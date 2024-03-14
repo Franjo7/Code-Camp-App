@@ -5,3 +5,9 @@
 :root {
     background-color: rgb(1, 7, 9);
 }
+
+.error-message {
+    color: #e53e3e; /* Red 600 */
+    margin: 0;
+    padding: 0;
+}
