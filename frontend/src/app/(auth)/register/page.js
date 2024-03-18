@@ -1,108 +1,74 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  firstName: yup
+    .string()
+    .required('First Name is required')
+    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'First Name must contain only letters'),
+  lastName: yup
+    .string()
+    .required('Last Name is required')
+    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'Last Name must contain only letters'),
+  tel: yup
+    .string()
+    .required('Phone Number is required')
+    .matches(/^\+387 63 [0-9]{3}-[0-9]{3}$/, 'Phone Number must be in the format +387 63 XXX-XXX'),
+  email: yup
+    .string()
+    .required('Email is required')
+    .email('Email must be a valid email address'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters long'),
+  confirmPassword: yup
+    .string()
+    .required('Confirm Password is required')
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+});
 
 const page = () => {
-
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [tel, setTel] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState({}); 
-  const [isFormValid, setIsFormValid] = useState(false);
+  const { register, handleSubmit, formState: { errors, isDirty, dirtyFields, isValid }, trigger, } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
 
   useEffect(() => {
-    validateForm();
-  }, [firstName, lastName, tel, email, password, confirmPassword]);
+    trigger();
+  }, [trigger]);
 
-  const validateForm = () => {
-    let errors = {};
-
-    if(!firstName) {
-      errors.firstName = 'First Name is required';
-    }
-    else if (!/^[A-Za-z]+$/.test(firstName)) {
-      errors.firstName = 'First Name must contain only letters';
-    }
-
-    if(!lastName) {
-      errors.lastName = 'Last Name is required';
-    }
-    else if (!/^[A-Za-z]+$/.test(lastName)) {
-      errors.lastName = 'Last Name must contain only letters';
-    }
-
-    if(!tel) {
-      errors.tel = 'Phone Number is required';
-    }
-    else if (!/^\+[0-9]{3} [0-9]{2} [0-9]{3}-[0-9]{3}$/.test(tel)) {
-      errors.tel = 'Phone Number must be in the format +387 63 XXX-XXX';
-    }
-
-    if(!email) {
-      errors.email = 'Email is required';
-    }
-    else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Email is not valid';
-    }
-
-    if(!password) {
-      errors.password = 'Password is required';
-    }
-    else if (password.length < 8) {
-      errors.password = 'Password must be at least 8 characters long';
-    }
-
-    if(!confirmPassword) {
-      errors.confirmPassword = 'Confirm Password is required';
-    }
-    else if (confirmPassword.length < 8) {
-      errors.confirmPassword = 'Password must be at least 8 characters long';
-    }
-    else if (password !== confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(errors);
-    setIsFormValid(Object.keys(errors).length === 0);
-
-  };
-
-  const handleSubmit = () => {
-    if (isFormValid) {
-      alert('Form is valid');
-    }
-    else {
-      alert('Form is invalid');
-    }
+  const formSubmit = (data) => {
+    console.log(data);
   };
 
   return (
     <section className='mt-4'>
       <h1 className='text-center text-white text-4xl'>Register</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit}>
-        <input type='text' value={firstName} placeholder='Your First Name' className='bg-white rounded-md p-3' onChange={(e) => setFirstName(e.target.value)} />
-        {errors.firstName && <p className="error-message">{errors.firstName}</p>}
-        <input type='text' value={lastName} placeholder='Your Last Name' className='bg-white rounded-md p-3' onChange={(e) => setLastName(e.target.value)} required />
-        {errors.lastName && <p className="error-message">{errors.lastName}</p>}
-        <input type='tel' value={tel} placeholder='Your Phone Number' className='bg-white rounded-md p-3' onChange={(e) => setTel(e.target.value)} required />
-        {errors.tel && <p className="error-message">{errors.tel}</p>}
-        <input type='email' value={email} placeholder='Your Email' className='bg-white rounded-md p-3' onChange={(e) => setEmail(e.target.value)} required />
-        {errors.email && <p className="error-message">{errors.email}</p>}
-        <input type='password' value={password} placeholder='Your Password' className='bg-white rounded-md p-3' onChange={(e) => setPassword(e.target.value)} required />
-        {errors.password && <p className="error-message">{errors.password}</p>}
-        <input type='password' value={confirmPassword} placeholder='Confirm Your Password' className='bg-white rounded-md p-3' onChange={(e) => setConfirmPassword(e.target.value)} required />
-        {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
-        <button className={`bg-primary text-white rounded-md p-3 ${!isFormValid && 'opacity-50 cursor-not-allowed'}`} disabled={!isFormValid} 
-        type="submit">Register</button>
-
+      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
+        <input type='text' placeholder='Your First Name' className='input' {...register('firstName')} />
+        <p className='error-message'>{dirtyFields.firstName && errors.firstName?.message}</p>
+        <input type='text' placeholder='Your Last Name' className='input' {...register('lastName')} />
+        <p className='error-message'>{dirtyFields.lastName && errors.lastName?.message}</p>
+        <input type='tel' placeholder='Your Phone Number' className='input' {...register('tel')} />
+        <p className='error-message'>{dirtyFields.tel && errors.tel?.message}</p>
+        <input type='email' placeholder='Your Email' className='input' {...register('email')} />
+        <p className='error-message'>{dirtyFields.email && errors.email?.message}</p>
+        <input type='password' placeholder='Your Password' className='input' {...register('password')} />
+        <p className='error-message'>{dirtyFields.password && errors.password?.message}</p>
+        <input type='password' placeholder='Confirm Password' className='input' {...register('confirmPassword')} />
+        <p className='error-message'>{dirtyFields.confirmPassword && errors.confirmPassword?.message}</p>
+        <button type='submit' className={`button rounded-md p-3 ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
+        disabled={!isValid}>Register</button>
       </form>
       <p className='text-center text-white mt-4'>
         Already have an account? <a href='/login' className='underline'>Login</a>
       </p>
     </section>
-  )
-}
+  );
+};
 
-export default page
+export default page;
