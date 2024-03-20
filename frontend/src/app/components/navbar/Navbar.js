@@ -4,8 +4,8 @@ import Link from 'next/link'
 const Navbar = () => {
   return (
     <header className="flex items-center justify-between">
-        <nav className="text-white text-1xl flex items-center gap-4">
-          <Link className="text-white font-bold text-2xl mr-16" href="">globalsoft</Link>
+        <nav className="text-white flex items-center gap-4">
+          <img src="./logo.svg" alt="logo" className="mr-16" href="/" />
           <Link href='/'>Home</Link>
           <Link href='/about'>About</Link>
           <Link href='/contact'>Contact</Link>
