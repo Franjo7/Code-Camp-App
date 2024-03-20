@@ -18,21 +18,47 @@
     padding: 0.75rem; 
 }
   
-/* Stilovi za onemogućeni gumb */
 .disabled-button {
     background-color: #374f80;
     color: #6b7280;
     cursor: not-allowed;
 }
   
-/* Stilovi za omogućeni gumb */
 .enabled-button {
     background-color: theme('colors.primary'); 
     color: #ffffff;
 }
   
-/* Stilovi za hover efekt */
 .enabled-button:hover {
     background-color: rgb(25, 99, 235); 
 }
   
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    margin-top: 2.5rem;
+}
+  
+table {
+    width: 80%;
+    border-collapse: collapse;
+}
+
+caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 10px;
+}
+  
+th, td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    background-color: #ffffff;
+}
+
+th {
+    background-color: #f2f2f2;
+}
