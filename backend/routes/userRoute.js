@@ -4,8 +4,6 @@ import { create, fetch , update,deleteUser,login} from '../controller/userContro
 const route = express.Router();
 
 
-
-
 //Registracija
 route.post('/register',create);
 
@@ -17,10 +15,6 @@ route.put('/update/:id',update);
 route.delete('/delete/:id',deleteUser);
 
 route.get('/',fetch);
-
-
-
-
 
 
 export default route;
