@@ -32,7 +32,7 @@ const schema = yup.object().shape({
 });
 
 const page = () => {
-  const { register, handleSubmit, formState: { errors, isDirty, dirtyFields, isValid }, trigger, } = useForm({
+  const { register, handleSubmit, reset, formState: { errors, isDirty, dirtyFields, isValid }, trigger, } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
@@ -41,12 +41,14 @@ const page = () => {
     trigger();
   }, [trigger]);
 
-  const formSubmit = (data) => {
+  const formSubmit = (data, e) => {
+    e.preventDefault();
     console.log(data);
+    reset();
   };
 
   return (
-    <section className='mt-4'>
+    <section className='mt-10'>
       <h1 className='text-center text-white text-4xl'>Register</h1>
       <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
         <input type='text' placeholder='Your First Name' className='input' {...register('firstName')} />
