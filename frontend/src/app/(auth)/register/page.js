@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import axios from 'axios';
 
 const schema = yup.object().shape({
   firstName: yup
@@ -43,8 +44,12 @@ const page = () => {
 
   const formSubmit = (data, e) => {
     e.preventDefault();
+    axios.post('http://localhost:5001/api/user/register', data).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.error('Error registering user:', error);
+    });
     console.log(data);
-    reset();
   };
 
   return (

@@ -34,9 +34,9 @@ export default function Home() {
         <tbody>
           {data.map((user, index) => (
             <tr key={index}>
-              <td>{user.first_name}</td>
-              <td>{user.last_name}</td>
-              <td>{user.telephone}</td>
+              <td>{user.firstName}</td>
+              <td>{user.lastName}</td>
+              <td>{user.tel}</td>
               <td>{user.email}</td>
               <td>{user.role}</td>
             </tr>
