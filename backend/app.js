@@ -5,6 +5,9 @@ import route from './routes/userRoute.js';
 import workshopRoute from './routes/workshopRoute.js';
 import registrationRoute from './routes/registrationRoute.js';
 import cors from 'cors';
+//import userModel from './model/userModel.js';
+
+
 
 const app = express();
 app.use(express.json());
@@ -34,6 +37,7 @@ mongoose.connect(MONGOURL).then(() => {
 });
 
   
+
 
 app.use('/api/user', route);
 app.use('/api/workshop', workshopRoute);

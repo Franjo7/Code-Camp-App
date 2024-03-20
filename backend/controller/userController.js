@@ -18,7 +18,7 @@ export const create = async (req, res) => {
         }
 
         const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             savedUser.password = hashedPassword;
             const newUser = await savedUser.save();
@@ -31,7 +31,7 @@ export const create = async (req, res) => {
 
            const token =  jwt.sign(payload,process.env.JWT_SECRET,{expiresIn:'1hr'});
             res.status(201).json({token});
-
+        
     } catch (error) {
         res.status(500).json({error:"Internal Server Error" });
     }
