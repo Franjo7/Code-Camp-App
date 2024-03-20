@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import axios from 'axios';
 
 const schema = yup.object().shape({
   email: yup
@@ -27,8 +28,11 @@ const page = () => {
 
   const formSubmit = (data, e) => {
     e.preventDefault();
-    console.log(data);
-    reset();
+    axios.post('http://localhost:5001/api/user/login', data).then((response) => {
+      window.location.href = '/';
+    }).catch((error) => {
+      alert('Invalid email or password');
+    });
   };
 
   return (
