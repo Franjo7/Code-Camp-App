@@ -5,7 +5,7 @@ const Navbar = () => {
   return (
     <header className="flex items-center justify-between">
         <nav className="text-white flex items-center gap-4">
-          <img src="./logo.svg" alt="logo" className="mr-16" href="/" />
+          <img src="./logo.svg" alt="logo" className="mr-16 logo" href="/" />
           <Link href='/'>Home</Link>
           <Link href='/about'>About</Link>
           <Link href='/contact'>Contact</Link>

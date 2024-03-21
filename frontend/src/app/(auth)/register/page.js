@@ -44,7 +44,7 @@ const page = () => {
 
   const formSubmit = (data, e) => {
     e.preventDefault();
-    axios.post('http://localhost:5001/api/user/register', data).then((response) => {
+    axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/register`, data).then((response) => {
       window.location.href = '/';
     }).catch((error) => {
       console.error('Error registering user:', error);
