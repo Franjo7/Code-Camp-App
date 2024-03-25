@@ -2,13 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [data, setData] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     async function getUsers() {
@@ -41,6 +42,10 @@ export default function Home() {
     }
   }
 
+  function redirectToUpdate(id) {
+    router.push(`/admin/edit/${id}`);
+  }
+
   return (
     <div className="container">
       {showAlert && (
@@ -70,9 +75,7 @@ export default function Home() {
               <td>{user.role}</td>
               <td>
                 <Router>
-                  <Link to={`/admin/edit/${user._id}`}>
-                    <button className="btn btn-update" ><FaEdit /></button>
-                  </Link>
+                  <button className="btn btn-update" onClick={() => redirectToUpdate(user._id)}><FaEdit /></button>
                   <button className="btn btn-delete" onClick={() => {
                     if (window.confirm(`Are you sure you want to delete user ${user.firstName} ${user.lastName}?`)) {
                       deleteUser(user._id);

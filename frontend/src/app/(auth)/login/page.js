@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const schema = yup.object().shape({
   email: yup
@@ -17,7 +18,7 @@ const schema = yup.object().shape({
 });
 
 const page = () => {
-  const { register, handleSubmit, reset, formState: { errors, isDirty, dirtyFields, isValid }, trigger } = useForm({
+  const { register, handleSubmit, formState: { errors, isDirty, dirtyFields, isValid }, trigger } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
@@ -26,13 +27,17 @@ const page = () => {
     trigger();
   }, [trigger]);
 
+  const router = useRouter();
+
   const formSubmit = (data, e) => {
     e.preventDefault();
-    axios.post('http://localhost:5001/api/user/login', data).then((response) => {
-      window.location.href = '/';
-    }).catch((error) => {
-      alert('Invalid email or password');
-    });
+    axios.post(process.env.NEXT_PUBLIC_URL_USER + 'user/login', data)
+      .then((response) => {
+        router.push('/');
+      })
+      .catch((error) => {
+        alert('Invalid email or password');
+      });
   };
 
   return (

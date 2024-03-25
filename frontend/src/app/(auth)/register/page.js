@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const schema = yup.object().shape({
   firstName: yup
@@ -38,6 +39,8 @@ const page = () => {
     mode: 'onChange',
   });
 
+  const router = useRouter();
+
   useEffect(() => {
     trigger();
   }, [trigger]);
@@ -45,7 +48,7 @@ const page = () => {
   const formSubmit = (data, e) => {
     e.preventDefault();
     axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/register`, data).then((response) => {
-      window.location.href = '/';
+      router.push('/');
     }).catch((error) => {
       console.error('Error registering user:', error);
     });
