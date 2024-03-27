@@ -6,21 +6,19 @@ import {verifyToken} from '../utils/verifyUser.js';
 const route = express.Router();
 
 
-//Registracija
+
 route.post('/register',create);
 
-//Logiranje
+
 route.post('/login',login);
 
 route.put('/update/:id',verifyToken,update);
 
-route.delete('/delete/:id',deleteUser);
+route.delete('/delete/:id',verifyToken,deleteUser);
 
 route.get('/getUser/:id',getUserById);
 
 route.get('/allUsers',getAllUsers);
-
-
 
 
 export default route;
