@@ -5,12 +5,14 @@ import route from './routes/userRoute.js';
 import workshopRoute from './routes/workshopRoute.js';
 import registrationRoute from './routes/registrationRoute.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 //import userModel from './model/userModel.js';
 
 
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
@@ -20,6 +22,7 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", " Content-Type ");
     next();
   }); 
+
 
 
 
@@ -35,12 +38,14 @@ mongoose.connect(MONGOURL).then(() => {
 }).catch((error) => {
     console.log('Error connecting to database', error);
 });
-
+ 
   
+
 
 
 app.use('/api/user', route);
 app.use('/api/workshop', workshopRoute);
 app.use('/api/campRegistration', registrationRoute);
+
 
 

@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     async function getUsers() {
       try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/`);
+        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'user/allUsers');
         setData(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -31,6 +31,8 @@ export default function Home() {
       console.error('Error deleting user:', error);
     }
   }
+
+ 
 
   function redirectToUpdate(id) {
     router.push(`/admin/edit/${id}`);

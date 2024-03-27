@@ -9,16 +9,16 @@ export default function EditUser() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    async function fetchUser() {
+    async function getUser() {
       try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/update/${id}`);
+        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/getUser/${id}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user:', error);
       } 
     }
     if (id) {
-      fetchUser();
+      getUser();
     }
   }, [id]);
 

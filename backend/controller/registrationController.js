@@ -1,12 +1,10 @@
-import Registration from '../model/registrationModel.js';
 import jwt from 'jsonwebtoken';
-import Workshop from '../model/workshopModel.js'; 
+import Workshop from '../model/workshopModel.js';
+import Registration from '../model/registrationModel.js';
 
-// Registrirajte korisnika za radionicu
 export const registerForWorkshop = async (req, res) => {
     try {
-        
-
+        // Provjera tokena
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized' });
@@ -14,29 +12,32 @@ export const registerForWorkshop = async (req, res) => {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decodedToken.userId;
 
-       
-        const { workshopId } = req.body;
+       /*
 
-        const workshop = await Workshop.findById(workshopId);
-        if (!workshop) {
+        // Provjera postojanja radionice
+        const saveWorkshop  = new Workshop(req.body);
+        const { _id } = saveWorkshop;
+        const workshopExist = await Workshop.findById(saveWorkshop.id);
+        if (!workshopExist) {
             return res.status(404).json({ message: 'Workshop not found' });
         }
-
-     
+        */
+       
+        // Provjera postojanja registracije
         const existingRegistration = await Registration.findOne({ user: userId, workshop: workshopId });
         if (existingRegistration) {
             return res.status(400).json({ message: 'User is already registered for this workshop' });
         }
 
-     
+        // Stvaranje nove registracije
         const newRegistration = new Registration({
             user: userId,
-            workshop: workshopId,
+            workshop: workshop,
             registrationDate: new Date(),
             status: 'pending'
         });
 
-        
+        // Pohrana registracije
         const savedRegistration = await newRegistration.save();
 
         res.status(201).json(savedRegistration);
@@ -47,10 +48,9 @@ export const registerForWorkshop = async (req, res) => {
 };
 
 
-
 export const fetchRegistrations = async (req, res) => { 
     try {
-        const registrations = await registration.find();
+        const registrations = await registrations.find();
         
         if (registrations.length === 0) {
             return res.status(404).json({ message: "Registrations not found" });
