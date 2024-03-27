@@ -32,16 +32,6 @@ export default function Home() {
     }
   }
 
-  async function updateUser(id) {
-    try {
-      await axios.put(process.env.NEXT_PUBLIC_BASE_URL + `user/update/${id}`);
-      setAlertMessage('User updated successfully');
-      setShowAlert(true);
-    } catch (error) {
-      console.error('Error updating user:', error);
-    }
-  }
-
   function redirectToUpdate(id) {
     router.push(`/admin/edit/${id}`);
   }
@@ -54,7 +44,7 @@ export default function Home() {
         </div>
       )}
       <table>
-        <caption>Users</caption>
+        <caption className='text-center text-white text-4xl font-bold'>Users</caption>
         <thead>
           <tr>
             <th>First Name</th>
