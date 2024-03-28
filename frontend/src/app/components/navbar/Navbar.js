@@ -27,9 +27,7 @@ const Navbar = () => {
             <FaUser className="mr-1" /> About
         </Link>
         <Link href='/contact' className="flex items-center">
-          <div className="flex items-center">
             <FaEnvelope className="mr-1" /> Contact
-          </div>
         </Link>
       </nav>
       <div className='text-white text-lg flex items-center gap-2'>
