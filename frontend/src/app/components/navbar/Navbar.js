@@ -20,17 +20,13 @@ const Navbar = () => {
     <header className="flex items-center justify-between px-6 py-4 md:px-10">
       <img src="./logo.svg" alt="logo" className="w-32 md:w-48" />
       <nav className="hidden md:flex text-white text-lg items-center gap-6">
-        <Link href='/'>
-          <div className="flex items-center">
+        <Link href='/' className='flex items-center'>
             <FaHome className="mr-1" /> Home
-          </div>
         </Link>
-        <Link href='/about'>
-          <div className="flex items-center">
+        <Link href='/about' className="flex items-center">
             <FaUser className="mr-1" /> About
-          </div>
         </Link>
-        <Link href='/contact'>
+        <Link href='/contact' className="flex items-center">
           <div className="flex items-center">
             <FaEnvelope className="mr-1" /> Contact
           </div>

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
+import cookieCutter from 'cookie-cutter';
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -25,7 +26,7 @@ export default function Home() {
 
   async function deleteUser(id) {
     try {
-      await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `user/delete/${id}`); 
+      await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `user/delete/${id}`, {data: { token: cookieCutter.get('token')}}); 
       setData(prevData => prevData.filter(user => user._id !== id));
     } catch (error) {
       console.error('Error deleting user:', error);
