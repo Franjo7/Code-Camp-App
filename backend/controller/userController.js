@@ -67,8 +67,10 @@ export const login = async (req, res) => {
         };
 
         const token =  jwt.sign(payload,process.env.JWT_SECRET,{expiresIn:'1hr'});
+
+        res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge: 3600000 }).status(200).json({token});
        
-        res.status(200).json({token});
+        // res.status(200).json({token});
 
     } catch (error) {
         res.status(500).json({error:"Internal Server Error" });

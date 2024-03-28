@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useCookies } from 'react-cookie';
 
 const schema = yup.object().shape({
   email: yup
@@ -28,13 +29,17 @@ const page = () => {
   }, [trigger]);
 
   const router = useRouter();
+  const [cookies, setCookies] = useCookies(['token']);
 
   const formSubmit = (data, e) => {
     e.preventDefault();
     axios.post(process.env.NEXT_PUBLIC_URL_USER + 'user/login', data)
       .then((response) => {
         router.push('/');
+        setCookies('token', response.data.token);
+        window.localStorage.setItem('user._id', response.data.token);
       })
+
       .catch((error) => {
         alert('Invalid email or password');
       });
