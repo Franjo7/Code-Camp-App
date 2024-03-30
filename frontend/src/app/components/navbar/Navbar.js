@@ -1,57 +1,97 @@
 "use client"
-import React from 'react'
-import Link from 'next/link'
-import { FaHome, FaUser, FaEnvelope, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { FaHome, FaUser, FaEnvelope, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
-
-  const [cookies, setCookies, removeCookie] = useCookies(['token']);
+  const [cookies, , removeCookie] = useCookies(['token']);
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
     removeCookie('token');
     window.localStorage.removeItem('user._id');
     router.push('/login');
+    closeMenu();
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 md:px-10">
+    <header className="flex items-center justify-between px-3 py-3 md:px-10 relative z-10 text-white">
       <img src="./logo.svg" alt="logo" className="w-32 md:w-48" />
-      <nav className="hidden md:flex text-white text-lg items-center gap-6">
-        <Link href='/' className='flex items-center'>
-            <FaHome className="mr-1" /> Home
+      <nav className="hidden md:flex text-lg items-center gap-10">
+        <Link href='/' className='flex items-center' onClick={closeMenu}>
+          <FaHome className="mr-1" /> <span className="ml-1">Home</span>
         </Link>
-        <Link href='/about' className="flex items-center">
-            <FaUser className="mr-1" /> About
+        <Link href='/about' className="flex items-center" onClick={closeMenu}>
+          <FaUser className="mr-1" /> <span className="ml-1">About</span>
         </Link>
-        <Link href='/contact' className="flex items-center">
-            <FaEnvelope className="mr-1" /> Contact
+        <Link href='/contact' className="flex items-center" onClick={closeMenu}>
+          <FaEnvelope className="mr-1" /> <span className="ml-1">Contact</span>
         </Link>
-      </nav>
-      <div className='text-white text-lg flex items-center gap-2'>
         {cookies.token ? (
           <div onClick={handleLogout} className="flex items-center bg-gray-700 rounded-full px-4 py-2 hover:bg-gray-600 cursor-pointer">
-            <FaSignOutAlt className="mr-1 text-xl" /> Logout
+            <FaSignOutAlt className="mr-1 text-xl" /> <span className="ml-1">Logout</span>
           </div>
         ) : (
-          <>
-            <Link href='/login'>
-              <div className="flex items-center bg-gray-700 rounded-full px-4 py-2 hover:bg-gray-600">
-                <FaSignInAlt className="mr-1 text-xl" /> Login
-              </div>
-            </Link>
-            <Link href='/register'>
-              <div className="flex items-center bg-primary rounded-full px-4 py-2 enabled-button">
-                <FaUserPlus className="mr-1 text-xl" /> Register
-              </div>
-            </Link>
-          </>
+          <Link href='/login' onClick={closeMenu}>
+            <div className="flex items-center bg-gray-700 rounded-full px-4 py-2 hover:bg-gray-600 cursor-pointer">
+              <FaSignInAlt className="mr-1 text-xl" /> <span className="ml-1">Login</span>
+            </div>
+          </Link>
         )}
+      </nav>
+      <div className='md:hidden'>
+        <button onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <FaTimes className="text-white text-2xl" /> : <FaBars className="text-white text-2xl" />}
+        </button>
       </div>
+      {isOpen && (
+        <div className="md:hidden absolute top-16 mt-1 right-0 bg-secondary text-white overflow-y-auto">
+          <div className="flex flex-col items-center">
+            <Link href='/' className='block py-2 px-4' onClick={closeMenu}>
+              <div className="flex items-center">
+                <FaHome className="text-xl mr-1 md:mr-0 md:mb-1" />
+                <span>Home</span>
+              </div>
+            </Link>
+            <Link href='/about' className='block py-2 px-4' onClick={closeMenu}>
+              <div className="flex items-center">
+                <FaUser className="text-xl mr-1 md:mr-0 md:mb-1" />
+                <span>About</span>
+              </div>
+            </Link>
+            <Link href='/contact' className='block py-2 px-4' onClick={closeMenu}>
+              <div className="flex items-center">
+                <FaEnvelope className="text-xl mr-1 md:mr-0 md:mb-1" />
+                <span>Contact</span>
+              </div>
+            </Link>
+            {cookies.token ? (
+              <div onClick={handleLogout} className="block py-2 px-4 cursor-pointer">
+                <div className="flex items-center" onClick={closeMenu}>
+                  <FaSignOutAlt className="text-xl mr-1 md:mr-0 md:mb-1" />
+                  <span>Logout</span>
+                </div>
+              </div>
+            ) : (
+              <Link href='/login' className='block py-2 px-4' onClick={closeMenu}>
+                <div className="flex items-center">
+                  <FaSignInAlt className="text-xl mr-1 md:mr-0 md:mb-1" />
+                  <span>Login</span>
+                </div>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

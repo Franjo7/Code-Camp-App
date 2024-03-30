@@ -33,8 +33,6 @@ export default function Home() {
     }
   }
 
- 
-
   function redirectToUpdate(id) {
     router.push(`/admin/edit/${id}`);
   }
@@ -46,40 +44,42 @@ export default function Home() {
           {alertMessage}
         </div>
       )}
-      <table>
-        <caption className='text-center text-white text-4xl font-bold'>Users</caption>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Phone Number</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((user, index) => (
-            <tr key={index}>
-              <td>{user.firstName}</td>
-              <td>{user.lastName}</td>
-              <td>{user.tel}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <Router>
-                  <button className="btn btn-update" onClick={() => redirectToUpdate(user._id)}><FaEdit /></button>
-                  <button className="btn btn-delete" onClick={() => {
-                    if (window.confirm(`Are you sure you want to delete user ${user.firstName} ${user.lastName}?`)) {
-                      deleteUser(user._id);
-                    }
-                  }}><FaTrash /></button>
-                </Router>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full table-fixed text-center">
+          <caption className='text-center text-white text-4xl font-bold'>Users</caption>
+          <thead>
+            <tr>
+              <th className="w-1/6 py-2">First Name</th>
+              <th className="w-1/6 py-2">Last Name</th>
+              <th className="w-1/6 py-2">Phone Number</th>
+              <th className="w-1/6 py-2">Email</th>
+              <th className="w-1/6 py-2">Role</th>
+              <th className="w-1/6 py-2">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((user, index) => (
+              <tr key={index}>
+                <td className="w-1/6 py-2 break-all">{user.firstName}</td>
+                <td className="w-1/6 py-2 break-all">{user.lastName}</td>
+                <td className="w-1/6 py-2 break-all">{user.tel}</td>
+                <td className="w-1/6 py-2 break-all">{user.email}</td>
+                <td className="w-1/6 py-2 break-all">{user.role}</td>
+                <td className="w-1/6 py-2">
+                  <Router>
+                    <button className="btn btn-update" onClick={() => redirectToUpdate(user._id)}><FaEdit /></button>
+                    <button className="btn btn-delete" onClick={() => {
+                      if (window.confirm(`Are you sure you want to delete user ${user.firstName} ${user.lastName}?`)) {
+                        deleteUser(user._id);
+                      }
+                    }}><FaTrash /></button>
+                  </Router>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

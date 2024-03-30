@@ -46,7 +46,7 @@ const page = () => {
   };
 
   return (
-    <section className='mt-10'>
+    <section className='container'>
       <h1 className='text-center text-white text-4xl font-bold'>Login</h1>
       <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
         <input type='email' placeholder='Your Email' className='input' {...register('email')} />
