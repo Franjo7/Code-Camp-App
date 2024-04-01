@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FaHome, FaUser, FaEnvelope, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
+import { FaHome, FaUser, FaQuestionCircle, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 
@@ -31,16 +31,16 @@ const Navbar = () => {
         <Link href='/about' className="flex items-center" onClick={closeMenu}>
           <FaUser className="mr-1" /> <span className="ml-1">About</span>
         </Link>
-        <Link href='/contact' className="flex items-center" onClick={closeMenu}>
-          <FaEnvelope className="mr-1" /> <span className="ml-1">Contact</span>
+        <Link href='/faq' className="flex items-center" onClick={closeMenu}>
+          <FaQuestionCircle className="mr-1" /> <span className="ml-1">FAQ</span>
         </Link>
         {cookies.token ? (
-          <div onClick={handleLogout} className="flex items-center bg-gray-700 rounded-full px-4 py-2 hover:bg-gray-600 cursor-pointer">
+          <div onClick={handleLogout} className="flex items-center bg-secondary rounded-full px-4 py-2 hover:bg-gray-600 cursor-pointer">
             <FaSignOutAlt className="mr-1 text-xl" /> <span className="ml-1">Logout</span>
           </div>
         ) : (
           <Link href='/login' onClick={closeMenu}>
-            <div className="flex items-center bg-gray-700 rounded-full px-4 py-2 hover:bg-gray-600 cursor-pointer">
+            <div className="flex items-center bg-secondary rounded-full px-4 py-2 hover:bg-gray-600 cursor-pointer">
               <FaSignInAlt className="mr-1 text-xl" /> <span className="ml-1">Login</span>
             </div>
           </Link>
@@ -66,10 +66,10 @@ const Navbar = () => {
                 <span>About</span>
               </div>
             </Link>
-            <Link href='/contact' className='block py-2 px-4' onClick={closeMenu}>
+            <Link href='/faq' className='block py-2 px-4' onClick={closeMenu}>
               <div className="flex items-center">
-                <FaEnvelope className="text-xl mr-1 md:mr-0 md:mb-1" />
-                <span>Contact</span>
+                <FaQuestionCircle className="text-xl mr-1 md:mr-0 md:mb-1" />
+                <span>FAQ</span>
               </div>
             </Link>
             {cookies.token ? (

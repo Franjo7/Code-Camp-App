@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
 import cookieCutter from 'cookie-cutter';
 
-export default function Home() {
+export default function AdminPage() {
   const [data, setData] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -46,7 +46,7 @@ export default function Home() {
       )}
       <div className="overflow-x-auto">
         <table className="w-full table-fixed text-center">
-          <caption className='text-center text-white text-4xl font-bold'>Users</caption>
+          <caption className='main-title'>Users</caption>
           <thead>
             <tr>
               <th className="w-1/6 py-2">First Name</th>

@@ -38,9 +38,6 @@ const AboutPage = () => {
           <p>
             One part of our company develops our own IT products, implements, and provides comprehensive support for the products of our partners, the world’s leading IT companies. Our team consists of experts who develop and test solutions with advanced technologies and methods, such as DDD, Microservice architecture, and Event sourcing.
           </p>
-          <p>
-            The other part develops complete innovative services and solutions for our clients - mainly in the gaming industry, as well as e-learning platforms and various systems according to the needs of clients from other industries. We design and develop attractive projects using the latest technological trends, and our experts make sure that everything works flawlessly.
-          </p>
           </div>
         </div>
       </div>

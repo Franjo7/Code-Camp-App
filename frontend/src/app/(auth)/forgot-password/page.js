@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import Link from 'next/link';
 
 const schema = yup.object().shape({
   email: yup
@@ -27,7 +28,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <section className='container'>
-      <h1 className='text-center text-white text-4xl font-bold'>Reset Your Password</h1>
+      <h1 className='main-title'>Reset Your Password</h1>
       <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
         <input type='email' placeholder='Your Email' className='input' {...register('email')} />
         <p className='error-message'>{dirtyFields.email && errors.email?.message}</p>
@@ -35,7 +36,7 @@ const ForgotPasswordPage = () => {
         disabled={!isValid}>Send Email</button>
       </form>
       <p className='text-center text-white mt-4'>
-        Remembered your password? <a href='/login' className='underline'>Login</a>
+        Remembered your password? <Link href='/login' className='underline'>Login</Link>
       </p>
     </section>
   );

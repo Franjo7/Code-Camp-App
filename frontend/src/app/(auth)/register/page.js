@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const schema = yup.object().shape({
   firstName: yup
@@ -33,7 +34,7 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
-const page = () => {
+const RegisterPage = () => {
   const { register, handleSubmit, reset, formState: { errors, isDirty, dirtyFields, isValid }, trigger, } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -57,7 +58,7 @@ const page = () => {
 
   return (
     <section className='container'>
-      <h1 className='text-center text-white text-4xl font-bold'>Register</h1>
+      <h1 className='main-title'>Register</h1>
       <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
         <input type='text' placeholder='Your First Name' className='input' {...register('firstName')} />
         <p className='error-message'>{dirtyFields.firstName && errors.firstName?.message}</p>
@@ -75,10 +76,10 @@ const page = () => {
         disabled={!isValid}>Register</button>
       </form>
       <p className='text-center text-white mt-4'>
-        Already have an account? <a href='/login' className='underline'>Login</a>
+        Already have an account? <Link href='/login' className='underline'>Login</Link>
       </p>
     </section>
   );
 };
 
-export default page;
+export default RegisterPage;
