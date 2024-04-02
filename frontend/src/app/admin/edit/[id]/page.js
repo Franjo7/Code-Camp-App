@@ -35,15 +35,25 @@ export default function EditUser() {
         lastName: user.lastName,
         tel: user.tel,
         email: user.email,
+        password: user.password,
         role: user.role
       };
-  
-      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/update/${id}`, userDataToUpdate);
+      const token = localStorage.getItem('user._id');
+      const headers = {Authorization: `Bearer ${token}`};
+
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/update/${id}`, userDataToUpdate,{headers});
       alert('User updated successfully');
-    } catch (error) {
-      console.error('Error updating user:', error);
-    }
+    }catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+          const errorMessage = error.response.data.error.message;
+          const errorCode = error.response.data.error.code;
+          console.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
+      } else {
+          console.error('An error occurred:', error);
+      }
   };  
+
+};  
 
   return (
     <section className='container'>
@@ -53,6 +63,7 @@ export default function EditUser() {
         <input type='text' name='lastName' placeholder='Last Name' className='input' value={user.lastName || ''} onChange={handleInputChange} />
         <input type='text' name='tel' placeholder='Tel' className='input' value={user.tel || ''} onChange={handleInputChange} />
         <input type='email' name='email' placeholder='Email' className='input' value={user.email || ''} onChange={handleInputChange} />
+        <input type='password' name='password' placeholder='Password' className='input'  onChange={handleInputChange} />
         <select name='role' className='input' value={user.role || ''  } onChange={handleInputChange}>
           <option value=''>Select Role</option>
           <option value='admin'>Admin</option>

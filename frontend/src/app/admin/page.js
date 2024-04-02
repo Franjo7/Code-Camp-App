@@ -26,10 +26,20 @@ export default function AdminPage() {
 
   async function deleteUser(id) {
     try {
-      await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `user/delete/${id}`, {data: { token: cookieCutter.get('token')}}); 
+      const token = localStorage.getItem('user._id');
+      const headers = {Authorization: `Bearer ${token}`};
+      
+      await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `user/delete/${id}`, {headers}); 
       setData(prevData => prevData.filter(user => user._id !== id));
     } catch (error) {
-      console.error('Error deleting user:', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        const errorMessage = error.response.data.error.message;
+        const errorCode = error.response.data.error.code;
+        console.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
+    } else {
+        console.error('An error occurred:', error);
+    
+      }
     }
   }
 

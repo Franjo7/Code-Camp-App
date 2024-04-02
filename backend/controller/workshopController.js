@@ -12,15 +12,11 @@ dotenv.config();
 
 export const create = async (req, res) => { 
     try {
-        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-
-        if(!token){
-            return res.status(401).json({message:"Unauthorized"});
-        }
-        const decodedToken = jwt.verify(token,process.env.JWT_SECRET);
-        const user = await User.findById({_id:decodedToken.user._id});
+        
+        const user = req.user.user._id;
+        const userRole = req.user.user.role;
             
-        if(!user || !user.role.includes('admin')){
+        if(!user || !userRole.includes('admin')){
             return res.status(403).json({ message: 'Only administrators can create workshops' });
         }
 
@@ -47,15 +43,10 @@ export const create = async (req, res) => {
 
 export const update = async (req, res) => {
    try{
-    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-
-    if(!token){
-        return res.status(401).json({message:"Unauthorized"});
-    }
-    const decodedToken = jwt.verify(token,process.env.JWT_SECRET);
-    const user = await User.findById({_id:decodedToken.user._id});
+        const user = req.user.user._id;
+        const userRole = req.user.user.role;
         
-    if(!user || !user.role.includes('admin')){
+    if(!user || !userRole.includes('admin')){
         return res.status(403).json({ message: 'Only administrators can update workshops' });
     }
 
@@ -78,15 +69,10 @@ export const update = async (req, res) => {
 export const deleteWorkshop = async (req, res) => {
     try{
 
-    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-
-    if(!token){
-        return res.status(401).json({message:"Unauthorized"});
-    }
-    const decodedToken = jwt.verify(token,process.env.JWT_SECRET);
-    const user = await User.findById({_id:decodedToken.user._id});
+        const user = req.user.user._id;
+        const userRole = req.user.user.role;
         
-    if(!user || !user.role.includes('admin')){
+    if(!user || !userRole.includes('admin')){
         return res.status(403).json({ message: 'Only administrators can delete workshops' });
     }
         const id= req.params.id;

@@ -15,7 +15,13 @@ export const create = async (req, res) => {
         const userExist = await User.findOne({email});
 
         if(userExist){
-            return res.status(400).json({message:"User already exist"});
+            return res.status(400).json({
+
+                error:{
+                    message:"User already exist",
+                    code:400
+                }
+            });
         }
 
         const saltRounds = 10;
@@ -49,14 +55,24 @@ export const login = async (req, res) => {
        const user  = await User.findOne({email});
 
          if(!user){
-            return res.status(400).json({message:"User not found"});
+            return res.status(400).json({
+                error:{
+                    message:"User not found",
+                    code:400
+                }
+            });
          }
         
          const isMatch = await bcrypt.compare(password,user.password);
             
-         if(!isMatch){
-                return res.status(400).json({message:"Invalid password"});
-            }
+         if (!isMatch) {
+            return res.status(400).json({
+                error: { 
+                    message: "Invalid password",
+                    code: 400
+                }
+            });
+        }
 
         const payload ={
             user: {
@@ -70,8 +86,6 @@ export const login = async (req, res) => {
 
         res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge: 3600000 }).status(200).json({token});
        
-        // res.status(200).json({token});
-
     } catch (error) {
         res.status(500).json({error:"Internal Server Error" });
     }
@@ -89,7 +103,12 @@ export const getUserById = async (req, res) => {
         const user = await User.findById(userId);
         
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({
+                error:{
+                    message:"User not found",
+                    code:404
+                }
+            });
         }
 
         res.status(200).json(user);
@@ -126,7 +145,13 @@ export const update = async (req, res) => {
                 req.body.password = await bcrypt.hash(req.body.password, saltRounds);
             } else if (req.body.password) {
                
-                return res.status(403).json({ message: "Admin is not authorized to update user passwords" });
+                return res.status(403).json({ 
+                    
+                    error: { 
+                        message: "Admin is not authorized to update user passwords",
+                        code: 403
+                    }    
+                 });
             }
 
             const updateUser = await User.findByIdAndUpdate(
@@ -172,7 +197,12 @@ export const update = async (req, res) => {
             return res.status(201).json(rest);
         } else {
             
-            return res.status(403).json({ message: "You are not authorized to update this user" });
+            return res.status(403).json({ 
+                error: { 
+                    message: "You are not authorized to update this user",
+                    code: 403
+                } 
+            });
         }
     } catch (error) {
         console.log(error);
@@ -201,7 +231,12 @@ export const deleteUser = async (req, res) => {
                 return res.status(200).json({ message: "User deleted successfully" });
             } else {
               
-                return res.status(403).json({ message: "You are not authorized to delete this user" });
+                return res.status(403).json({
+                    error:{
+                        message:"You are not authorized to delete this user",
+                        code:403            
+                    }
+                });
             }
         }
     } catch (error) {

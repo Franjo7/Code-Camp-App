@@ -6,8 +6,6 @@ import workshopRoute from './routes/workshopRoute.js';
 import registrationRoute from './routes/registrationRoute.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-//import userModel from './model/userModel.js';
-
 
 
 const app = express();
@@ -16,6 +14,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -23,12 +22,15 @@ app.use(function(req, res, next) {
     next();
   }); 
 
-
-
-
+  
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 const MONGOURL = process.env.DATABASE_URL;
+
+app.use('/api/user', route);
+app.use('/api/workshop', workshopRoute);
+app.use('/api/campRegistration', registrationRoute);
+
 
 mongoose.connect(MONGOURL).then(() => {
     console.log('Database connected');
@@ -43,9 +45,7 @@ mongoose.connect(MONGOURL).then(() => {
 
 
 
-app.use('/api/user', route);
-app.use('/api/workshop', workshopRoute);
-app.use('/api/campRegistration', registrationRoute);
+
 
 
 
