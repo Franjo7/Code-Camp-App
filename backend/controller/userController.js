@@ -143,6 +143,7 @@ export const update = async (req, res) => {
                 
                 const saltRounds = 10;
                 req.body.password = await bcrypt.hash(req.body.password, saltRounds);
+                
             } else if (req.body.password) {
                
                 return res.status(403).json({ 
@@ -209,6 +210,8 @@ export const update = async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+
 
 
 // delete user
