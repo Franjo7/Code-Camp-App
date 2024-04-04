@@ -11,16 +11,26 @@ export default function AdminPage() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getUsers() {
       try {
+        setLoading(true);
         const token = localStorage.getItem('user._id');
         const headers = {Authorization: `Bearer ${token}`};
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'user/allUsers', {headers});
         setData(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
+        setLoading(false);
+      } 
+      catch (error) {
+        const token = localStorage.getItem('user._id');
+        if (!token) {
+          router.push('/login');
+        }
+        else {
+          router.push('/');
+        }
       }
     }
     getUsers();
@@ -40,7 +50,6 @@ export default function AdminPage() {
         toast.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
     } else {
         console.error('An error occurred:', error);
-    
       }
     }
   }
@@ -56,6 +65,7 @@ export default function AdminPage() {
           {alertMessage}
         </div>
       )}
+      {!loading && (
       <div className="overflow-x-auto">
         <table className="w-full table-fixed text-center">
           <caption className='main-title'>Users</caption>
@@ -92,6 +102,7 @@ export default function AdminPage() {
           </tbody>
         </table>
       </div>
+      )}
     </div>
   );
 }
