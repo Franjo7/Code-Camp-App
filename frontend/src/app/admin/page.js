@@ -4,7 +4,7 @@ import axios from 'axios';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
-import cookieCutter from 'cookie-cutter';
+import toast from 'react-hot-toast';
 
 export default function AdminPage() {
   const [data, setData] = useState([]);
@@ -15,7 +15,9 @@ export default function AdminPage() {
   useEffect(() => {
     async function getUsers() {
       try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'user/allUsers');
+        const token = localStorage.getItem('user._id');
+        const headers = {Authorization: `Bearer ${token}`};
+        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'user/allUsers', {headers});
         setData(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -28,14 +30,14 @@ export default function AdminPage() {
     try {
       const token = localStorage.getItem('user._id');
       const headers = {Authorization: `Bearer ${token}`};
-      
       await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `user/delete/${id}`, {headers}); 
       setData(prevData => prevData.filter(user => user._id !== id));
+      toast.success('User deleted successfully');
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         const errorMessage = error.response.data.error.message;
         const errorCode = error.response.data.error.code;
-        console.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
+        toast.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
     } else {
         console.error('An error occurred:', error);
     

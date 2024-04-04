@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import Footer from "./components/footer/Footer";
+import { Toaster } from "react-hot-toast";
 
 const Navbar = dynamic(() => import("./components/navbar/Navbar"), { ssr: false });
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           {children}
           <Footer />
+          <Toaster position="bottom-center" />  
         </main>
       </body>
     </html>

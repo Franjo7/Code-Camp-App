@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 const schema = yup.object().shape({
   firstName: yup
@@ -49,7 +50,8 @@ const RegisterPage = () => {
   const formSubmit = (data, e) => {
     e.preventDefault();
     axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/register`, data).then((response) => {
-      router.push('/');
+      toast.success('Registration successful, please log in');
+      router.push('/login');
     }).catch((error) => {
       console.error('Error registering user:', error);
     });

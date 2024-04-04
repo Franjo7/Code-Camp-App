@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { FaHome, FaUser, FaQuestionCircle, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const [cookies, , removeCookie] = useCookies(['token']);
@@ -13,6 +14,7 @@ const Navbar = () => {
   const handleLogout = () => {
     removeCookie('token');
     window.localStorage.removeItem('user._id');
+    toast.success('You have successfully logged out!');
     router.push('/login');
     closeMenu();
   };

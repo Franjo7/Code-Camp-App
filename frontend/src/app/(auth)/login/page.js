@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'react-cookie';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 const schema = yup.object().shape({
   email: yup
@@ -36,13 +37,14 @@ const LoginPage = () => {
     e.preventDefault();
     axios.post(process.env.NEXT_PUBLIC_URL_USER + 'user/login', data)
       .then((response) => {
+        toast.success('You have successfully logged in!');
         router.push('/');
         setCookies('token', response.data.token);
         window.localStorage.setItem('user._id', response.data.token);
       })
 
       .catch((error) => {
-        alert('Invalid email or password');
+        toast.error("Invalid email or password. Please try again.")
       });
   };
 
