@@ -33,7 +33,8 @@ export const create = async (req, res) => {
             const payload ={
                 user: {
                     _id:newUser._id,
-                    role:newUser.role
+                    role:newUser.role,
+                
                    
                 }
             }
@@ -77,7 +78,8 @@ export const login = async (req, res) => {
         const payload ={
             user: {
                 _id:user._id,
-                role:user.role
+                role:user.role,
+                firstName:user.firstName
             
             }
         };
@@ -118,77 +120,39 @@ export const getUserById = async (req, res) => {
 };
 
 
-// fetching all users
-
-export const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find({ deleted: { $ne: true } });
-        return res.status(200).json(users);
-    } catch (error) {
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-
 // update user
 
-export const update = async (req, res) => {    
+export const update = async (req, res) => {
     try {
         const userIdFromToken = req.user.user._id;
-        const userRole = req.user.user.role;
         const targetUserId = req.params.id;
-        
-        if (userRole.includes("admin")) {
-            if (req.body.password && userIdFromToken === targetUserId) {
-                
-                const saltRounds = 10;
-                req.body.password = await bcrypt.hash(req.body.password, saltRounds);
-                
-            } else if (req.body.password) {
-               
-                return res.status(403).json({ 
-                    
-                    error: { 
-                        message: "Admin is not authorized to update user passwords",
-                        code: 403
-                    }    
-                 });
-            }
 
+        if (userIdFromToken !== targetUserId) {
+            return res.status(403).json({ 
+                error: { 
+                    message: "You are not authorized to update other users",
+                    code: 403
+                } 
+            });
+        }
+
+        const newPassword = req.body.password;
+        const user = await User.findById(targetUserId);
+        const hashedPassword = user.password;
+
+        const passwordMatch = await bcrypt.compare(newPassword, hashedPassword);
+
+        if (passwordMatch) {
             const updateUser = await User.findByIdAndUpdate(
                 targetUserId,
                 {
-                    $set:{
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
-                        tel: req.body.tel,
-                        email: req.body.email,
-                        password: req.body.password, 
-                        role: req.body.role 
-                    }
-                },
-                { new: true }
-            );
-            
-            const { password, ...rest } = updateUser._doc;
-            return res.status(201).json(rest);
-        } else if (userIdFromToken === targetUserId) {
-           
-            if(req.body.password){
-                const saltRounds = 10;
-                req.body.password = await bcrypt.hash(req.body.password, saltRounds);
-            }
-            
-            const updateUser = await User.findByIdAndUpdate(
-                targetUserId,
-                {
-                    $set:{
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
-                        tel: req.body.tel,
-                        email: req.body.email,
-                        password: req.body.password,
-                        role: userRole 
+                    $set: {
+                        firstName: req.body.firstName || user.firstName,
+                        lastName: req.body.lastName || user.lastName,
+                        tel: req.body.tel || user.tel,
+                        email: req.body.email || user.email,
+                        password: user.password,
+                        role: user.role
                     }
                 },
                 { new: true }
@@ -197,17 +161,44 @@ export const update = async (req, res) => {
             const { password, ...rest } = updateUser._doc;
             return res.status(201).json(rest);
         } else {
-            
-            return res.status(403).json({ 
-                error: { 
-                    message: "You are not authorized to update this user",
-                    code: 403
-                } 
-            });
+            if (newPassword && newPassword.length > 8) {
+                const saltRounds = 10;
+                req.body.password = await bcrypt.hash(newPassword, saltRounds);
+
+                const updateUser = await User.findByIdAndUpdate(
+                    targetUserId,
+                    {
+                        $set: {
+                            firstName: req.body.firstName || user.firstName,
+                            lastName: req.body.lastName || user.lastName,
+                            tel: req.body.tel || user.tel,
+                            email: req.body.email || user.email,
+                            password: req.body.password,
+                            role: user.role
+                        }
+                    },
+                    { new: true }
+                );
+                
+                const { password, ...rest } = updateUser._doc;
+                return res.status(201).json(rest);
+            } else {
+                return res.status(400).json({ 
+                    error: { 
+                        message: "Password must be at least 8 characters long",
+                        code: 400
+                    } 
+                });
+            }
         }
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error:", error);
+        return res.status(500).json({ 
+            error: { 
+                message: "Internal Server Error",
+                code: 500
+            } 
+        });
     }
 };
 
@@ -219,15 +210,7 @@ export const update = async (req, res) => {
 export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const userRole = req.user.user.role;
         
-        
-        if (userRole.includes("admin")) {
-            
-            await User.findByIdAndDelete(id);
-            return res.status(200).json({ message: "User deleted successfully" });
-        } else {
-          
             if (req.user.user._id === id) {
                
                 await User.findByIdAndDelete(id);
@@ -241,7 +224,7 @@ export const deleteUser = async (req, res) => {
                     }
                 });
             }
-        }
+        
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error" });

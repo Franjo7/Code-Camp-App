@@ -1,7 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import route from './routes/userRoute.js';
+import adminRoute from './routes/adminRoute.js';
+import userRoute from './routes/userRoute.js';
 import workshopRoute from './routes/workshopRoute.js';
 import registrationRoute from './routes/registrationRoute.js';
 import cors from 'cors';
@@ -27,7 +28,8 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 const MONGOURL = process.env.DATABASE_URL;
 
-app.use('/api/user', route);
+app.use('/api/admin', adminRoute);
+app.use('/api/user', userRoute);
 app.use('/api/workshop', workshopRoute);
 app.use('/api/campRegistration', registrationRoute);
 
