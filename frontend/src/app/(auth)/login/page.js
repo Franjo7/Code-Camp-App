@@ -42,11 +42,10 @@ const LoginPage = () => {
         setCookies('token', response.data.token);
         window.localStorage.setItem('user._id', response.data.token);
       })
-
       .catch((error) => {
-        toast.error("Invalid email or password. Please try again.")
+        toast.error('Invalid email or password');
       });
-  };
+  }
 
   return (
     <section className='container'>

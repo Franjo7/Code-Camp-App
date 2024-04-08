@@ -18,7 +18,7 @@ export default function EditUser() {
         console.error('Error fetching user:', error);
       } 
     }
-    if (id) {
+    if (id) { 
       getUser();
     }
   }, [id]);
