@@ -44,8 +44,8 @@ const Navbar = () => {
 
   return (
     <header className="flex items-center justify-between px-3 py-3 md:px-10 relative z-10">
-      <img src="./logo.svg" alt="logo" className="w-32 md:w-48" />
-      <nav className="hidden md:flex text-lg items-center gap-10">
+      <img src="./logo.svg" alt="logo" className="w-32 md:w-48"  />
+      <nav className="hidden md:flex text-lg items-center gap-10 text-white" >
         <Link href='/' className={`flex items-center link ${pathname === '/' ? 'active' : ''}`} onClick={closeMenu}>
           <FaHome className="mr-1" /> <span className="ml-1">Home</span>
         </Link>

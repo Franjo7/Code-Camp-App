@@ -41,7 +41,7 @@ export default function EditUser() {
       const token = localStorage.getItem('user._id');
       const headers = {Authorization: `Bearer ${token}`};
 
-      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/update/${id}`, userDataToUpdate,{headers});
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `admin/update/${id}`, userDataToUpdate,{headers});
       toast.success('User updated successfully');
     }catch (error) {
       if (error.response && error.response.data && error.response.data.error) {

@@ -19,7 +19,7 @@ export default function AdminPage() {
         setLoading(true);
         const token = localStorage.getItem('user._id');
         const headers = {Authorization: `Bearer ${token}`};
-        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'user/allUsers', {headers});
+        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'admin/users', {headers});
         setData(response.data);
         setLoading(false);
       } 
@@ -40,7 +40,7 @@ export default function AdminPage() {
     try {
       const token = localStorage.getItem('user._id');
       const headers = {Authorization: `Bearer ${token}`};
-      await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `user/delete/${id}`, {headers}); 
+      await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `admin/delete/${id}`, {headers}); 
       setData(prevData => prevData.filter(user => user._id !== id));
       toast.success('User deleted successfully');
     } catch (error) {
