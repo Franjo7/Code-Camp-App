@@ -33,7 +33,7 @@ export const create = async (req, res) => {
         res.status(201).json(savedWorkshop);
         
     } catch (error) {
-        console.error(error);
+        console.error(`Error in createWorkshop controller: ${error}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -61,6 +61,7 @@ export const update = async (req, res) => {
     res.status(201).json(updateWorkshop);
 
    } catch (error) {
+    console.error(`Error in updateWorkshop controller: ${error}`);
     res.status(500).json({error:"Internal Server Error" });
    }
 };
@@ -85,6 +86,7 @@ export const deleteWorkshop = async (req, res) => {
         res.status(201).json({message:"Workshop deleted successfully"});
 
     } catch (error) {
+        console.error(`Error in deleteWorkshop controller: ${error}`);
         res.status(500).json({error:"Internal Server Error" });
     }   
 };
@@ -100,6 +102,7 @@ export const fetch = async (req, res) => {
         res.status(200).json(workshops);
 
     } catch (error) {
+        console.error(`Error in fetchWorkshop controller: ${error}`);
         res.status(500).json({error:"Internal Server Error" });
     }
 };

@@ -14,7 +14,7 @@ export const verifyAdmin = async (req, res, next) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        console.log(`Error in verifyAdmin  middleware: ${error}`);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }

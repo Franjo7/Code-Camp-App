@@ -43,6 +43,7 @@ export const create = async (req, res) => {
             res.status(201).json({token});
         
     } catch (error) {
+        console.error(`Error in registerUser controller ${error}`)
         res.status(500).json({error:"Internal Server Error" });
     }
 };
@@ -89,6 +90,7 @@ export const login = async (req, res) => {
         res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge: 3600000 }).status(200).json({token});
        
     } catch (error) {
+        console.error(`Error in login controller ${error}`)
         res.status(500).json({error:"Internal Server Error" });
     }
 };
@@ -115,6 +117,7 @@ export const getUserById = async (req, res) => {
 
         res.status(200).json(user);
     } catch (error) {
+        console.error(`error in getUser controller ${error}`);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -140,8 +143,17 @@ export const update = async (req, res) => {
         const user = await User.findById(targetUserId);
         const hashedPassword = user.password;
 
-        const passwordMatch = await bcrypt.compare(newPassword, hashedPassword);
 
+        let passwordMatch;
+        
+        if(newPassword === hashedPassword){
+            passwordMatch = true;
+        } else{
+           // passwordMatch = await bcrypt.compare(newPassword, hashedPassword);
+           passwordMatch = false;
+        }
+
+            
         if (passwordMatch) {
             const updateUser = await User.findByIdAndUpdate(
                 targetUserId,
@@ -161,7 +173,7 @@ export const update = async (req, res) => {
             const { password, ...rest } = updateUser._doc;
             return res.status(201).json(rest);
         } else {
-            if (newPassword && newPassword.length > 8) {
+            if (newPassword && newPassword.length >= 8) {
                 const saltRounds = 10;
                 req.body.password = await bcrypt.hash(newPassword, saltRounds);
 
@@ -192,7 +204,7 @@ export const update = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error:", error);
+        console.error(`Error in update controller: ${error}`);
         return res.status(500).json({ 
             error: { 
                 message: "Internal Server Error",
@@ -226,7 +238,7 @@ export const deleteUser = async (req, res) => {
             }
         
     } catch (error) {
-        console.log(error);
+        console.error(`Error in deleteUser controller: ${error}`)
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };

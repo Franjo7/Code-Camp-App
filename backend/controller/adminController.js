@@ -39,6 +39,7 @@ export const update = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        console.log(`Error in update controller: ${error}`);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -49,6 +50,7 @@ export const getAllUsers = async (req, res) => {
         const users = await User.find({ deleted: { $ne: true } });
         return res.status(200).json(users);
     } catch (error) {
+        console.log(`Error in getAllUsers controller: ${error}`)
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -67,7 +69,7 @@ export const deleteUser = async (req, res) => {
             return res.status(200).json({ message: "User deleted successfully" });
         } 
     } catch (error) {
-        console.log(error);
+        console.log(`Error in deleteUser controller: ${error}`);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };

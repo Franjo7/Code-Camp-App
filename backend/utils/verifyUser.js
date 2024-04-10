@@ -13,7 +13,7 @@ export const verifyToken = async (req, res, next) => {
         req.user = decode;
         next();
     } catch (error) {
-        console.log(error);
+        console.log(`Error in verifyToken  middleware: ${error}`);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
