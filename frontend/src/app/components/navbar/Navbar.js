@@ -14,19 +14,22 @@ const Navbar = () => {
   const pathname = usePathname();
   const [role, setRole] = useState(null);
   const [firstName, setFirstName] = useState('');
+  const [id, setId] = useState(null);
 
   useEffect(() => {
     const token = cookies.token;
     if (token) {
       const decodedToken = jwtDecode(token);
+      const id = decodedToken.user._id;
       const userRole = decodedToken.user.role;
       const userFirstName = decodedToken.user.firstName;
       setRole(userRole);
       setFirstName(userFirstName);
-    } 
-    else {
+      setId(id);
+    } else {
       setRole(null);
       setFirstName('');
+      setId('');
     }
   }, [cookies.token]);
 
@@ -36,7 +39,7 @@ const Navbar = () => {
     toast.success('You have successfully logged out!');
     router.push('/login');
     closeMenu();
-  };  
+  };
 
   const closeMenu = () => {
     setIsOpen(false);
@@ -44,8 +47,8 @@ const Navbar = () => {
 
   return (
     <header className="flex items-center justify-between px-3 py-3 md:px-10 relative z-10">
-      <img src="./logo.svg" alt="logo" className="w-32 md:w-48"  />
-      <nav className="hidden md:flex text-lg items-center gap-10 text-white" >
+      <img src="./logo.svg" alt="logo" className="w-32 md:w-48" />
+      <nav className="hidden md:flex text-lg items-center gap-10 text-white">
         <Link href='/' className={`flex items-center link ${pathname === '/' ? 'active' : ''}`} onClick={closeMenu}>
           <FaHome className="mr-1" /> <span className="ml-1">Home</span>
         </Link>
@@ -67,8 +70,11 @@ const Navbar = () => {
               <span className="ml-1">{firstName}</span>
             </button>
             {isOpen && (
-              <div className="absolute right-0 cursor-pointer">
-                <div className="px-3 py-3" onClick={handleLogout}>Logout</div>
+              <div className="absolute right-0 cursor-pointer px-3 py-3">
+                <div>
+                  <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
+                </div>
+                <div onClick={handleLogout}>Logout</div>
               </div>
             )}
           </div>
@@ -106,21 +112,26 @@ const Navbar = () => {
                 <span>FAQ</span>
               </div>
             </Link>
+            {role?.includes('admin') && (
             <Link href='/admin' className='block py-2 px-4' onClick={closeMenu}>
               <div className="flex items-center">
                 <FaUserLock className="mr-1 md:mr-0 md:mb-1" />
                 <span>Admin</span>
               </div>
             </Link>
+            )}
             {cookies.token ? (
               <div className="py-2 px-4 cursor-pointer relative" onClick={() => setIsOpen(!isOpen)}>
                 <div className="flex items-center">
                   <FaUserCircle className="mr-1 md:mr-0 md:mb-1" />
-                  <span>{firstName}</span>  
+                  <span>{firstName}</span>
                 </div>
                 {isOpen && (
                   <div className="absolute right-0 top-full mt-1 bg-secondary text-white py-2 rounded-md shadow-lg">
-                    <div className="py-1 px-4 hover:bg-gray-600 cursor-pointer" onClick={handleLogout}>Logout</div>
+                    <div className="py-2 px-4">
+                      <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
+                    </div>
+                    <div className='py-2 px-4' onClick={handleLogout}>Logout</div>
                   </div>
                 )}
               </div>

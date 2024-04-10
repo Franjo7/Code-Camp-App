@@ -43,7 +43,7 @@ const LoginPage = () => {
         window.localStorage.setItem('user._id', response.data.token);
       })
       .catch((error) => {
-        toast.error('Invalid email or password');
+        toast.error('Invalid email or password. Please try again.');
       });
   }
 
