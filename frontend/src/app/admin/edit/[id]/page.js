@@ -3,11 +3,13 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function EditUser() {
   const pathname = usePathname();
   const id = pathname.split('/').pop();
   const [user, setUser] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     async function getUser() {
@@ -43,7 +45,9 @@ export default function EditUser() {
 
       await axios.put(process.env.NEXT_PUBLIC_URL_USER + `admin/update/${id}`, userDataToUpdate,{headers});
       toast.success('User updated successfully');
-    }catch (error) {
+      router.push('/admin');
+    }
+    catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
           const errorMessage = error.response.data.error.message;
           const errorCode = error.response.data.error.code;

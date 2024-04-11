@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaHome, FaUser, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock } from 'react-icons/fa';
+import { FaHome, FaUser, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -26,11 +26,14 @@ const Navbar = () => {
       setRole(userRole);
       setFirstName(userFirstName);
       setId(id);
-    } else {
+    } 
+    else {
       setRole(null);
       setFirstName('');
       setId('');
     }
+
+    return () => {};
   }, [cookies.token]);
 
   const handleLogout = () => {
@@ -63,6 +66,11 @@ const Navbar = () => {
             <FaUserLock className="mr-1" /> <span className="ml-1">Admin</span>
           </Link>
         )}
+        {role?.includes('professor') && (
+          <Link href='/workshops' className={`flex items-center link ${pathname === '/workshops' ? 'active' : ''}`} onClick={closeMenu}>
+          <FaChalkboardTeacher className="mr-1" /> <span className="ml-1">Workshops</span>
+        </Link>
+        )}
         {cookies.token ? (
           <div className="relative">
             <button onClick={() => setIsOpen(!isOpen)} className="flex items-center bg-secondary px-4 py-2 hover:bg-gray-600 cursor-pointer">
@@ -71,10 +79,10 @@ const Navbar = () => {
             </button>
             {isOpen && (
               <div className="absolute right-0 cursor-pointer px-3 py-3">
-                <div>
+                <div className="py-2 px-2 hover:underline">
                   <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
                 </div>
-                <div onClick={handleLogout}>Logout</div>
+                <div className="py-2 px-2 hover:underline" onClick={handleLogout}>Logout</div>
               </div>
             )}
           </div>
@@ -120,6 +128,14 @@ const Navbar = () => {
               </div>
             </Link>
             )}
+            {role?.includes('professor') && (
+            <Link href='/workshops' className='block py-2 px-4' onClick={closeMenu}>
+              <div className="flex items-center">
+                <FaChalkboardTeacher className="mr-1 md:mr-0 md:mb-1" />
+                <span>Workshops</span>
+              </div>
+            </Link>
+            )}
             {cookies.token ? (
               <div className="py-2 px-4 cursor-pointer relative" onClick={() => setIsOpen(!isOpen)}>
                 <div className="flex items-center">
@@ -128,10 +144,10 @@ const Navbar = () => {
                 </div>
                 {isOpen && (
                   <div className="absolute right-0 top-full mt-1 bg-secondary text-white py-2 rounded-md shadow-lg">
-                    <div className="py-2 px-4">
+                    <div className="py-2 px-4 hover:underline">
                       <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
                     </div>
-                    <div className='py-2 px-4' onClick={handleLogout}>Logout</div>
+                    <div className='py-2 px-4 hover:underline' onClick={handleLogout}>Logout</div>
                   </div>
                 )}
               </div>

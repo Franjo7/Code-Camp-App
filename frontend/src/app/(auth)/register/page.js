@@ -53,7 +53,7 @@ const RegisterPage = () => {
       toast.success('Registration successful, please log in');
       router.push('/login');
     }).catch((error) => {
-      console.error('Error registering user:', error);
+      toast.error('Registration failed, please try again');
     });
     console.log(data);
   };

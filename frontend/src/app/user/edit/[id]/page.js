@@ -3,11 +3,13 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';    
 
 export default function EditProfile() {
+    const [user, setUser] = useState({});
+    const router = useRouter();
     const pathname = usePathname();
     const id = pathname.split('/').pop();
-    const [user, setUser] = useState({});
 
     useEffect(() => {
         if (id) {
@@ -41,13 +43,15 @@ export default function EditProfile() {
             const token = localStorage.getItem('user._id');
             const headers = { Authorization: `Bearer ${token}` };
             await axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/update/${id}`, userDataToUpdate, { headers });
-            toast.success('Profile updated successfully');
+            toast.success('Profile updated successfully!');
+            router.push('/');
         } 
         catch (error) {
             if (error.response && error.response.data && error.response.data.error) {
                 const errorMessage = error.response.data.error.message;
                 const errorCode = error.response.data.error.code;
                 console.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
+                toast.error("Error while updating profile. Please try again.");
             } else {
                 console.error('An error occurred:', error);
             }
