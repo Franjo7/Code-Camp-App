@@ -91,20 +91,37 @@ export const deleteWorkshop = async (req, res) => {
     }   
 };
 
-// Dohvatanje radionica
-export const fetch = async (req, res) => { 
-    try{
-        const workshops = await Workshop.find();
-       
 
-        if(workshops.length === 0){
-            return res.status(404).json({message:"Workshop not found"});
+// Dohvatanje radionica
+export const fetch = async (req, res) => {
+    try {
+        const workshops = await Workshop.find();
+
+        if (workshops.length === 0) {
+            return res.status(404).json({ message: "Workshops not found" });
         }
-        res.status(200).json(workshops);
+
+
+        const workshopsWithProfessorName = await Promise.all(workshops.map(async (workshop) => {
+            const professorId = workshop.professor;
+            const professor = await User.findOne({ _id: professorId });
+            if (!professor) {
+                return res.status(404).json({ message: "Professor not found" });
+            }
+            return {
+                _id: workshop._id,
+                name: workshop.name,
+                description: workshop.description,
+                date: workshop.date.toDateString().split(' ').slice(1).join(' '),
+                professor: professor.firstName + ' ' + professor.lastName
+            };
+        }));
+
+        res.status(200).json(workshopsWithProfessorName);
 
     } catch (error) {
-        console.error(`Error in fetchWorkshop controller: ${error}`);
-        res.status(500).json({error:"Internal Server Error" });
+        console.error(`Error in fetch controller: ${error}`);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
@@ -132,7 +149,7 @@ export const fetchById = async (req, res) => {
             _id: workshop._id,
             name: workshop.name,
             description: workshop.description,
-            date: workshop.date.toDateString().split(' ').slice(1).join(' '),
+            date: workshop.date.toISOString().slice(0, 10),
             professor: professor.firstName + ' ' + professor.lastName
         };
 
