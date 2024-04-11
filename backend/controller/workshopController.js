@@ -95,7 +95,7 @@ export const deleteWorkshop = async (req, res) => {
 export const fetch = async (req, res) => { 
     try{
         const workshops = await Workshop.find();
-        const professors = await Workshop.find({professor:req.user.user._id});  
+       
 
         if(workshops.length === 0){
             return res.status(404).json({message:"Workshop not found"});
@@ -108,19 +108,39 @@ export const fetch = async (req, res) => {
     }
 };
 
-// Dohvatanje radionice po ID
+
+// dohvcanje radionice po id
 
 export const fetchById = async (req, res) => {
-    try{
+    try {
         const id = req.params.id;
-        const workshop = await Workshop.findOne({_id:id});
-        if(!workshop){
-            return res.status(404).json({message:"Workshop not found"});
+        const workshop = await Workshop.findOne({ _id: id });
+
+        if (!workshop) {
+            return res.status(404).json({ message: "Workshop not found" });
         }
-        res.status(200).json(workshop);
+
+        const professorId = workshop.professor;
+
+        const professor = await User.findOne({ _id: professorId });
+
+        if (!professor) {
+            return res.status(404).json({ message: "Professor not found" });
+        }
+
+        const responseData = {
+            _id: workshop._id,
+            name: workshop.name,
+            description: workshop.description,
+            date: workshop.date.toDateString().split(' ').slice(1).join(' '),
+            professor: professor.firstName + ' ' + professor.lastName
+        };
+
+        res.status(200).json(responseData);
 
     } catch (error) {
         console.error(`Error in fetchById controller: ${error}`);
-        res.status(500).json({error:"Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
