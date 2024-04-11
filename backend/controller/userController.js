@@ -143,15 +143,7 @@ export const update = async (req, res) => {
         const user = await User.findById(targetUserId);
         const hashedPassword = user.password;
 
-
-        let passwordMatch;
-        
-        if(newPassword === hashedPassword){
-            passwordMatch = true;
-        } else{
-           // passwordMatch = await bcrypt.compare(newPassword, hashedPassword);
-           passwordMatch = false;
-        }
+        const passwordMatch = newPassword === hashedPassword ? true : false;
 
             
         if (passwordMatch) {
@@ -173,7 +165,7 @@ export const update = async (req, res) => {
             const { password, ...rest } = updateUser._doc;
             return res.status(201).json(rest);
         } else {
-            if (newPassword && newPassword.length >= 8) {
+            if (newPassword && newPassword.length >= 8){
                 const saltRounds = 10;
                 req.body.password = await bcrypt.hash(newPassword, saltRounds);
 
@@ -197,7 +189,7 @@ export const update = async (req, res) => {
             } else {
                 return res.status(400).json({ 
                     error: { 
-                        message: "Password must be at least 8 characters long",
+                        message:"Password must be at least 8 characters long",
                         code: 400
                     } 
                 });
@@ -246,9 +238,15 @@ export const deleteUser = async (req, res) => {
 
 
 
-
-
-
+export const getAllProffesors = async (req, res) => {
+    try {
+        const users = await User.find({ role: 'professor' });
+        return res.status(200).json(users);
+    } catch (error) {
+        console.log(`Error in getAllUsers controller: ${error}`)
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 

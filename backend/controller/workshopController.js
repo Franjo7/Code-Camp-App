@@ -16,8 +16,8 @@ export const create = async (req, res) => {
         const user = req.user.user._id;
         const userRole = req.user.user.role;
             
-        if(!user || !userRole.includes('admin')){
-            return res.status(403).json({ message: 'Only administrators can create workshops' });
+        if(!user || !userRole.includes('professor')){
+            return res.status(403).json({ message: 'Only professors can create workshops' });
         }
 
         const workshopData = new Workshop(req.body);
@@ -46,7 +46,7 @@ export const update = async (req, res) => {
         const user = req.user.user._id;
         const userRole = req.user.user.role;
         
-    if(!user || !userRole.includes('admin')){
+    if(!user || !userRole.includes('professor')){
         return res.status(403).json({ message: 'Only administrators can update workshops' });
     }
 
@@ -73,8 +73,8 @@ export const deleteWorkshop = async (req, res) => {
         const user = req.user.user._id;
         const userRole = req.user.user.role;
         
-    if(!user || !userRole.includes('admin')){
-        return res.status(403).json({ message: 'Only administrators can delete workshops' });
+    if(!user || !userRole.includes('professor')){
+        return res.status(403).json({ message: 'Only professors can delete workshops' });
     }
         const id= req.params.id;
         const workshopExist = await Workshop.findOne({_id:id});
@@ -95,7 +95,8 @@ export const deleteWorkshop = async (req, res) => {
 export const fetch = async (req, res) => { 
     try{
         const workshops = await Workshop.find();
-        
+        const professors = await Workshop.find({professor:req.user.user._id});  
+
         if(workshops.length === 0){
             return res.status(404).json({message:"Workshop not found"});
         }
@@ -103,6 +104,23 @@ export const fetch = async (req, res) => {
 
     } catch (error) {
         console.error(`Error in fetchWorkshop controller: ${error}`);
+        res.status(500).json({error:"Internal Server Error" });
+    }
+};
+
+// Dohvatanje radionice po ID
+
+export const fetchById = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const workshop = await Workshop.findOne({_id:id});
+        if(!workshop){
+            return res.status(404).json({message:"Workshop not found"});
+        }
+        res.status(200).json(workshop);
+
+    } catch (error) {
+        console.error(`Error in fetchById controller: ${error}`);
         res.status(500).json({error:"Internal Server Error" });
     }
 };
