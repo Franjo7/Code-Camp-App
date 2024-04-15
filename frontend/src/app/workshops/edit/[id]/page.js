@@ -10,6 +10,21 @@ export default function WorkshopEdit() {
   const id = pathname.split('/').pop();
   const [workshop, setWorkshop] = useState({});
   const router = useRouter();
+  const [professors, setProfessors] = useState([]);
+
+  useEffect(() => { 
+    async function getProfessors() {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'user/getProfessors');
+        console.log('Professors:', response.data);
+        setProfessors(response.data);
+      } catch (error) {
+        console.error('Error fetching professors:', error);
+      }
+    }
+    getProfessors();
+  }
+  , []);
 
   useEffect(() => {
     async function getWorkshop() {
@@ -64,7 +79,12 @@ export default function WorkshopEdit() {
         <input type='text' name='name' placeholder='Name' className='input' value={workshop.name || ''} onChange={handleInputChange} />
         <input type='text' name='description' placeholder='Description' className='input' value={workshop.description || ''} onChange={handleInputChange} />
         <input type='date' name='date' placeholder='Date' className='input' value={workshop.date || ''} onChange={handleInputChange} />
-        <input type='text' name='professor' placeholder='Professor' className='input' value={workshop.professor || ''} onChange={handleInputChange} />
+        <select name='professor' className='input' value={workshop.professor || ''} onChange={handleInputChange}>
+          <option value=''>Select Professor</option>
+          {professors.map((professor) => (
+            <option key={professor._id} value={professor._id}>{professor.firstName} {professor.lastName}</option>
+          ))}
+          </select>
         <button type='submit' className='button rounded-md p-3 enabled-button'>Update</button>
       </form>
     </section>

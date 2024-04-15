@@ -76,6 +76,14 @@ th {
     cursor: pointer;
 }
 
+.btn-create {
+    color: white;
+}
+
+.btn-create:hover {
+    background-color: #718096;
+}
+
 .btn-update {
     background-color: #4CAF50;
     color: white;

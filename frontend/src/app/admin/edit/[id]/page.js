@@ -71,6 +71,7 @@ export default function EditUser() {
           <option value=''>Select Role</option>
           <option value='admin'>Admin</option>
           <option value='user'>User</option>
+          <option value='professor'>Professor</option>
         </select>
         <button type='submit' className='button rounded-md p-3 enabled-button'>Update</button>
       </form>

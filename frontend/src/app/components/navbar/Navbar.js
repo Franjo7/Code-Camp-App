@@ -68,7 +68,7 @@ const Navbar = () => {
         )}
         {role?.includes('professor') && (
           <Link href='/workshops' className={`flex items-center link ${pathname === '/workshops' ? 'active' : ''}`} onClick={closeMenu}>
-          <FaChalkboardTeacher className="mr-1" /> <span className="ml-1">Workshops</span>
+          <FaChalkboardTeacher className="mr-1 size-5" /> <span className="ml-1">Workshops</span>
         </Link>
         )}
         {cookies.token ? (
@@ -78,7 +78,7 @@ const Navbar = () => {
               <span className="ml-1">{firstName}</span>
             </button>
             {isOpen && (
-              <div className="absolute right-0 cursor-pointer px-3 py-3">
+              <div className="absolute right-0 cursor-pointer px-3 py-3 bg-black">
                 <div className="py-2 px-2 hover:underline">
                   <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
                 </div>

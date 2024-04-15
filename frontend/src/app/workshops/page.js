@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -68,38 +68,41 @@ export default function WorkshopsPage() {
         )}
         {!loading && (
           <div className="overflow-x-auto">
-          <table className="w-full table-fixed text-center">
-            <caption className='main-title'>Workshops</caption>
-            <thead>
-              <tr>
-                <th className="w-1/5 py-2">Name</th>
-                <th className="w-1/5 py-2">Description</th>
-                <th className="w-1/5 py-2">Date</th>
-                <th className="w-1/5 py-2">Professor</th>
-                <th className="w-1/5 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map(workshop => (
-                <tr key={workshop._id}>
-                  <td className="w-1/5 py-2 break-all">{workshop.name}</td>
-                  <td className="w-1/5 py-2 break-all">{workshop.description}</td>
-                  <td className="w-1/5 py-2 break-all">{workshop.date}</td>
-                  <td className="w-1/5 py-2 break-all">{workshop.professor}</td>
-                  <td className="w-1/5 py-2 break-all">
-                    <Router>
-                        <button className="btn btn-update" onClick={() => redirectToUpdate(workshop._id)}><FaEdit /></button>
-                        <button className="btn btn-delete" onClick={() => {
-                        if (window.confirm(`Are you sure you want to delete user ${workshop.name}?`)) {
-                            deleteWorkshop(workshop._id);
-                        }
-                        }}><FaTrash /></button>
-                    </Router>
-                  </td>
+          <div className="flex justify-end">
+            <button className="btn btn-create" onClick={() => router.push('/workshops/create')}><FaPlus /></button>
+          </div>
+            <table className="w-full table-fixed text-center">
+              <caption className='main-title'>Workshops</caption>
+              <thead>
+                <tr>
+                  <th className="w-1/5 py-2">Name</th>
+                  <th className="w-1/5 py-2">Description</th>
+                  <th className="w-1/5 py-2">Date</th>
+                  <th className="w-1/5 py-2">Professor</th>
+                  <th className="w-1/5 py-2">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.map(workshop => (
+                  <tr key={workshop._id}>
+                    <td className="w-1/5 py-2 break-all">{workshop.name}</td>
+                    <td className="w-1/5 py-2 break-all">{workshop.description}</td>
+                    <td className="w-1/5 py-2 break-all">{workshop.date}</td>
+                    <td className="w-1/5 py-2 break-all">{workshop.professor}</td>
+                    <td className="w-1/5 py-2">
+                      <Router>
+                          <button className="btn btn-update" onClick={() => redirectToUpdate(workshop._id)}><FaEdit /></button>
+                          <button className="btn btn-delete" onClick={() => {
+                          if (window.confirm(`Are you sure you want to delete ${workshop.name}?`)) {
+                              deleteWorkshop(workshop._id);
+                          }
+                          }}><FaTrash /></button>
+                      </Router>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
