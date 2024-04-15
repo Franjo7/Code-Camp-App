@@ -238,7 +238,7 @@ export const deleteUser = async (req, res) => {
 
 
 
-export const getAllProffesors = async (req, res) => {
+export const getAllProfessors = async (req, res) => {
     try {
         const users = await User.find({ role: 'professor' });
         return res.status(200).json(users);

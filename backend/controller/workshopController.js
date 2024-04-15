@@ -57,7 +57,11 @@ export const update = async (req, res) => {
         return res.status(404).json({message:"Workshop not found"});
     }
 
-    const updateWorkshop = await Workshop.findByIdAndUpdate(id,req.body,{new:true});
+
+    const {date,...otherFields} = req.body;
+    const updatedWorkshopData = {...otherFields, date: new Date(date)};
+
+    const updateWorkshop = await Workshop.findByIdAndUpdate(id,updatedWorkshopData,{new:true});
     res.status(201).json(updateWorkshop);
 
    } catch (error) {

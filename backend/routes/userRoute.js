@@ -1,5 +1,5 @@
 import express from 'express';
-import { create, getUserById , update,deleteUser,login, getAllProffesors} from '../controller/userController.js';
+import { create, getUserById , update,deleteUser,login, getAllProfessors} from '../controller/userController.js';
 import {verifyToken} from '../utils/verifyUser.js';
 
 
@@ -16,9 +16,7 @@ route.delete('/delete/:id',verifyToken,deleteUser);
 
 route.get('/getUser/:id',getUserById);
 
-route.get('/getProfessors',getAllProffesors);
-
-
+route.get('/getProfessors',getAllProfessors);
 
 
 export default route;
