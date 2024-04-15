@@ -57,7 +57,6 @@ export const update = async (req, res) => {
         return res.status(404).json({message:"Workshop not found"});
     }
 
-
     const {StartDate,EndDate,...otherFields} = req.body;
     const updatedWorkshopData = {...otherFields, StartDate: new Date(StartDate), EndDate: new Date(EndDate)};
 
@@ -118,7 +117,8 @@ export const fetch = async (req, res) => {
                 description: workshop.description,
                 StartDate: workshop.StartDate.toDateString().split(' ').slice(1).join(' '),
                 EndDate: workshop.EndDate.toDateString().split(' ').slice(1).join(' '),
-                professor: professor.firstName + ' ' + professor.lastName
+                professor: professor.firstName + ' ' + professor.lastName,
+                Visibility: workshop.Visibility
             };
         }));
 
@@ -156,7 +156,8 @@ export const fetchById = async (req, res) => {
             description: workshop.description,
             StartDate: workshop.StartDate.toISOString().slice(0, 10),
             EndDate: workshop.EndDate.toISOString().slice(0, 10),
-            professor: professor.firstName + ' ' + professor.lastName
+            professor: professor.firstName + ' ' + professor.lastName,
+            Visibility: workshop.Visibility
         };
 
         res.status(200).json(responseData);
@@ -166,4 +167,34 @@ export const fetchById = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+export const Visibility = async (req, res) => {
+    try {
+        const user = req.user.user._id;
+        const userRole = req.user.user.role;
+        
+    if(!user || !userRole.includes('professor')){
+        return res.status(403).json({ message: 'Only professors can change visibility of workshops' });
+    }
+
+        const id = req.params.id;
+        const workshopExist = await Workshop.findOne({_id:id});
+
+        if(!workshopExist){
+            return res.status(404).json({message:"Workshop not found"});
+        }
+
+        const {Visibility} = req.body;
+        const updatedWorkshopData = {Visibility};
+
+        const updateWorkshop = await Workshop.findByIdAndUpdate(id,updatedWorkshopData,{new:true});
+        res.status(201).json(updateWorkshop);
+
+    } catch (error) {
+        console.error(`Error in Visibility controller: ${error}`);
+        res.status(500).json({error:"Internal Server Error" });
+    }
+}
+
+
 
