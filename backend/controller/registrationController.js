@@ -48,6 +48,10 @@ export const registerForWorkshop = async (req, res) => {
 };
 
 
+
+
+
+
 export const fetchRegistrations = async (req, res) => { 
     try {
         const registrations = await registrations.find();

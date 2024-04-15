@@ -58,8 +58,8 @@ export const update = async (req, res) => {
     }
 
 
-    const {date,...otherFields} = req.body;
-    const updatedWorkshopData = {...otherFields, date: new Date(date)};
+    const {StartDate,EndDate,...otherFields} = req.body;
+    const updatedWorkshopData = {...otherFields, StartDate: new Date(StartDate), EndDate: new Date(EndDate)};
 
     const updateWorkshop = await Workshop.findByIdAndUpdate(id,updatedWorkshopData,{new:true});
     res.status(201).json(updateWorkshop);
@@ -116,7 +116,8 @@ export const fetch = async (req, res) => {
                 _id: workshop._id,
                 name: workshop.name,
                 description: workshop.description,
-                date: workshop.date.toDateString().split(' ').slice(1).join(' '),
+                StartDate: workshop.date.toDateString().split(' ').slice(1).join(' '),
+                EndDate: workshop.date.toDateString().split(' ').slice(1).join(' '),
                 professor: professor.firstName + ' ' + professor.lastName
             };
         }));
@@ -153,7 +154,8 @@ export const fetchById = async (req, res) => {
             _id: workshop._id,
             name: workshop.name,
             description: workshop.description,
-            date: workshop.date.toISOString().slice(0, 10),
+            StartDate: workshop.date.toISOString().slice(0, 10),
+            EndDate: workshop.date.toISOString().slice(0, 10),
             professor: professor.firstName + ' ' + professor.lastName
         };
 
