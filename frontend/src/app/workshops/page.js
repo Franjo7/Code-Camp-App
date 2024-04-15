@@ -77,7 +77,8 @@ export default function WorkshopsPage() {
                 <tr>
                   <th className="w-1/5 py-2">Name</th>
                   <th className="w-1/5 py-2">Description</th>
-                  <th className="w-1/5 py-2">Date</th>
+                  <th className="w-1/5 py-2">Start Date</th>
+                  <th className="w-1/5 py-2">End Date</th>
                   <th className="w-1/5 py-2">Professor</th>
                   <th className="w-1/5 py-2">Actions</th>
                 </tr>
@@ -87,7 +88,8 @@ export default function WorkshopsPage() {
                   <tr key={workshop._id}>
                     <td className="w-1/5 py-2 break-all">{workshop.name}</td>
                     <td className="w-1/5 py-2 break-all">{workshop.description}</td>
-                    <td className="w-1/5 py-2 break-all">{workshop.date}</td>
+                    <td className="w-1/5 py-2 break-all">{workshop.startDate}</td>
+                    <td className="w-1/5 py-2 break-all">{workshop.endDate}</td>
                     <td className="w-1/5 py-2 break-all">{workshop.professor}</td>
                     <td className="w-1/5 py-2">
                       <Router>

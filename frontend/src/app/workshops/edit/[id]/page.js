@@ -77,7 +77,7 @@ export default function WorkshopEdit() {
       <h1 className='main-title'>Update Workshop</h1>
       <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' onSubmit={handleSubmit}>
         <input type='text' name='name' placeholder='Name' className='input' value={workshop.name || ''} onChange={handleInputChange} />
-        <input type='text' name='description' placeholder='Description' className='input' value={workshop.description || ''} onChange={handleInputChange} />
+        <input type='text' n  ame='description' placeholder='Description' className='input' value={workshop.description || ''} onChange={handleInputChange} />
         <input type='date' name='date' placeholder='Date' className='input' value={workshop.date || ''} onChange={handleInputChange} />
         <select name='professor' className='input' value={workshop.professor || ''} onChange={handleInputChange}>
           <option value=''>Select Professor</option>
