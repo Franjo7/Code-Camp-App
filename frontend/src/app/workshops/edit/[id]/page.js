@@ -59,7 +59,7 @@ export default function WorkshopEdit() {
       const headers = {Authorization: `Bearer ${token}`};
 
       await axios.put(process.env.NEXT_PUBLIC_URL_USER + `workshop/update/${id}`, workshopDataToUpdate, {headers});
-      toast.success('Workshop updated successfully');
+      toast.success('Workshop updated successfully!');
       router.push('/workshops');
     } 
     catch (error) {

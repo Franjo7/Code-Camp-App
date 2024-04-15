@@ -94,6 +94,16 @@ th {
     color: white;
 }
 
+.btn-active {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-inactive {
+    background-color: #6c757d;
+    color: white;
+}
+
 .logo {
     max-width: 180px;
     height: auto;
