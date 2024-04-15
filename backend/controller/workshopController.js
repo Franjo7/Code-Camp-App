@@ -116,8 +116,8 @@ export const fetch = async (req, res) => {
                 _id: workshop._id,
                 name: workshop.name,
                 description: workshop.description,
-                StartDate: workshop.date.toDateString().split(' ').slice(1).join(' '),
-                EndDate: workshop.date.toDateString().split(' ').slice(1).join(' '),
+                StartDate: workshop.StartDate.toDateString().split(' ').slice(1).join(' '),
+                EndDate: workshop.EndDate.toDateString().split(' ').slice(1).join(' '),
                 professor: professor.firstName + ' ' + professor.lastName
             };
         }));
@@ -154,8 +154,8 @@ export const fetchById = async (req, res) => {
             _id: workshop._id,
             name: workshop.name,
             description: workshop.description,
-            StartDate: workshop.date.toISOString().slice(0, 10),
-            EndDate: workshop.date.toISOString().slice(0, 10),
+            StartDate: workshop.StartDate.toISOString().slice(0, 10),
+            EndDate: workshop.EndDate.toISOString().slice(0, 10),
             professor: professor.firstName + ' ' + professor.lastName
         };
 

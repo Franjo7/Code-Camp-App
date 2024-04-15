@@ -88,8 +88,8 @@ export default function WorkshopsPage() {
                   <tr key={workshop._id}>
                     <td className="w-1/5 py-2 break-all">{workshop.name}</td>
                     <td className="w-1/5 py-2 break-all">{workshop.description}</td>
-                    <td className="w-1/5 py-2 break-all">{workshop.startDate}</td>
-                    <td className="w-1/5 py-2 break-all">{workshop.endDate}</td>
+                    <td className="w-1/5 py-2 break-all">{workshop.StartDate}</td>
+                    <td className="w-1/5 py-2 break-all">{workshop.EndDate}</td>
                     <td className="w-1/5 py-2 break-all">{workshop.professor}</td>
                     <td className="w-1/5 py-2">
                       <Router>
