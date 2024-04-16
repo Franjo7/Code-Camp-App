@@ -14,6 +14,7 @@ export default function WorkshopCreate() {
   });
   const [professors, setProfessors] = useState([]);
   const router = useRouter();
+  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     async function getProfessors() {
@@ -31,6 +32,7 @@ export default function WorkshopCreate() {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setWorkshop({ ...workshop, [name]: value });
+    setIsDirty(true);
   };
 
   const handleSubmit = async (event) => {
@@ -60,15 +62,19 @@ export default function WorkshopCreate() {
     }
   };
 
+  const isFormValid = () => {
+    return Object.values(workshop).every((value) => value.trim() !== '') && isDirty;
+  };
+
   return (
     <section className='container'>
       <h1 className='main-title'>Create Workshop</h1>
       <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' onSubmit={handleSubmit}>
-        <input type='text' name='name' placeholder='Name' className='input' value={workshop.name} onChange={handleInputChange} />
-        <input type='text' name='description' placeholder='Description' className='input' value={workshop.description} onChange={handleInputChange} />
-        <input type='date' name='startDate' placeholder='Start Date' className='input' value={workshop.startDate} onChange={handleInputChange} />
-        <input type='date' name='endDate' placeholder='End Date' className='input' value={workshop.endDate} onChange={handleInputChange} />
-        <select name='professor' className='input' value={workshop.professor} onChange={handleInputChange}>
+        <input type='text' name='name' placeholder='Name' className='input' value={workshop.name} autoComplete='off' onChange={handleInputChange} />
+        <input type='text' name='description' placeholder='Description' className='input' value={workshop.description} autoComplete='off' onChange={handleInputChange} />
+        <input type='date' name='startDate' placeholder='Start Date' className='input' value={workshop.startDate} autoComplete='off' onChange={handleInputChange} />
+        <input type='date' name='endDate' placeholder='End Date' className='input' value={workshop.endDate} autoComplete='off' onChange={handleInputChange} />
+        <select name='professor' className='input' value={workshop.professor} autoComplete='off' onChange={handleInputChange}>
           <option value=''>Select Professor</option>
           {professors.map((professor) => (
             <option key={professor._id} value={professor._id}>
@@ -76,7 +82,9 @@ export default function WorkshopCreate() {
             </option>
           ))}
         </select>
-        <button type='submit' className='button rounded-md p-3 enabled-button'>Create</button>
+        <button type='submit' className={`button rounded-md p-3 ${!isFormValid() ? 'disabled-button' : 'enabled-button'}`} disabled={!isFormValid()}>
+          Create
+        </button>
       </form>
     </section>
   );
