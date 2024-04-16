@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import adminRoute from './routes/adminRoute.js';
 import userRoute from './routes/userRoute.js';
 import workshopRoute from './routes/workshopRoute.js';
-import registrationRoute from './routes/registrationRoute.js';
+import applicationRoute from './routes/applicationRoute.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -31,7 +31,7 @@ const MONGOURL = process.env.DATABASE_URL;
 app.use('/api/admin', adminRoute);
 app.use('/api/user', userRoute);
 app.use('/api/workshop', workshopRoute);
-app.use('/api/campRegistration', registrationRoute);
+app.use('/api/application', applicationRoute);
 
 
 mongoose.connect(MONGOURL).then(() => {

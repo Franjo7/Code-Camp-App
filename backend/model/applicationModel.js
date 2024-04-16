@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const registrationSchema = new mongoose.Schema({
-    user: { type: String, required: true},
-    workshop: { type: String, required: true},
+const applicationSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    workshop: {  type: mongoose.Schema.Types.ObjectId, ref: 'Workshop', required: true},
     registrationDate: { type: Date, required: true, default: Date.now},
     status: { type: String, required: true, default: 'pending' },
     points: { type: Number, required: true, default: 0 },
@@ -10,4 +10,4 @@ const registrationSchema = new mongoose.Schema({
     remark: { type: String, required: true, default: 'no remark' },
 });
 
-export default mongoose.model('registration', registrationSchema);
+export default mongoose.model('application', applicationSchema);

@@ -1,6 +1,5 @@
 import Workshop from "../model/workshopModel.js";
 import User from "../model/userModel.js";
-import  jwt  from "jsonwebtoken";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -47,7 +46,7 @@ export const update = async (req, res) => {
         const userRole = req.user.user.role;
         
     if(!user || !userRole.includes('professor')){
-        return res.status(403).json({ message: 'Only administrators can update workshops' });
+        return res.status(403).json({ message: 'Only professors can update workshops' });
     }
 
     const id = req.params.id;
@@ -168,7 +167,9 @@ export const fetchById = async (req, res) => {
     }
 };
 
-export const Visibility = async (req, res) => {
+// Azuriranje vidljivosti radionice
+
+export const visibility = async (req, res) => {
     try {
         const user = req.user.user._id;
         const userRole = req.user.user.role;
