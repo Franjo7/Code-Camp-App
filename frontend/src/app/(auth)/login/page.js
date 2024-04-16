@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -21,31 +21,25 @@ const schema = yup.object().shape({
 });
 
 const LoginPage = () => {
-  const { register, handleSubmit, formState: { errors, isDirty, dirtyFields, isValid }, trigger } = useForm({
+  const { register, handleSubmit, formState: { errors, isValid, dirtyFields } } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    trigger();
-  }, [trigger]);
-
   const router = useRouter();
-  const [cookies, setCookies] = useCookies(['token']);
+  const [, setCookies] = useCookies(['token']);
 
-  const formSubmit = (data, e) => {
-    e.preventDefault();
-    axios.post(process.env.NEXT_PUBLIC_URL_USER + 'user/login', data)
-      .then((response) => {
-        toast.success('You have successfully logged in!');
-        router.push('/');
-        setCookies('token', response.data.token);
-        window.localStorage.setItem('user._id', response.data.token);
-      })
-      .catch((error) => {
-        toast.error('Invalid email or password. Please try again.');
-      });
-  }
+  const formSubmit = async (data) => {
+    try {
+      const response = await axios.post(process.env.NEXT_PUBLIC_URL_USER + 'user/login', data);
+      toast.success('You have successfully logged in!');
+      router.push('/');
+      setCookies('token', response.data.token);
+      window.localStorage.setItem('user._id', response.data.token);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Invalid email or password. Please try again.');
+    }
+  };  
 
   return (
     <section className='container'>

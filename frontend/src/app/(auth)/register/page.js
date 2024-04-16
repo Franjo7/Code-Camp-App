@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -36,26 +36,22 @@ const schema = yup.object().shape({
 });
 
 const RegisterPage = () => {
-  const { register, handleSubmit, reset, formState: { errors, isDirty, dirtyFields, isValid }, trigger, } = useForm({
+  const { register, handleSubmit, formState: { errors, isValid, dirtyFields } } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
   const router = useRouter();
 
-  useEffect(() => {
-    trigger();
-  }, [trigger]);
-
-  const formSubmit = (data, e) => {
-    e.preventDefault();
-    axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/register`, data).then((response) => {
-      toast.success('Registration successful, please log in');
-      router.push('/login');
-    }).catch((error) => {
-      toast.error('Registration failed, please try again');
-    });
-    console.log(data);
+  const formSubmit = (data) => {
+    axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/register`, data)
+      .then(() => {
+        toast.success('Registration successful, please log in');
+        router.push('/login');
+      })
+      .catch((error) => {
+        toast.error(error.response?.data?.message || 'Registration failed, please try again');
+      });
   };
 
   return (
