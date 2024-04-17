@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaHome, FaUser, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher } from 'react-icons/fa';
+import { FaHome, FaUser, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher, FaPaperPlane } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -32,8 +32,6 @@ const Navbar = () => {
       setFirstName('');
       setId('');
     }
-
-    return () => {};
   }, [cookies.token]);
 
   const handleLogout = () => {
@@ -67,9 +65,14 @@ const Navbar = () => {
           </Link>
         )}
         {role?.includes('professor') && (
-          <Link href='/workshops' className={`flex items-center link ${pathname === '/workshops' ? 'active' : ''}`} onClick={closeMenu}>
-          <FaChalkboardTeacher className="mr-1 size-5" /> <span className="ml-1">Workshops</span>
-        </Link>
+          <>
+            <Link href='/workshops' className={`flex items-center link ${pathname === '/workshops' ? 'active' : ''}`} onClick={closeMenu}>
+              <FaChalkboardTeacher className="mr-1 size-5" /> <span className="ml-1">Workshops</span>
+            </Link>
+            <Link href='/applications' className={`flex items-center link ${pathname === '/applications' ? 'active' : ''}`} onClick={closeMenu}>
+              <FaPaperPlane className="mr-1 size-5" /> <span className="ml-1">Applications</span>
+            </Link>
+          </>
         )}
         {cookies.token ? (
           <div className="relative">
@@ -129,12 +132,20 @@ const Navbar = () => {
             </Link>
             )}
             {role?.includes('professor') && (
-            <Link href='/workshops' className='block py-2 px-4' onClick={closeMenu}>
-              <div className="flex items-center">
-                <FaChalkboardTeacher className="mr-1 md:mr-0 md:mb-1" />
-                <span>Workshops</span>
-              </div>
-            </Link>
+            <>
+              <Link href='/workshops' className='block py-2 px-4' onClick={closeMenu}>
+                <div className="flex items-center">
+                  <FaChalkboardTeacher className="mr-1 md:mr-0 md:mb-1" />
+                  <span>Workshops</span>
+                </div>
+              </Link>
+              <Link href='/applications' className='block py-2 px-4' onClick={closeMenu}>
+                <div className="flex items-center">
+                  <FaPaperPlane className="mr-1 md:mr-0 md:mb-1" />
+                  <span>Applications</span>
+                </div>
+              </Link>
+            </>
             )}
             {cookies.token ? (
               <div className="py-2 px-4 cursor-pointer relative" onClick={() => setIsOpen(!isOpen)}>

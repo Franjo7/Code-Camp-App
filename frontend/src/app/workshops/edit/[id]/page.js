@@ -11,26 +11,27 @@ export default function WorkshopEdit() {
   const [workshop, setWorkshop] = useState({});
   const router = useRouter();
   const [professors, setProfessors] = useState([]);
+  const [isDirty, setIsDirty] = useState(false);
+  const [initialWorkshop, setInitialWorkshop] = useState({});
 
-  useEffect(() => { 
+  useEffect(() => {
     async function getProfessors() {
       try {
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'user/getProfessors');
-        console.log('Professors:', response.data);
         setProfessors(response.data);
       } catch (error) {
         console.error('Error fetching professors:', error);
       }
     }
     getProfessors();
-  }
-  , []);
+  }, []);
 
   useEffect(() => {
     async function getWorkshop() {
       try {
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `workshop/${id}`);
         setWorkshop(response.data);
+        setInitialWorkshop(response.data);
       } catch (error) {
         console.error('Error fetching workshop:', error);
       }
@@ -43,6 +44,8 @@ export default function WorkshopEdit() {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setWorkshop({ ...workshop, [name]: value });
+    const isValueChanged = initialWorkshop[name] !== value;
+    setIsDirty(isValueChanged);
   };
 
   const handleSubmit = async (event) => {
@@ -56,13 +59,12 @@ export default function WorkshopEdit() {
         professor: workshop.professor
       };
       const token = localStorage.getItem('user._id');
-      const headers = {Authorization: `Bearer ${token}`};
+      const headers = { Authorization: `Bearer ${token}` };
 
-      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `workshop/update/${id}`, workshopDataToUpdate, {headers});
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `workshop/update/${id}`, workshopDataToUpdate, { headers });
       toast.success('Workshop updated successfully!');
       router.push('/workshops');
-    } 
-    catch (error) {
+    } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         const errorMessage = error.response.data.error.message;
         const errorCode = error.response.data.error.code;
@@ -71,7 +73,7 @@ export default function WorkshopEdit() {
         console.error('An error occurred:', error);
       }
     }
-  }  
+  };
 
   return (
     <section className='container'>
@@ -83,11 +85,13 @@ export default function WorkshopEdit() {
         <input type='date' name='EndDate' className='input' value={workshop.EndDate || ''} onChange={handleInputChange} />
         <select name='professor' className='input' value={workshop.professor || ''} onChange={handleInputChange}>
           <option value=''>Select Professor</option>
-          {professors.map((professor) => (
-            <option key={professor._id} value={professor._id}>{professor.firstName} {professor.lastName}</option>
-          ))}
-          </select>
-        <button type='submit' className='button rounded-md p-3 enabled-button'>Update</button>
+            {professors.map((professor) => (
+              <option key={professor._id} value={professor._id}>{professor.firstName} {professor.lastName}</option>
+            ))}
+        </select>
+        <button type='submit' className={`button rounded-md p-3 ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>
+          Update
+        </button>
       </form>
     </section>
   );

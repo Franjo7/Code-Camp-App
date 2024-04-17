@@ -81,7 +81,7 @@ th {
 }
 
 .btn-create:hover {
-    background-color: #718096;
+    background-color: theme('colors.secondary');
 }
 
 .btn-update {
