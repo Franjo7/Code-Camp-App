@@ -95,39 +95,39 @@ export const deleteWorkshop = async (req, res) => {
 
 
 // Dohvatanje radionica
-export const fetch = async (req, res) => {
-    try {
-        const workshops = await Workshop.find();
+    export const fetch = async (req, res) => {
+        try {
+            const workshops = await Workshop.find();
 
-        if (workshops.length === 0) {
-            return res.status(404).json({ message: "Workshops not found" });
-        }
-
-
-        const workshopsWithProfessorName = await Promise.all(workshops.map(async (workshop) => {
-            const professorId = workshop.professor;
-            const professor = await User.findOne({ _id: professorId });
-            if (!professor) {
-                return res.status(404).json({ message: "Professor not found" });
+            if (workshops.length === 0) {
+                return res.status(404).json({ message: "Workshops not found" });
             }
-            return {
-                _id: workshop._id,
-                name: workshop.name,
-                description: workshop.description,
-                StartDate: workshop.StartDate.toDateString().split(' ').slice(1).join(' '),
-                EndDate: workshop.EndDate.toDateString().split(' ').slice(1).join(' '),
-                professor: professor.firstName + ' ' + professor.lastName,
-                Visibility: workshop.Visibility
-            };
-        }));
 
-        res.status(200).json(workshopsWithProfessorName);
 
-    } catch (error) {
-        console.error(`Error in fetch controller: ${error}`);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-};
+            const workshopsWithProfessorName = await Promise.all(workshops.map(async (workshop) => {
+                const professorId = workshop.professor;
+                const professor = await User.findOne({ _id: professorId });
+                if (!professor) {
+                    return res.status(404).json({ message: "Professor not found" });
+                }
+                return {
+                    _id: workshop._id,
+                    name: workshop.name,
+                    description: workshop.description,
+                    StartDate: workshop.StartDate.toDateString().split(' ').slice(1).join(' '),
+                    EndDate: workshop.EndDate.toDateString().split(' ').slice(1).join(' '),
+                    professor: professor.firstName + ' ' + professor.lastName,
+                    Visibility: workshop.Visibility
+                };
+            }));
+
+            res.status(200).json(workshopsWithProfessorName);
+
+        } catch (error) {
+            console.error(`Error in fetch controller: ${error}`);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    };
 
 
 // dohvcanje radionice po id
@@ -193,6 +193,21 @@ export const visibility = async (req, res) => {
 
     } catch (error) {
         console.error(`Error in Visibility controller: ${error}`);
+        res.status(500).json({error:"Internal Server Error" });
+    }
+}
+
+
+export const fetchForUser = async (req, res) => {
+    try{
+        const workshops = await Workshop.find({ Visibility: true });
+        if (workshops.length === 0) {
+            return res.status(404).json({ message: "Workshops not found" });
+        }
+        res.status(200).json(workshops);
+    }
+    catch(error){
+        console.error(`Error in fetchForUser controller: ${error}`);
         res.status(500).json({error:"Internal Server Error" });
     }
 }

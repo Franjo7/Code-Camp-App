@@ -83,7 +83,7 @@ export const deleteApplication  =  async (req, res) => {
         if(!application){
             return res.status(404).json({message: 'Application not found'});
         }
-        
+
         if((userRole.includes('professor'))){
            
             await Application.findByIdAndDelete(applicationId);
@@ -109,7 +109,6 @@ export const deleteApplication  =  async (req, res) => {
 
 export const getAllApplicationsForWorkshop = async (req, res) => {
     try {
-        
         const userId = req.user.user._id;
         const role = req.user.user.role;
 
@@ -117,15 +116,42 @@ export const getAllApplicationsForWorkshop = async (req, res) => {
             return res.status(403).json({ message: 'Only professors can view applications' });
         }
 
-        const applications  = await Application.find().sort({workshop:1});
+        const applications = await Application.find();
 
-        res.status(200).json(applications);
+        const applicationsWithName = await Promise.all(applications.map(async (application) => {
+            const userId = application.user;
+            const workshopId = application.workshop;
+
+            const user = await User.findOne({ _id: userId }).lean();
+            const workshop = await Workshop.findOne({ _id: workshopId }).lean();
+
+           if (!user || !workshop) {
+                return { error: 'User or Workshop not found' };
+            }
+            
+
+            return {
+                _id: application._id,
+                user: user.firstName + ' ' + user.lastName,
+                workshop: workshop.name,
+                status: application.status,
+                registrationDate: application.registrationDate.toDateString().split(' ').slice(1).join(' '),
+                points: application.points,
+                evaluation: application.evaluation,
+                remark: application.remark
+            };
+        }));
+
+        res.status(200).json(applicationsWithName.filter(application => !application.error));
 
     } catch (error) {
         console.error(`Error in getAllApplicationsForWorkshop controller: ${error}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+
+
 
 
 export const getAllApplicationsForUser = async (req, res) => {
