@@ -76,27 +76,34 @@ export const deleteApplication  =  async (req, res) => {
 
         const userId = req.user.user._id;
         const applicationId = req.params.id;
-
+        const userRole = req.user.user.role;
+    
         const application = await Application.findOne({ _id: applicationId });
 
         if(!application){
             return res.status(404).json({message: 'Application not found'});
         }
-
         
+        if((userRole.includes('professor'))){
+           
+            await Application.findByIdAndDelete(applicationId);
+            res.status(200).json({message: 'Application deleted successfully'});
 
-        if(application.user.toString() !== userId){
+        } else if(application.user.toString() === userId){
+
+            await Application.findByIdAndDelete(applicationId);
+            res.status(200).json({message: 'Application deleted successfully'});
+
+        } else{
             return res.status(403).json({message: 'You are not authorized to delete this application'});
         }
-
-        await Application.findByIdAndDelete(applicationId);
-        res.status(200).json({message: 'Application deleted successfully'});
 
     }catch(error){
         console.log(`Error in deleteApplication controller: ${error}`);
         res.status(500).json({error: 'Internal Server Error'});
     }
 };
+
 
 
 

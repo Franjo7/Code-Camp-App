@@ -15,4 +15,4 @@ applicationRoute.get('/applicationsForWorkshop',verifyToken,verifyProfessor,getA
 applicationRoute.get('/applicationsForUser/:id',verifyToken,getAllApplicationsForUser);
 
 
-export default applicationRoute;
+export default applicationRoute;    
