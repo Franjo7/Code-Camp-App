@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaHome, FaUser } from 'react-icons/fa';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
@@ -11,7 +10,6 @@ const HomePage = () => {
   const [cookies] = useCookies(['token']);
   const [role, setRole] = useState(null);
   const [data, setData] = useState([]);
-  const router = useRouter();
 
   useEffect(() => {
     const token = cookies.token;
@@ -38,25 +36,43 @@ const HomePage = () => {
     getWorkshops();
   }, []);
 
+  const handleApply = async (workshop) => {
+    try {
+      const token = localStorage.getItem('user._id');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const payload = {
+        workshop: workshop,
+      };
+
+      const response = await axios.post(process.env.NEXT_PUBLIC_URL_USER + 'application/workshopApplication', payload, { headers });
+      
+      if (response.status === 200) {
+        console.log('Successfully applied to workshop');
+      }
+    } catch (error) {
+      console.error('An error occurred while applying to workshop:', error);
+    }
+  };
+
   return (
     <div className="container">
       <div className="max-w-6xl mx-auto">
         {role && (role.includes('user') || role.includes('admin') || role.includes('professor')) ? (
           <>
-            <h1 className="main-title">Workshops</h1>
+            <h1 className="main-title mb-8">Code Camp Sessions</h1>
               <div className="space-y-8">
                 {data.map(workshop => (
-                  <div key={workshop._id} className="p-6 bg-secondary rounded-lg shadow-md">
+                  <div key={workshop._id} className="p-6 bg-secondary rounded-lg shadow-md text-white">
                     <h2 className="text-4xl font-semibold mb-6">{workshop.name}</h2>
                     <p className="text-xl mb-6">{workshop.description}</p>
-                    
-                    <div className="text-gray-600 mb-6">
+                    <div className="text-gray-400 mb-6">
                       <p className="text-lg"><strong>Start Date:</strong> {workshop.StartDate}</p>
                       <p className="text-lg"><strong>End Date:</strong> {workshop.EndDate}</p>
                       <p className="text-lg"><strong>Professor:</strong> {workshop.professor}</p>
                     </div>
-                    
-                    <button className="btn bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-4 rounded-full w-full" onClick={() => router.push(`/workshops/apply/${workshop._id}`)}>Apply</button>
+                    <button className="btn bg-blue-600 hover:bg-blue-700 text-white text-lg rounded-full w-full" 
+                    onClick={() =>  handleApply(workshop._id)}>Apply</button>
                   </div>
                 ))}
               </div>
