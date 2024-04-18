@@ -174,3 +174,47 @@ export const getAllApplicationsForUser = async (req, res) => {
 };
 
 
+export const getApplicationForWorkshop = async (req, res) => {
+    try {
+        const userId = req.user.user._id;
+        const role = req.user.user.role;
+
+        if (!userId || !role.includes('professor')) {
+            return res.status(403).json({ message: 'Only professors can view applications' });
+        }
+
+        const application = await Application.findOne({ user: userId });
+
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found for this user' });
+        }
+
+        
+        const workshopId = application.workshop;
+
+        const user = await User.findOne({ _id: userId }).lean();
+        const workshop = await Workshop.findOne({ _id: workshopId }).lean();
+
+        if (!user || !workshop) {
+            return res.status(404).json({ error: 'User or Workshop not found' });
+        }
+
+        const applicationData = {
+            _id: application._id,
+            user: user.firstName + ' ' + user.lastName,
+            workshop: workshop.name,
+            status: application.status,
+            registrationDate: application.registrationDate.toDateString().split(' ').slice(1).join(' '),
+            points: application.points,
+            evaluation: application.evaluation,
+            remark: application.remark
+        };
+
+        res.status(200).json(applicationData);
+
+    } catch (error) {
+        console.error(`Error in getAllApplicationsForWorkshop controller: ${error}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+

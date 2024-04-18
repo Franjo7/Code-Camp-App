@@ -1,5 +1,5 @@
 import express from 'express';
-import {applicationForWorkshop,manageApplication,deleteApplication,getAllApplicationsForWorkshop,getAllApplicationsForUser} from '../controller/applicationController.js';
+import {applicationForWorkshop,manageApplication,deleteApplication,getAllApplicationsForWorkshop,getAllApplicationsForUser,getApplicationForWorkshop} from '../controller/applicationController.js';
 import{verifyToken} from '../utils/verifyUser.js';
 import{verifyProfessor} from '../utils/verifyProfessor.js';
 
@@ -13,6 +13,5 @@ applicationRoute.put('/manageApplication/:id',verifyToken,verifyProfessor,manage
 applicationRoute.delete('/deleteApplication/:id',verifyToken,deleteApplication);
 applicationRoute.get('/applicationsForWorkshop',verifyToken,verifyProfessor,getAllApplicationsForWorkshop);
 applicationRoute.get('/applicationsForUser/:id',verifyToken,getAllApplicationsForUser);
-
-
+applicationRoute.get('/applicationForWorkshop/:id',verifyToken,verifyProfessor,getApplicationForWorkshop);
 export default applicationRoute;    
