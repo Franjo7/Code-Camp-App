@@ -121,10 +121,9 @@ export const getAllApplicationsForWorkshop = async (req, res) => {
         const applicationsWithName = await Promise.all(applications.map(async (application) => {
             const userId = application.user;
             const workshopId = application.workshop;
-
             const user = await User.findOne({ _id: userId }).lean();
             const workshop = await Workshop.findOne({ _id: workshopId }).lean();
-
+            
            if (!user || !workshop) {
                 return { error: 'User or Workshop not found' };
             }
@@ -211,33 +210,34 @@ export const getApplicationForWorkshop = async (req, res) => {
     try {
         const userId = req.user.user._id;
         const role = req.user.user.role;
-
+        const applicationId = req.params.id;
+        
         if (!userId || !role.includes('professor')) {
             return res.status(403).json({ message: 'Only professors can view applications' });
         }
 
-        const application = await Application.findOne({ user: userId });
+        const application = await Application.findOne({ _id:applicationId  })
+        const {user,workshop} = application;
+       
 
         if (!application) {
             return res.status(404).json({ message: 'Application not found for this user' });
         }
 
-        
-        const workshopId = application.workshop;
 
-        const user = await User.findOne({ _id: userId }).lean();
-        const workshop = await Workshop.findOne({ _id: workshopId }).lean();
+        const user_ = await User.findOne({ _id: user }).lean();
+        const workshop_ = await Workshop.findOne({ _id: workshop }).lean();
 
-        if (!user || !workshop) {
+        if (!user_ || !workshop_) {
             return res.status(404).json({ error: 'User or Workshop not found' });
         }
 
         const applicationData = {
             _id: application._id,
-            user: user.firstName + ' ' + user.lastName,
-            workshop: workshop.name,
+            user: user_.firstName + ' ' + user_.lastName,
+            workshop: workshop_.name,
             status: application.status,
-            registrationDate: application.registrationDate.toDateString().split(' ').slice(1).join(' '),
+            registrationDate: application.registrationDate.toISOString().slice(0, 10),
             points: application.points,
             evaluation: application.evaluation,
             remark: application.remark
