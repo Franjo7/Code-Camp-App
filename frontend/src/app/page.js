@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const HomePage = () => {
   const [cookies] = useCookies(['token']);
@@ -40,18 +41,20 @@ const HomePage = () => {
     try {
       const token = localStorage.getItem('user._id');
       const headers = { Authorization: `Bearer ${token}` };
-      
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.user._id;
       const payload = {
+        user: userId,
         workshop: workshop,
       };
 
       const response = await axios.post(process.env.NEXT_PUBLIC_URL_USER + 'application/workshopApplication', payload, { headers });
       
-      if (response.status === 200) {
-        console.log('Successfully applied to workshop');
+      if (response.status === 201) {
+        toast.success('You have successfully applied to the workshop.');
       }
     } catch (error) {
-      console.error('An error occurred while applying to workshop:', error);
+      toast.error('An error occurred. Please try again.');
     }
   };
 
