@@ -135,7 +135,7 @@ export const getAllApplicationsForWorkshop = async (req, res) => {
                 user: user.firstName + ' ' + user.lastName,
                 workshop: workshop.name,
                 status: application.status,
-                registrationDate: application.registrationDate.toDateString().split(' ').slice(1).join(' '),
+                registrationDate: application.registrationDate.toISOString().slice(0, 10),
                 points: application.points,
                 evaluation: application.evaluation,
                 remark: application.remark
