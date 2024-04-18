@@ -163,10 +163,43 @@ export const getAllApplicationsForUser = async (req, res) => {
             return res.status(403).json({ message: 'You are not authorized to view this applications' });
         }
         
-        const applications = await Application.find({ user: userId }).sort({ workshop: 1 });
+        const applications = await Application.find({ user: userId });
 
-        res.status(200).json(applications);
 
+        const applicationsWithName = await Promise.all(applications.map(async (application) => {
+            const workshopId = application.workshop;
+
+            const workshop = await Workshop.findOne({ _id: workshopId }).lean();
+
+           if (!workshop) {
+                return { error: 'Workshop not found' };
+            }
+
+            if(application.status === 'Pending...' || application.status === 'Rejected'){
+
+                return {
+                    workshop: workshop.name,
+                    status: application.status,
+                    registrationDate: application.registrationDate.toISOString().slice(0, 10),
+                };
+
+            } else {
+
+                return {
+                    _id: application._id,
+                    workshop: workshop.name,
+                    StartDate: workshop.StartDate.toISOString().slice(0, 10),
+                    EndDate: workshop.EndDate.toISOString().slice(0, 10),
+                    status: application.status,
+                    registrationDate: application.registrationDate.toISOString().slice(0, 10),
+                    points: application.points,
+                    evaluation: application.evaluation,
+                    remark: application.remark
+                };
+            }
+        }));
+
+        res.status(200).json(applicationsWithName.filter(application => !application.error));
     } catch (error) {
         console.error(`Error in getAllApplicationsForUser controller: ${error}`);
         res.status(500).json({ error: 'Internal Server Error' });
