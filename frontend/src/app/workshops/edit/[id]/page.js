@@ -30,7 +30,7 @@ export default function WorkshopEdit() {
     async function getWorkshop() {
       try {
         const token = localStorage.getItem('user._id');
-      const headers = { Authorization: `Bearer ${token}` };
+        const headers = { Authorization: `Bearer ${token}` };
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `workshop/${id}`,{ headers });
         setWorkshop(response.data);
         setInitialWorkshop(response.data);

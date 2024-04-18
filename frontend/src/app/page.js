@@ -51,7 +51,7 @@ const HomePage = () => {
       const response = await axios.post(process.env.NEXT_PUBLIC_URL_USER + 'application/workshopApplication', payload, { headers });
       
       if (response.status === 201) {
-        toast.success('You have successfully applied to the workshop.');
+        toast.success('Application successful!');
       }
     } catch (error) {
       toast.error('An error occurred. Please try again.');
@@ -75,7 +75,7 @@ const HomePage = () => {
                       <p className="text-lg"><strong>Professor:</strong> {workshop.professor}</p>
                     </div>
                     <button className="btn bg-blue-600 hover:bg-blue-700 text-white text-lg rounded-full w-full" 
-                    onClick={() =>  handleApply(workshop._id)}>Apply</button>
+                    onClick={() => handleApply(workshop._id)}>Apply</button>
                   </div>
                 ))}
               </div>
