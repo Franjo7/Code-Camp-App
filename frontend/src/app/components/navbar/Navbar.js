@@ -81,12 +81,22 @@ const Navbar = () => {
               <span className="ml-1">{firstName}</span>
             </button>
             {isOpen && (
-              <div className="absolute right-0 cursor-pointer px-3 py-3 bg-black">
-                <div className="py-2 px-2 hover:underline">
-                  <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
+              <div className="absolute right-0 top-full w-40 mt-2 bg-secondary text-white rounded-lg shadow-lg border border-gray-300">
+                <div className="py-3 px-4 hover:text-white hover:underline">
+                  <Link href={`/user/edit/${id}`} onClick={closeMenu}>
+                    Profile
+                  </Link>
                 </div>
-                <div className="py-2 px-2 hover:underline" onClick={handleLogout}>Logout</div>
+                <div className="py-3 px-4 hover:text-white hover:underline">
+                  <Link href={`/workshops/${id}`} onClick={closeMenu}>
+                    My Workshops
+                  </Link>
+                </div>
+                <div className="py-3 px-4 hover:text-white hover:underline cursor-pointer" onClick={handleLogout}>
+                  Logout
+                </div>
               </div>
+            
             )}
           </div>
         ) : (
@@ -157,6 +167,9 @@ const Navbar = () => {
                   <div className="absolute right-0 top-full mt-1 bg-secondary text-white py-2 rounded-md shadow-lg">
                     <div className="py-2 px-4 hover:underline">
                       <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
+                    </div>
+                    <div className='py-2 px-4 hover:underline'>
+                      <Link href={`/workshops/${id}`} onClick={closeMenu}>My Workshops</Link>
                     </div>
                     <div className='py-2 px-4 hover:underline' onClick={handleLogout}>Logout</div>
                   </div>

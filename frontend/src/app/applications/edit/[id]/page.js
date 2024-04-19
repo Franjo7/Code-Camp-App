@@ -9,7 +9,6 @@ export default function ApplicationEdit() {
   const pathname = usePathname();
   const id = pathname.split('/').pop();
   const [application, setApplication] = useState({});
-  const [workshops, setWorkshops] = useState([]);
   const router = useRouter();
   const [isDirty, setIsDirty] = useState(false);
   const [initialApplication, setInitialApplication] = useState({});
@@ -69,7 +68,11 @@ export default function ApplicationEdit() {
         <input type='text' name='user' placeholder='User' className='input' value={application.user || ''} onChange={handleInputChange} disabled />
         <input type='text' name='workshop' placeholder='Workshop' className='input' value={application.workshop || ''} onChange={handleInputChange} disabled />
         <input type='date' name='registrationDate' className='input' value={application.registrationDate || ''} onChange={handleInputChange} disabled />
-        <input type='text' name='status' placeholder='Status' className='input' value={application.status || ''} onChange={handleInputChange} />
+        <select name='status' className='input' value={application.status || ''} onChange={handleInputChange}>
+          <option value='Pending...'>Pending...</option>
+          <option value='Rejected'>Rejected</option>
+          <option value='Approved'>Approved</option>
+        </select>
         <input type='text' name='points' placeholder='Points' className='input' value={application.points || ''} onChange={handleInputChange} />
         <input type='text' name='evaluation' placeholder='Evaluation' className='input' value={application.evaluation || ''} onChange={handleInputChange} />
         <input type='text' name='remark' placeholder='Remark' className='input' value={application.remark || ''} onChange={handleInputChange} />
