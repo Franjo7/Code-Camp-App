@@ -2,6 +2,8 @@ import User from "../model/userModel.js";
 import bcrypt from 'bcrypt';
 import  jwt  from "jsonwebtoken";
 import dotenv from 'dotenv';
+import nodeMailer from 'nodemailer';
+
 
 dotenv.config();
 
@@ -250,6 +252,85 @@ export const getAllProfessors = async (req, res) => {
 
 
 
+// forgot password send email
+export const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email:email });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '20min' });
+
+        const transporter = nodeMailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_ADDRESS,
+                pass: process.env.EMAIL_PASSWORD
+               
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_ADDRESS,
+            to: email,
+            subject: 'Reset your password',
+            text: `Click on the link to reset your password: ${process.env.CLIENT_URL}/resetpassword/${token}` // front url
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(`Error in sending email: ${error}`);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                console.log(`Email sent: ${info.response}`);
+                return res.status(200).json({ message: 'Email has been sent' });
+            }
+        });
+    }
+    catch(error){
+        console.error(`Error in forgotPassword controller: ${error}`);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+export const resetPassword = async (req, res) => {
+    try{
+        const id = req.user._id;
+        const {password} = req.body;
+        const user = await User.findById(id);
+        
+
+        if(!user){
+            return res.status(404).json({error:'User not found'});
+        }
+
+        if(password.length < 8){
+            return res.status(400).json({error:'Password must be at least 8 characters long'});
+        }
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    password: hashedPassword
+                }
+            },
+            { new: true }
+        );
+
+        const { password: pass, ...rest } = updatedUser._doc;
+        return res.status(201).json(rest);
+    
+    }catch(error){
+        console.error(`Error in resetPassword controller: ${error}`);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 

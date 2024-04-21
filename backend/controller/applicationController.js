@@ -115,7 +115,7 @@ export const getAllApplicationsForWorkshop = async (req, res) => {
         if (!userId || !role.includes('professor')) {
             return res.status(403).json({ message: 'Only professors can view applications' });
         }
-
+ 
         const applications = await Application.find();
 
         const applicationsWithName = await Promise.all(applications.map(async (application) => {

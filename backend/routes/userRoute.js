@@ -1,5 +1,5 @@
 import express from 'express';
-import { create, getUserById , update,deleteUser,login, getAllProfessors} from '../controller/userController.js';
+import { create, getUserById , update,deleteUser,login, getAllProfessors,forgotPassword,resetPassword} from '../controller/userController.js';
 import {verifyToken} from '../utils/verifyUser.js';
 
 
@@ -10,6 +10,10 @@ route.post('/register',create);
 
 route.post('/login',login);
 
+route.post('/forgotPassword',forgotPassword);
+
+route.put('/resetPassword',verifyToken,resetPassword);
+
 route.put('/update/:id',verifyToken,update);
 
 route.delete('/delete/:id',verifyToken,deleteUser);
@@ -17,6 +21,7 @@ route.delete('/delete/:id',verifyToken,deleteUser);
 route.get('/getUser/:id',getUserById);
 
 route.get('/getProfessors',getAllProfessors);
+
 
 
 export default route;
