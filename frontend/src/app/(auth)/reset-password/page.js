@@ -1,9 +1,10 @@
 "use client"
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import Link from 'next/link';
+import axios from 'axios';
 
 const schema = yup.object().shape({
   newPassword: yup
@@ -17,18 +18,27 @@ const schema = yup.object().shape({
 });
 
 const ResetPasswordPage = () => {
+
+  const [, setResetStatus] = useState(null);
+  const [token, setToken] = useState(null);
+
   const { register, handleSubmit, formState: { errors, dirtyFields, isValid }, trigger } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const headers = {Authorization: `Bearer ${token}`};
+    setToken(headers);
     trigger();
   }, [trigger]);
 
-  const formSubmit = (data) => {
-    console.log(data);
-  };
+  const formSubmit = async (data) => {
+    const response = await axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/resetPassword`, data, {headers: token});
+    setResetStatus(response.data.message)
+  }
 
   return (
     <section className='container'>
@@ -38,6 +48,7 @@ const ResetPasswordPage = () => {
         <p className='error-message'>{dirtyFields.newPassword && errors.newPassword?.message}</p>
         <input type='password' placeholder='Confirm Password' className='input' {...register('confirmPassword')} />
         <p className='error-message'>{dirtyFields.confirmPassword && errors.confirmPassword?.message}</p>
+        
         <button type='submit' className={`button rounded-md p-3 ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
         disabled={!isValid}>Reset Password</button>
       </form>

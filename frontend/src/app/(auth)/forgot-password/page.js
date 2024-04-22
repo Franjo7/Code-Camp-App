@@ -4,6 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import Link from 'next/link';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const schema = yup.object().shape({
   email: yup
@@ -13,7 +15,7 @@ const schema = yup.object().shape({
 });
 
 const ForgotPasswordPage = () => {
-  const { register, handleSubmit, reset, formState: { errors, isDirty, dirtyFields, isValid }, trigger } = useForm({
+  const { register, handleSubmit, reset, formState: { errors, dirtyFields, isValid }, trigger } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
@@ -22,9 +24,16 @@ const ForgotPasswordPage = () => {
     trigger();
   }, [trigger]);
 
-  const formSubmit = (data) => {
-    console.log(data);
-  };
+  const formSubmit = async (data) => {
+    axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/forgotPassword`, data)
+      .then(() => { 
+        toast.success('Email sent successfully, please check your inbox');
+        reset();
+      })
+      .catch((error) => {
+        toast.error(error.response?.data?.message || 'Email sending failed, please try again');
+      });
+  }
 
   return (
     <section className='container'>
