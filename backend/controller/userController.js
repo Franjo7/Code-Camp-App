@@ -261,7 +261,7 @@ export const forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '20min' });
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '59min' });
 
         const transporter = nodeMailer.createTransport({
             service: 'gmail',
@@ -276,7 +276,7 @@ export const forgotPassword = async (req, res) => {
             from: process.env.EMAIL_ADDRESS,
             to: email,
             subject: 'Reset your password',
-            text: `Click on the link to reset your password: ${process.env.CLIENT_URL}/resetpassword/${token}` // front url
+            text: `Click on the link to reset your password: ${process.env.CLIENT_URL}/?token=${token}` // front url
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -299,7 +299,7 @@ export const forgotPassword = async (req, res) => {
 export const resetPassword = async (req, res) => {
     try{
         const id = req.user._id;
-        const {password} = req.body;
+        const {newPassword} = req.body;
         const user = await User.findById(id);
         
 
@@ -307,11 +307,11 @@ export const resetPassword = async (req, res) => {
             return res.status(404).json({error:'User not found'});
         }
 
-        if(password.length < 8){
+        if(newPassword.length < 8){
             return res.status(400).json({error:'Password must be at least 8 characters long'});
         }
         const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
         const updatedUser = await User.findByIdAndUpdate(
             id,
