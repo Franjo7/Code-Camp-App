@@ -27,11 +27,11 @@ const ForgotPasswordPage = () => {
   const formSubmit = async (data) => {
     axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/forgotPassword`, data)
       .then(() => { 
-        toast.success('Email sent successfully, please check your inbox');
+        toast.success('Email sent successfully, please check your inbox.');
         reset();
       })
       .catch((error) => {
-        toast.error(error.response?.data?.message || 'Email sending failed, please try again');
+        toast.error(error.response?.data?.message || 'Error while sending email, please try again.');
       });
   }
 

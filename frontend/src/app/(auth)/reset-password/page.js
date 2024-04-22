@@ -2,9 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import * as yup from 'yup';
 import Link from 'next/link';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const schema = yup.object().shape({
   newPassword: yup
@@ -18,8 +20,7 @@ const schema = yup.object().shape({
 });
 
 const ResetPasswordPage = () => {
-
-  const [, setResetStatus] = useState(null);
+  const router = useRouter();
   const [token, setToken] = useState(null);
 
   const { register, handleSubmit, formState: { errors, dirtyFields, isValid }, trigger } = useForm({
@@ -36,8 +37,14 @@ const ResetPasswordPage = () => {
   }, [trigger]);
 
   const formSubmit = async (data) => {
-    const response = await axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/resetPassword`, data, {headers: token});
-    setResetStatus(response.data.message)
+    axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/resetPassword`, data, {headers: token})
+      .then(() => {
+        toast.success('Password reset successfully, please login.');
+        router.push('/login');
+      })
+      .catch((error) => {
+        toast.error(error.response?.data?.message || 'Password reset failed, please try again.');
+      });
   }
 
   return (
