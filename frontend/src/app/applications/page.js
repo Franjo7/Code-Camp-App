@@ -66,40 +66,44 @@ export default function ApplicationsPage() {
             {!loading && (
                 <div>
                     <h1 className="main-title text-center mb-8 text-4xl font-bold">Applications</h1>
-                    <div className="search-bar mb-4">
+                    <div className="mb-4">
                         <input 
                             type="text" 
                             placeholder="Search by user..." 
                             value={searchTerm} 
                             onChange={handleSearch} 
-                            className="border rounded-md p-2 w-full"
+                            className="input rounded-md p-2 w-full"
                         />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
-                        {filteredApplications.map(application => (
-                            <div key={application._id} className="border rounded-lg shadow-md p-6">
-                                <h2 className="text-2xl font-semibold mb-4">{application.user}</h2>
-                                <p className="mb-2"><strong>Workshop:</strong> {application.workshop}</p>
-                                <p className="mb-2"><strong>Registration Date:</strong> {application.registrationDate}</p>
-                                <p className="mb-2"><strong>Status:</strong> {application.status}</p>
-                                <p className="mb-2"><strong>Points:</strong> {application.points}</p>
-                                <p className="mb-2"><strong>Evaluation:</strong> {application.evaluation}</p>
-                                <p className="mb-2"><strong>Remark:</strong> {application.remark}</p>
-                                <div className="mt-6 flex justify-end space-x-1">
-                                    <button className="btn btn-update" onClick={() => redirectToUpdate(application._id)}>
-                                        <FaEdit />
-                                    </button>
-                                    <button className="btn btn-delete" onClick={() => {
-                                        if (window.confirm(`Are you sure you want to delete ${application.user}'s application?`)) {
-                                            deleteApplication(application._id);
-                                        }
-                                    }}>
-                                        <FaTrash />
-                                    </button>
+                    {filteredApplications.length === 0 ? (
+                        <p className="text-center text-2xl text-red-500 font-semibold">No applications found.</p>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
+                            {filteredApplications.map(application => (
+                                <div key={application._id} className="border border-gray-400 rounded-lg shadow-md p-6">
+                                    <h2 className="text-2xl font-semibold mb-4">{application.user}</h2>
+                                    <p className="mb-2"><strong>Workshop:</strong> {application.workshop}</p>
+                                    <p className="mb-2"><strong>Registration Date:</strong> {application.registrationDate}</p>
+                                    <p className="mb-2"><strong>Status:</strong> {application.status}</p>
+                                    <p className="mb-2"><strong>Points:</strong> {application.points}</p>
+                                    <p className="mb-2"><strong>Evaluation:</strong> {application.evaluation}</p>
+                                    <p className="mb-2"><strong>Remark:</strong> {application.remark}</p>
+                                    <div className="mt-6 flex justify-end space-x-1">
+                                        <button className="btn btn-update" onClick={() => redirectToUpdate(application._id)}>
+                                            <FaEdit />
+                                        </button>
+                                        <button className="btn btn-delete" onClick={() => {
+                                            if (window.confirm(`Are you sure you want to delete ${application.user}'s application?`)) {
+                                                deleteApplication(application._id);
+                                            }
+                                        }}>
+                                            <FaTrash />
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                     <div className="pagination">
                         <ul className="flex justify-center space-x-4 p-4 m-4">
                             {Array.from({ length: Math.ceil(data.length / applicationsPerPage) }, (_, index) => (
@@ -117,5 +121,5 @@ export default function ApplicationsPage() {
                 </div>
             )}
         </div>
-    );
+    );    
 }

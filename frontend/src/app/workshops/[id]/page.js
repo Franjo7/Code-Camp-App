@@ -29,7 +29,7 @@ export default function MyWorkshops() {
         }
     }, [id]);
 
-    async function checkID() {
+    function shouldDisplayExtendedColumns() {
         return !!id;
     }
 
@@ -38,44 +38,22 @@ export default function MyWorkshops() {
             {!loading && (
                 <div className="overflow-x-auto">
                     <h1 className="main-title text-center mb-4">My Workshops</h1>
-                    <table className="w-full table-fixed text-center">
-                        <thead>
-                            <tr>
-                                {checkID() ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {data.map((application) => (
+                            <div key={application._id} className="border border-gray-400 rounded-lg shadow-md p-6 text-white">
+                                <h2 className="text-2xl font-semibold mb-4">{application.workshop}</h2>
+                                <p className="mb-2"><strong>Registration Date:</strong> {application.registrationDate}</p>
+                                <p className="mb-2"><strong>Status:</strong> {application.status}</p>
+                                {shouldDisplayExtendedColumns() && (
                                     <>
-                                        <th className="w-1/3 py-2">Workshop</th>
-                                        <th className="w-1/3 py-2">Registration Date</th>
-                                        <th className="w-1/3 py-2">Status</th>
-                                    </>
-                                ) : (
-                                    <>
-                                        <th className="w-1/6 py-2">Workshop</th>
-                                        <th className="w-1/6 py-2">Registration Date</th>
-                                        <th className="w-1/6 py-2">Status</th>
-                                        <th className="w-1/6 py-2">Points</th>
-                                        <th className="w-1/6 py-2">Evaluation</th>
-                                        <th className="w-1/6 py-2">Remark</th>
+                                        <p className="mb-2"><strong>Points:</strong> {application.points}</p>
+                                        <p className="mb-2"><strong>Evaluation:</strong> {application.evaluation}</p>
+                                        <p className="mb-2"><strong>Remark:</strong> {application.remark}</p>
                                     </>
                                 )}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((application) => (
-                                <tr key={application._id}>
-                                    <td className="w-1/6 py-2 break-all">{application.workshop}</td>
-                                    <td className="w-1/6 py-2 break-all">{application.registrationDate}</td>
-                                    <td className="w-1/6 py-2 break-all">{application.status}</td>
-                                    {!checkID() && (
-                                        <>
-                                            <td className="w-1/6 py-2 break-all">{application.points}</td>
-                                            <td className="w-1/6 py-2 break-all">{application.evaluation}</td>
-                                            <td className="w-1/6 py-2 break-all">{application.remark}</td>
-                                        </>
-                                    )}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
