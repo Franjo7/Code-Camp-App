@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaHome, FaUser, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher, FaPaperPlane } from 'react-icons/fa';
+import { FaHome, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher, FaPaperPlane } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -52,9 +52,6 @@ const Navbar = () => {
       <nav className="hidden md:flex text-lg items-center gap-10 text-white">
         <Link href='/' className={`flex items-center link ${pathname === '/' ? 'active' : ''}`} onClick={closeMenu}>
           <FaHome className="mr-1" /> <span className="ml-1">Home</span>
-        </Link>
-        <Link href='/about' className={`flex items-center link ${pathname === '/about' ? 'active' : ''}`} onClick={closeMenu}>
-          <FaUser className="mr-1" /> <span className="ml-1">About</span>
         </Link>
         <Link href='/faq' className={`flex items-center link ${pathname === '/faq' ? 'active' : ''}`} onClick={closeMenu}>
           <FaQuestionCircle className="mr-1" /> <span className="ml-1">FAQ</span>
@@ -113,18 +110,12 @@ const Navbar = () => {
         </button>
       </div>
       {isOpen && (
-        <div className="md:hidden absolute top-16 mt-1 right-0 bg-secondary text-white overflow-y-auto">
+        <div className="md:hidden absolute top-16 p-4 right-0 bg-secondary text-white overflow-y-auto">
           <div className="flex flex-col items-center">
             <Link href='/' className='block py-2 px-4' onClick={closeMenu}>
               <div className="flex items-center">
                 <FaHome className="mr-1 md:mr-0 md:mb-1" />
                 <span>Home</span>
-              </div>
-            </Link>
-            <Link href='/about' className='block py-2 px-4' onClick={closeMenu}>
-              <div className="flex items-center">
-                <FaUser className="mr-1 md:mr-0 md:mb-1" />
-                <span>About</span>
               </div>
             </Link>
             <Link href='/faq' className='block py-2 px-4' onClick={closeMenu}>
