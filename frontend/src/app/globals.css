@@ -53,9 +53,9 @@ th {
 }
 
 .input:disabled {
-    background-color: rgb(30, 30, 30); /* Tamnosiva */
-    color: #6b7280; /* Sivkasta boja za tekst */
-    border-color: #4a5568; /* Sivkasta boja za granicu */
+    background-color: rgb(30, 30, 30);
+    color: #6b7280;
+    border-color: #4a5568;
     cursor: not-allowed;
 }
   
@@ -122,4 +122,51 @@ th {
 .logo {
     max-width: 180px;
     height: auto;
+}
+
+.popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #FFFFFF;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 60%;
+    max-width: 400px;
+}
+
+.popup-content h2 {
+    color: #333333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.popup-content button.cancel-btn {
+    margin-right: 10px;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #FFFFFF; 
+}
+
+.popup-content button.confirm-btn {
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    background-color: #f44336;
+    color: #FFFFFF;
 }
