@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -15,14 +15,10 @@ const schema = yup.object().shape({
 });
 
 const ForgotPasswordPage = () => {
-  const { register, handleSubmit, reset, formState: { errors, dirtyFields, isValid }, trigger } = useForm({
+  const { register, handleSubmit, reset, formState: { errors, dirtyFields, isValid } } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-
-  useEffect(() => {
-    trigger();
-  }, [trigger]);
 
   const formSubmit = async (data) => {
     axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/forgotPassword`, data)

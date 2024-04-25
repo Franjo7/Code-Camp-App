@@ -23,7 +23,7 @@ const ResetPasswordPage = () => {
   const router = useRouter();
   const [token, setToken] = useState(null);
 
-  const { register, handleSubmit, formState: { errors, dirtyFields, isValid }, trigger } = useForm({
+  const { register, handleSubmit, formState: { errors, dirtyFields, isValid } } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
@@ -33,8 +33,7 @@ const ResetPasswordPage = () => {
     const token = urlParams.get('token');
     const headers = {Authorization: `Bearer ${token}`};
     setToken(headers);
-    trigger();
-  }, [trigger]);
+  }, []);
 
   const formSubmit = async (data) => {
     axios.put(process.env.NEXT_PUBLIC_URL_USER + `user/resetPassword`, data, {headers: token})

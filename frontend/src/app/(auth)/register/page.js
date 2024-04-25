@@ -46,11 +46,11 @@ const RegisterPage = () => {
   const formSubmit = (data) => {
     axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/register`, data)
       .then(() => {
-        toast.success('Registration successful, please log in');
+        toast.success('Registration successful, please log in.');
         router.push('/login');
       })
       .catch((error) => {
-        toast.error(error.response?.data?.message || 'Registration failed, please try again');
+        toast.error(error.response?.data?.message || 'Registration failed, please try again.');
       });
   };
 

@@ -43,8 +43,8 @@ export default function EditUser() {
       const token = localStorage.getItem('user._id');
       const headers = {Authorization: `Bearer ${token}`};
 
-      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `admin/update/${id}`, userDataToUpdate,{headers});
-      toast.success('User updated successfully');
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `admin/update/${id}`, userDataToUpdate, {headers});
+      toast.success('User updated successfully!');
       router.push('/admin');
     }
     catch (error) {
@@ -56,7 +56,6 @@ export default function EditUser() {
           console.error('An error occurred:', error);
       }
   };  
-
 };  
 
   return (
