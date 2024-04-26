@@ -121,17 +121,16 @@ export const getAllApplicationsForWorkshop = async (req, res) => {
         const applicationsWithName = await Promise.all(applications.map(async (application) => {
             const userId = application.user;
             const workshopId = application.workshop;
-            const user = await User.findOne({ _id: userId }).lean();
-            const workshop = await Workshop.findOne({ _id: workshopId }).lean();
+            const foundUser = await User.findOne({ _id: userId }).lean();
+            const foundWorkshop = await Workshop.findOne({ _id: workshopId }).lean();
             
-           if (!user || !workshop) {
-                return { error: 'User or Workshop not found' };
-            }
-            
+            const user = foundUser || { firstName: 'User', lastName: 'Deleted' };
+            const workshop = foundWorkshop || { name: 'Workshop Deleted' };
 
+            
             return {
                 _id: application._id,
-                user: user.firstName + ' ' + user.lastName,
+                user: user.firstName + ' ' + user.lastName ,
                 workshop: workshop.name,
                 status: application.status,
                 registrationDate: application.registrationDate.toISOString().slice(0, 10),

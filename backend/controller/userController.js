@@ -1,4 +1,6 @@
 import User from "../model/userModel.js";
+import Workshop from "../model/workshopModel.js";
+import Application from "../model/applicationModel.js";
 import bcrypt from 'bcrypt';
 import  jwt  from "jsonwebtoken";
 import dotenv from 'dotenv';
@@ -141,6 +143,8 @@ export const update = async (req, res) => {
             });
         }
 
+
+    
         const newPassword = req.body.password;
         const user = await User.findById(targetUserId);
         const hashedPassword = user.password;
@@ -219,6 +223,8 @@ export const deleteUser = async (req, res) => {
         
             if (req.user.user._id === id) {
                
+                await Workshop.updateMany({ professor: id }, { $unset: { professor:1}});
+                await Application.updateMany({ user: id }, { $unset: { user:1}});
                 await User.findByIdAndDelete(id);
                 return res.status(200).json({ message: "User deleted successfully" });
             } else {

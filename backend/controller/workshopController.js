@@ -1,10 +1,8 @@
 import Workshop from "../model/workshopModel.js";
 import User from "../model/userModel.js";
+import Application from "../model/applicationModel.js";
 import dotenv from 'dotenv';
 dotenv.config();
-
-
-
 
 
 // Kreiranje radionice
@@ -106,10 +104,10 @@ export const deleteWorkshop = async (req, res) => {
 
             const workshopsWithProfessorName = await Promise.all(workshops.map(async (workshop) => {
                 const professorId = workshop.professor;
-                const professor = await User.findOne({ _id: professorId });
-                if (!professor) {
-                    return res.status(404).json({ message: "Professor not found" });
-                }
+                const foundProfessor = await User.findOne({ _id: professorId });
+
+                const professor  = foundProfessor || { firstName: 'Unknown', lastName: 'Professor' };
+                     
                 return {
                     _id: workshop._id,
                     name: workshop.name,
@@ -124,7 +122,7 @@ export const deleteWorkshop = async (req, res) => {
             res.status(200).json(workshopsWithProfessorName);
 
         } catch (error) {
-            console.error(`Error in fetch controller: ${error}`);
+            console.error(`Error in fetch  controller: ${error}`);
             res.status(500).json({ error: "Internal Server Error" });
         }
     };
@@ -208,10 +206,10 @@ export const fetchForUser = async (req, res) => {
 
         const workshopsWithProfessorName = await Promise.all(workshops.map(async (workshop) => {
             const professorId = workshop.professor;
-            const professor = await User.findOne({ _id: professorId });
-            if (!professor) {
-                return res.status(404).json({ message: "Professor not found" });
-            }
+            const foundProfessor = await User.findOne({ _id: professorId });
+            
+            const professor  = foundProfessor || { firstName: 'Unknown', lastName: 'Professor' };
+
             return {
                 _id: workshop._id,
                 name: workshop.name,
