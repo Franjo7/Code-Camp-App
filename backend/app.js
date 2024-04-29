@@ -5,6 +5,7 @@ import adminRoute from './routes/adminRoute.js';
 import userRoute from './routes/userRoute.js';
 import workshopRoute from './routes/workshopRoute.js';
 import applicationRoute from './routes/applicationRoute.js';
+import testRoute from './routes/testRoute.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -32,6 +33,7 @@ app.use('/api/admin', adminRoute);
 app.use('/api/user', userRoute);
 app.use('/api/workshop', workshopRoute);
 app.use('/api/application', applicationRoute);
+app.use('/api/test', testRoute);
 
 
 mongoose.connect(MONGOURL).then(() => {

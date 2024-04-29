@@ -220,7 +220,7 @@ export const update = async (req, res) => {
 export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        
+            
             if (req.user.user._id === id) {
                
                 await Workshop.updateMany({ professor: id }, { $unset: { professor:1}});

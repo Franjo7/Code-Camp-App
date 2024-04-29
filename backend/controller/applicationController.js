@@ -176,6 +176,7 @@ export const getAllApplicationsForUser = async (req, res) => {
             if(application.status === 'Pending...' || application.status === 'Rejected'){
 
                 return {
+                    workshopId:workshop._id,
                     workshop: workshop.name,
                     status: application.status,
                     registrationDate: application.registrationDate.toISOString().slice(0, 10),
