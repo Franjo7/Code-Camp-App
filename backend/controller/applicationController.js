@@ -186,6 +186,7 @@ export const getAllApplicationsForUser = async (req, res) => {
 
                 return {
                     _id: application._id,
+                    workshopId:workshop._id,
                     workshop: workshop.name,
                     StartDate: workshop.StartDate.toISOString().slice(0, 10),
                     EndDate: workshop.EndDate.toISOString().slice(0, 10),

@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function MyWorkshops() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const id = pathname.split('/').pop();
+  const router = useRouter();
 
   useEffect(() => {
     async function getApplications() {
@@ -33,6 +35,10 @@ export default function MyWorkshops() {
     return !!id;
   }
 
+  function redirectToSubmitTest(workshopId) {
+    router.push(`/workshops/submit?workshopId=${workshopId}`);
+  }
+
   return (
     <div className="container">
       {!loading && (
@@ -49,6 +55,7 @@ export default function MyWorkshops() {
                     <p className="mb-2"><strong>Points:</strong> {application.points}</p>
                     <p className="mb-2"><strong>Evaluation:</strong> {application.evaluation}</p>
                     <p className="mb-2"><strong>Remark:</strong> {application.remark}</p>
+                    <button className="btn-submit text-white py-2 px-4 rounded mt-2" onClick={() => redirectToSubmitTest(application.workshopId)}>Submit Your Test</button>
                   </>
                 )}
               </div>

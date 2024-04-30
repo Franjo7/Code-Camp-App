@@ -99,6 +99,11 @@ th {
     color: white;
 }
 
+.btn-submit {
+    background-color: #007bff;
+    color: white;
+}
+
 .btn-active {
     background-color: #007bff;
     color: white;
