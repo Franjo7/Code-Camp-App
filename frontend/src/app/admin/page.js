@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaEdit, FaTrash } from 'react-icons/fa';
@@ -88,7 +88,7 @@ export default function AdminPage() {
       )}
       {!loading && (
         <div>
-          <h1 className="main-title text-center mb-8 text-4xl font-bold">Users</h1>
+          <h1 className="main-title">Users</h1>
           <div className="mb-4">
             <input
               type="text"
@@ -99,7 +99,7 @@ export default function AdminPage() {
             />
           </div>
           {filteredUsers.length === 0 ? (
-            <p className="text-center text-2xl text-red-500 font-semibold">User not found.</p>
+            <p className="text-center text-2xl text-red-500 font-semibold">User not found</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full table-fixed text-center">

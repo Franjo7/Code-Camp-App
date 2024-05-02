@@ -63,7 +63,7 @@ const HomePage = () => {
       <div className="max-w-6xl mx-auto">
         {role && (role.includes('user') || role.includes('admin') || role.includes('professor')) ? (
           <>
-            <h1 className="main-title mb-8">Code Camp Sessions</h1>
+            <h1 className="main-title">Code Camp Sessions</h1>
               <div className="space-y-8">
                 {data.map(workshop => (
                   <div key={workshop._id} className="p-6 bg-secondary rounded-lg shadow-md text-white">

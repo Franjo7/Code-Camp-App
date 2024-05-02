@@ -57,7 +57,7 @@ const RegisterPage = () => {
   return (
     <section className='container'>
       <h1 className='main-title'>Register</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
+      <form className='form-container' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
         <input type='text' placeholder='Your First Name' className='input' {...register('firstName')} />
         <p className='error-message'>{dirtyFields.firstName && errors.firstName?.message}</p>
         <input type='text' placeholder='Your Last Name' className='input' {...register('lastName')} />
@@ -70,7 +70,7 @@ const RegisterPage = () => {
         <p className='error-message'>{dirtyFields.password && errors.password?.message}</p>
         <input type='password' placeholder='Confirm Password' className='input' {...register('confirmPassword')} />
         <p className='error-message'>{dirtyFields.confirmPassword && errors.confirmPassword?.message}</p>
-        <button type='submit' className={`button rounded-md p-3 ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
+        <button type='submit' className={`button ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
         disabled={!isValid}>Register</button>
       </form>
       <p className='text-center text-white mt-4'>

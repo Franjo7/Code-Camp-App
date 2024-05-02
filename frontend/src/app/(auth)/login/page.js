@@ -44,13 +44,13 @@ const LoginPage = () => {
   return (
     <section className='container'>
       <h1 className='main-title'>Login</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
+      <form className='form-container' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
         <input type='email' placeholder='Your Email' className='input' {...register('email')} />
         <p className='error-message'>{dirtyFields.email && errors.email?.message}</p>
         <input type='password' placeholder='Your Password' className='input' {...register('password')} />
         <p className='error-message'>{dirtyFields.password && errors.password?.message}</p>
         <Link href='/forgot-password' className='text-white text-right'>Forgot Password?</Link>
-        <button type='submit' className={`button rounded-md p-3 ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
+        <button type='submit' className={`button ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
         disabled={!isValid}>Login</button>
       </form>
       <p className='text-center text-white mt-4'>

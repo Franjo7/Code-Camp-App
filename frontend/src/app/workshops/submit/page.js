@@ -40,8 +40,7 @@ const FileUploadPage = () => {
   return (
     <section className='container'>
       <h1 className='main-title'>Upload Your Zip File</h1>
-      <div className='file-upload-container'>
-        <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(handleFileUpload)}>
+        <form className='form-container' autoComplete='off' onSubmit={handleSubmit(handleFileUpload)}>
           <input type='file' className='input' {...register('file', {
             required: true,
             validate: {
@@ -54,9 +53,8 @@ const FileUploadPage = () => {
           })} accept='.zip' />
           <p className='error-message'>{errors.file && errors.file.type === "required" && 'File is required.'}</p>
           <p className='error-message'>{errors.file && errors.file.type === "isZip" && 'File must be a zip.'}</p>
-          <button type='submit' className={`button rounded-md p-3 ${!isValid ? 'disabled-button' : 'enabled-button'}`} disabled={!isValid}>Submit</button>
+          <button type='submit' className={`button ${!isValid ? 'disabled-button' : 'enabled-button'}`} disabled={!isValid}>Submit</button>
         </form>
-      </div>
     </section>
   );
 };

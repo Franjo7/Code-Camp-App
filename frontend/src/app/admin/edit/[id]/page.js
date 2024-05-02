@@ -1,14 +1,15 @@
 "use client"
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
 
 export default function EditUser() {
   const pathname = usePathname();
   const id = pathname.split('/').pop();
   const [user, setUser] = useState({});
+  const [initialUser, setInitialUser] = useState({});
+  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -16,6 +17,7 @@ export default function EditUser() {
       try {
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/getUser/${id}`);
         setUser(response.data);
+        setInitialUser(response.data);
       } catch (error) {
         console.error('Error fetching user:', error);
       } 
@@ -28,6 +30,8 @@ export default function EditUser() {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUser({ ...user, [name]: value });
+    const isValueChanged = initialUser[name] !== value;
+    setIsDirty(isValueChanged);
   };
 
   const handleSubmit = async (event) => {
@@ -55,24 +59,23 @@ export default function EditUser() {
       } else {
           console.error('An error occurred:', error);
       }
+    }  
   };  
-};  
 
   return (
     <section className='container'>
       <h1 className='main-title'>Update User</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' onSubmit={handleSubmit}>
+      <form className='form-container' onSubmit={handleSubmit}>
         <input type='text' name='firstName' placeholder='First Name' className='input' value={user.firstName || ''} onChange={handleInputChange} />
         <input type='text' name='lastName' placeholder='Last Name' className='input' value={user.lastName || ''} onChange={handleInputChange} />
         <input type='text' name='tel' placeholder='Tel' className='input' value={user.tel || ''} onChange={handleInputChange} />
         <input type='email' name='email' placeholder='Email' className='input' value={user.email || ''} onChange={handleInputChange} />
-        <select name='role' className='input' value={user.role || ''  } onChange={handleInputChange}>
-          <option value=''>Select Role</option>
+        <select name='role' className='input' value={user.role || ''} onChange={handleInputChange}>
           <option value='admin'>Admin</option>
           <option value='user'>User</option>
           <option value='professor'>Professor</option>
         </select>
-        <button type='submit' className='button rounded-md p-3 enabled-button'>Update</button>
+        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update</button>
       </form>
     </section>
   );

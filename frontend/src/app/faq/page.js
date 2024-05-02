@@ -43,12 +43,12 @@ const FAQPage = () => {
   ];
 
   return (
-    <div className="container max-w-6xl">
-      <h1 className="main-title">Frequently Asked Questions</h1>
-      <div className="text-1xl text-white">
-        {faqData.map((faq, index) => (
-          <Accordion key={index} title={faq.question} answer={faq.answer} />
-        ))}
+    <div className="container">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="main-title">Frequently Asked Questions</h1>
+          {faqData.map((faq, index) => (
+            <Accordion key={index} title={faq.question} answer={faq.answer} />
+          ))}
       </div>
     </div>
   );

@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function MyWorkshops() {
   const [data, setData] = useState([]);
@@ -43,7 +42,7 @@ export default function MyWorkshops() {
     <div className="container">
       {!loading && (
         <div className="overflow-x-auto">
-          <h1 className="main-title text-center mb-4">My Workshops</h1>
+          <h1 className="main-title">My Workshops</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {data.map((application) => (
               <div key={application._id} className="border border-gray-400 rounded-lg shadow-md p-6 text-white">

@@ -1,44 +1,18 @@
-"use client";
+"use client"
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { usePathname, useRouter } from 'next/navigation';
-import { yupResolver } from '@hookform/resolvers/yup';
-
-const schema = yup.object().shape({
-  firstName: yup
-    .string()
-    .required('First Name is required')
-    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'First Name must contain only letters'),
-  lastName: yup
-    .string()
-    .required('Last Name is required')
-    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'Last Name must contain only letters'),
-  tel: yup
-    .string()
-    .required('Phone Number is required')
-    .matches(/^\+387 63 [0-9]{3}-[0-9]{3}$/, 'Phone Number must be in the format +387 63 XXX-XXX'),
-  email: yup
-    .string()
-    .required('Email is required')
-    .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/, 'Invalid email address'),
-  password: yup
-    .string()
-    .min(8, 'Password must be at least 8 characters long'),
-});
+import { useForm } from 'react-hook-form';
 
 export default function EditProfile() {
-  const { register, handleSubmit, formState: { errors, isValid, dirtyFields } } = useForm({
-    resolver: yupResolver(schema),
-    mode: 'onChange',
-  });
-
-  const [user, setUser] = useState({});
-  const router = useRouter();
+  const { register, handleSubmit } = useForm();
   const pathname = usePathname();
   const id = pathname.split('/').pop();
+  const [user, setUser] = useState({});
+  const [initialUser, setInitialUser] = useState({});
+  const [isDirty, setIsDirty] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
@@ -46,6 +20,7 @@ export default function EditProfile() {
         try {
           const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/getUser/${id}`);
           setUser(response.data);
+          setInitialUser(response.data);
         } catch (error) {
           console.error('Error fetching user:', error);
         }
@@ -53,6 +28,13 @@ export default function EditProfile() {
       getUser();
     }
   }, [id]);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUser({ ...user, [name]: value });
+    const isValueChanged = initialUser[name] !== value;
+    setIsDirty(isValueChanged);
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -69,18 +51,13 @@ export default function EditProfile() {
   return (
     <section className='container'>
       <h1 className='main-title'>Update Your Profile</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' onSubmit={handleSubmit(onSubmit)}>
-        <input type='text' name='firstName' placeholder='Your First Name' className='input' defaultValue={user.firstName || ''} {...register('firstName')} />
-        <p className='error-message'>{dirtyFields.firstName && errors.firstName?.message}</p>
-        <input type='text' name='lastName' placeholder='Your Last Name' className='input' defaultValue={user.lastName || ''} {...register('lastName')} />
-        <p className='error-message'>{dirtyFields.lastName && errors.lastName?.message}</p>
-        <input type='text' name='tel' placeholder='Your Phone Number' className='input' defaultValue={user.tel || ''} {...register('tel')} />
-        <p className='error-message'>{dirtyFields.tel && errors.tel?.message}</p>
-        <input type='email' name='email' placeholder='Your Email' className='input' defaultValue={user.email || ''} {...register('email')} />
-        <p className='error-message'>{dirtyFields.email && errors.email?.message}</p>
-        <input type='password' name='password' placeholder='Your Password' className='input' {...register('password')} />
-        <p className='error-message'>{dirtyFields.password && errors.password?.message}</p>
-        <button type='submit' className={`button rounded-md p-3 ${!isValid ? 'disabled-button' : 'enabled-button'}`} disabled={!isValid}>Update</button>
+      <form className='form-container' onSubmit={handleSubmit(onSubmit)}>
+        <input type='text' name='firstName' placeholder='Your First Name' className='input' value={user.firstName || ''} {...register('firstName')} onChange={handleInputChange} />
+        <input type='text' name='lastName' placeholder='Your Last Name' className='input' value={user.lastName || ''} {...register('lastName')} onChange={handleInputChange} />
+        <input type='text' name='tel' placeholder='Your Phone Number' className='input' value={user.tel || ''} {...register('tel')} onChange={handleInputChange} />
+        <input type='email' name='email' placeholder='Your Email' className='input' value={user.email || ''} {...register('email')} onChange={handleInputChange} />
+        <input type='password' name='password' placeholder='Your Password' className='input' {...register('password')} onChange={handleInputChange} />
+        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update</button>
       </form>
     </section>
   );

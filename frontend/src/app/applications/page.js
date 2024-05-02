@@ -80,7 +80,7 @@ export default function ApplicationsPage() {
       )}
       {!loading && (
         <div>
-          <h1 className="main-title text-center mb-8 text-4xl font-bold">Applications</h1>
+          <h1 className="main-title">Applications</h1>
           <div className="mb-4">
             <input 
               type="text" 
@@ -91,7 +91,7 @@ export default function ApplicationsPage() {
             />
           </div>
           {filteredApplications.length === 0 ? (
-            <p className="text-center text-2xl text-red-500 font-semibold">No applications found.</p>
+            <p className="text-center text-2xl text-red-500 font-semibold">No applications found</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
               {filteredApplications.map(application => (

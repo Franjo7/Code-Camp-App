@@ -49,13 +49,12 @@ const ResetPasswordPage = () => {
   return (
     <section className='container'>
       <h1 className='main-title'>Reset Your Password</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
+      <form className='form-container' autoComplete='off' onSubmit={handleSubmit(formSubmit)}>
         <input type='password' placeholder='New Password' className='input' {...register('newPassword')} />
         <p className='error-message'>{dirtyFields.newPassword && errors.newPassword?.message}</p>
         <input type='password' placeholder='Confirm Password' className='input' {...register('confirmPassword')} />
         <p className='error-message'>{dirtyFields.confirmPassword && errors.confirmPassword?.message}</p>
-        
-        <button type='submit' className={`button rounded-md p-3 ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
+        <button type='submit' className={`button ${!isValid ? 'disabled-button' : 'enabled-button'}`} 
         disabled={!isValid}>Reset Password</button>
       </form>
       <p className='text-center text-white mt-4'>

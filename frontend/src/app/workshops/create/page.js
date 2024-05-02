@@ -69,7 +69,7 @@ export default function WorkshopCreate() {
   return (
     <section className='container'>
       <h1 className='main-title'>Create Workshop</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' onSubmit={handleSubmit}>
+      <form className='form-container' onSubmit={handleSubmit}>
         <input type='text' name='name' placeholder='Name' className='input' value={workshop.name} autoComplete='off' onChange={handleInputChange} />
         <input type='text' name='description' placeholder='Description' className='input' value={workshop.description} autoComplete='off' onChange={handleInputChange} />
         <input type='date' name='startDate' placeholder='Start Date' className='input' value={workshop.startDate} autoComplete='off' onChange={handleInputChange} />
@@ -82,9 +82,7 @@ export default function WorkshopCreate() {
             </option>
           ))}
         </select>
-        <button type='submit' className={`button rounded-md p-3 ${!isFormValid() ? 'disabled-button' : 'enabled-button'}`} disabled={!isFormValid()}>
-          Create
-        </button>
+        <button type='submit' className={`button ${!isFormValid() ? 'disabled-button' : 'enabled-button'}`} disabled={!isFormValid()}>Create</button>
       </form>
     </section>
   );

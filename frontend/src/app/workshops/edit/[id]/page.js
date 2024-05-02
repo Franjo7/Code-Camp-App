@@ -1,18 +1,17 @@
 "use client"
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
 
 export default function WorkshopEdit() {
   const pathname = usePathname();
   const id = pathname.split('/').pop();
   const [workshop, setWorkshop] = useState({});
-  const router = useRouter();
+  const [initialWorkshop, setInitialWorkshop] = useState({});
   const [professors, setProfessors] = useState([]);
   const [isDirty, setIsDirty] = useState(false);
-  const [initialWorkshop, setInitialWorkshop] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     async function getProfessors() {
@@ -91,9 +90,7 @@ export default function WorkshopEdit() {
               <option key={professor._id} value={professor._id}>{professor.firstName} {professor.lastName}</option>
             ))}
         </select>
-        <button type='submit' className={`button rounded-md p-3 ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>
-          Update
-        </button>
+        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update Workshop</button>
       </form>
     </section>
   );
