@@ -9,7 +9,7 @@ const Accordion = ({ title, answer }) => {
       <button
         onClick={() => setAccordionOpen(!accordionOpen)}
         className={`flex justify-between items-center w-full py-4 transition duration-300 ease-in-out ${
-          accordionOpen ? "text-blue-500" : "text-white"
+          accordionOpen ? "text-primary" : "text-white"
         }`}
       >
         <span className="text-2xl text-left font-semibold">{title}</span>

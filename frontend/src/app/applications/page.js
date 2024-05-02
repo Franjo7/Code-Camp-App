@@ -32,19 +32,20 @@ export default function ApplicationsPage() {
     getApplications();
   }, []);
 
-  const indexOfLastApplication = currentPage * applicationsPerPage;
-  const indexOfFirstApplication = indexOfLastApplication - applicationsPerPage;
-  const currentApplications = data.slice(indexOfFirstApplication, indexOfLastApplication);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
-  const filteredApplications = currentApplications.filter(application => 
+  const filteredApplications = data.filter(application => 
     application.user.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const indexOfLastApplication = currentPage * applicationsPerPage;
+  const indexOfFirstApplication = indexOfLastApplication - applicationsPerPage;
+  const currentApplications = filteredApplications.slice(indexOfFirstApplication, indexOfLastApplication);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   async function deleteApplication(id) {
     try {
@@ -94,7 +95,7 @@ export default function ApplicationsPage() {
             <p className="text-center text-2xl text-red-500 font-semibold">No applications found</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
-              {filteredApplications.map(application => (
+              {currentApplications.map(application => (
                 <div key={application._id} className="border border-gray-400 rounded-lg shadow-md p-6">
                   <h2 className="text-2xl font-semibold mb-4">{application.user}</h2>
                   <p className="mb-2"><strong>Workshop:</strong> {application.workshop}</p>
@@ -120,13 +121,14 @@ export default function ApplicationsPage() {
           )}
           <div className="pagination">
             <ul className="flex justify-center space-x-4 p-4 m-4">
-              {Array.from({ length: Math.ceil(data.length / applicationsPerPage) }, (_, index) => (
+              {Array.from({ length: Math.ceil(filteredApplications.length / applicationsPerPage) }, (_, index) => (
                 <li key={index}>
                   <button 
                     onClick={() => paginate(index + 1)} 
-                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer', backgroundColor: currentPage === index + 1 ? '#4a90e2' : '#e0e0e0', color: currentPage === index + 1 ? '#ffffff' : '#000000' }}
+                    className={`py-2 px-4 rounded cursor-pointer text-white ${currentPage === index + 1 ? 'bg-primary' : 'bg-secondary'}`}
+                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
                   >
-                    {index + 1}
+                  {index + 1}
                   </button>
                 </li>
               ))}

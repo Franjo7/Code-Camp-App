@@ -74,7 +74,7 @@ const HomePage = () => {
                       <p className="text-lg"><strong>End Date:</strong> {workshop.EndDate}</p>
                       <p className="text-lg"><strong>Professor:</strong> {workshop.professor}</p>
                     </div>
-                    <button className="btn bg-blue-600 hover:bg-blue-700 text-white text-lg rounded-full w-full" 
+                    <button className="btn enabled-button text-white text-lg rounded-full w-full" 
                     onClick={() => handleApply(workshop._id)}>Apply</button>
                   </div>
                 ))}

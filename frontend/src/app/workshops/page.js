@@ -130,7 +130,7 @@ export default function WorkshopsPage() {
                   <td className="w-1/7 py-2 break-all">{workshop.professor}</td>
                   <td className="w-1/7 py-2 break-all">
                     <button
-                      className={`btn ${workshop.Visibility ? 'btn-active' : 'btn-inactive'}`}
+                      className={`btn ${workshop.Visibility ? 'enabled-button' : 'disabled-button'}`}
                       onClick={() => {
                         setVisibilityWorkshopId(workshop._id);
                         setVisibilityStatus(workshop.Visibility);

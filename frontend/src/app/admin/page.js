@@ -36,21 +36,22 @@ export default function AdminPage() {
     getUsers();
   }, []);
 
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = data.slice(indexOfFirstUser, indexOfLastUser);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
-  const filteredUsers = currentUsers.filter(user =>
+  const filteredUsers = data.filter(user =>
     user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   async function deleteUser(id) {
     try {
@@ -114,7 +115,7 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user, index) => (
+                  {currentUsers.map((user, index) => (
                     <tr key={index}>
                       <td className="w-1/6 py-2 break-all">{user.firstName}</td>
                       <td className="w-1/6 py-2 break-all">{user.lastName}</td>
@@ -141,13 +142,14 @@ export default function AdminPage() {
           )}
           <div className="pagination">
             <ul className="flex justify-center space-x-4 p-4 m-4">
-              {Array.from({ length: Math.ceil(data.length / usersPerPage) }, (_, index) => (
+              {Array.from({ length: Math.ceil(filteredUsers.length / usersPerPage) }, (_, index) => (
                 <li key={index}>
                   <button
                     onClick={() => paginate(index + 1)}
-                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer', backgroundColor: currentPage === index + 1 ? '#4a90e2' : '#e0e0e0', color: currentPage === index + 1 ? '#ffffff' : '#000000' }}
+                    className={`py-2 px-4 rounded cursor-pointer text-white ${currentPage === index + 1 ? 'bg-primary' : 'bg-secondary'}`}
+                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
                   >
-                    {index + 1}
+                  {index + 1}
                   </button>
                 </li>
               ))}
