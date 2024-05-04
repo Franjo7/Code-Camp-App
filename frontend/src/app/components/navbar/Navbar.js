@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaHome, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher, FaPaperPlane } from 'react-icons/fa';
+import { FaHome, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher, FaPaperPlane, FaBook } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -68,6 +68,9 @@ const Navbar = () => {
             </Link>
             <Link href='/applications' className={`flex items-center link ${pathname === '/applications' ? 'active' : ''}`} onClick={closeMenu}>
               <FaPaperPlane className="mr-1 size-5" /> <span className="ml-1">Applications</span>
+            </Link>
+            <Link href='tests' className={`flex items-center link ${pathname === '/tests' ? 'active' : ''}`} onClick={closeMenu}>
+              <FaBook className="mr-1 size-5" /> <span className="ml-1">Tests</span>
             </Link>
           </>
         )}
@@ -144,6 +147,12 @@ const Navbar = () => {
                 <div className="flex items-center">
                   <FaPaperPlane className="mr-1 md:mr-0 md:mb-1" />
                   <span>Applications</span>
+                </div>
+              </Link>
+              <Link href='/tests' className='block py-2 px-4' onClick={closeMenu}>
+                <div className="flex items-center">
+                  <FaBook className="mr-1 md:mr-0 md:mb-1" />
+                  <span>Tests</span>
                 </div>
               </Link>
             </>

@@ -114,6 +114,11 @@ th {
     color: white;
 }
 
+.btn-download {
+    background-color: theme('colors.secondary');
+    color: white;
+}
+
 .active {
     text-decoration: underline;
 }
