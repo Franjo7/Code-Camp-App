@@ -6,7 +6,8 @@ const testSchema = new mongoose.Schema({
     date: { type: Date, required: true, default: Date.now },
     file:{
         data:{type:Buffer, required:true},
-        contentType:{type:String, required:true}
+        contentType:{type:String, required:true},
+        filename:{type:String, required:true}
     }
 });
 
