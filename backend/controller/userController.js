@@ -1,6 +1,7 @@
 import User from "../model/userModel.js";
 import Workshop from "../model/workshopModel.js";
 import Application from "../model/applicationModel.js";
+import Test from "../model/testModel.js";
 import bcrypt from 'bcrypt';
 import  jwt  from "jsonwebtoken";
 import dotenv from 'dotenv';
@@ -225,6 +226,7 @@ export const deleteUser = async (req, res) => {
                
                 await Workshop.updateMany({ professor: id }, { $unset: { professor:1}});
                 await Application.updateMany({ user: id }, { $unset: { user:1}});
+                await Test.updateMany({ userId: id }, { $unset: { userId:1}});
                 await User.findByIdAndDelete(id);
                 return res.status(200).json({ message: "User deleted successfully" });
             } else {

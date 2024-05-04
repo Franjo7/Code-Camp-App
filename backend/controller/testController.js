@@ -70,8 +70,9 @@ export const getAllTest = async (req, res) => {
                     _id: test._id,
                     user: user.firstName + ' ' + user.lastName,
                     workshop: workshop.name,
-                    date: test.date,
-                    downloadLink: `/api/test/download/${test._id}`,
+                    date: test.date.toISOString().slice(0, 10),
+                    downloadLink: `test/download/${test._id}`,
+                    fileName: test.file.filename
                 };
             })
         );
@@ -79,6 +80,23 @@ export const getAllTest = async (req, res) => {
         res.status(200).json(formattedTests);
     } catch (error) {
         console.error(`Error in getAllTests controller: ${error}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+export const deleteTest = async (req, res) => {
+    try {
+        const testId = req.params.id;
+        const test = await Test.findById(testId);
+
+        if (!test) {
+            return res.status(404).json({ message: 'Test not found' });
+        }
+
+        await Test.findByIdAndDelete(testId);
+        res.status(200).json({ message: 'Test deleted successfully' });
+    } catch (error) {
+        console.error(`Error in deleteTest controller: ${error}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
