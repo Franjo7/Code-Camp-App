@@ -69,7 +69,7 @@ const Navbar = () => {
             <Link href='/applications' className={`flex items-center link ${pathname === '/applications' ? 'active' : ''}`} onClick={closeMenu}>
               <FaPaperPlane className="mr-1 size-5" /> <span className="ml-1">Applications</span>
             </Link>
-            <Link href='tests' className={`flex items-center link ${pathname === '/tests' ? 'active' : ''}`} onClick={closeMenu}>
+            <Link href='/tests' className={`flex items-center link ${pathname === '/tests' ? 'active' : ''}`} onClick={closeMenu}>
               <FaBook className="mr-1 size-5" /> <span className="ml-1">Tests</span>
             </Link>
           </>
