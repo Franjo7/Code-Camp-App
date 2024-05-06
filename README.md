@@ -1,8 +1,8 @@
 # Code Camp Application
 
-The **Code Camp Application** simplifies the process for users to register and enroll in globalsoft's Code Camp workshops. This application is designed to facilitate the management of workshops, applications, and users. It provides a user-friendly interface for users, administrators, and professors to interact with the system. Developed as part of the company's internship program, it offers robust features for seamless workshop management.
+The **Code Camp Application** simplifies the registration process for users eager to participate in globalsoft's Code Camp workshops. Designed for effortless management of workshops, applications, and user interactions, it offers a user-friendly interface accessible to all stakeholders. Developed as part of company's internship program, it delivers robust features ensuring smooth coordination.
 
-## Authors
+## Team Members
 - Antonio Šego - Backend Developer
 - Franjo Lovrić - Frontend Developer
 
@@ -11,13 +11,19 @@ The **Code Camp Application** simplifies the process for users to register and e
 2. [Backend Technologies](#backend-technologies)
 3. [Frontend Technologies](#frontend-technologies)
 4. [Features](#features)
-   - [Users](#users)
+   - [Unregistered Users](#unregistered-users)
+   - [Registered Users](#registered-users)
    - [Administrators](#administrators)
    - [Professors](#professors)
+5. [Conclusion](#conclusion)
 
 ---
 
 ## Installation
+
+### Getting Started
+1. Clone the repository to your local machine: `git clone https://github.com/Franjo7/Code-Camp-App.git`
+2. Using the editor such as Visual Studio Code, open the project folder.
 
 ### Backend
 1. Navigate to the backend directory: `cd backend`
@@ -69,6 +75,8 @@ MongoDB is a popular NoSQL database that uses a flexible document-based model. I
   - Used for authenticating requests.
 - **passport-local**: Passport strategy for local authentication.
   - Used for authenticating users with a username and password.
+- **upload**: Library for file uploads.
+  - Allows users to upload files, such as zip archives for workshop test submissions.
 
 ---
 
@@ -115,11 +123,18 @@ Tailwind CSS is a utility-first CSS framework that allows developers to quickly 
 
 ## Features
 
-### Users
+### Unregistered Users
+
+- **Company Information**: Provides short information about the company and the Code Camp program.
+- **Frequently Asked Questions (FAQ)**: Offers answers to common questions about the program.
 - **Registration**: Allows users to sign up for the application by providing basic information.
+
+### Registered Users
+- **Login**: Enables users to log in to the application.
 - **Workshop Viewing**: Users can browse available workshops and view detailed information about them.
 - **Enrollment**: Enables users to enroll in workshops of interest.
 - **Application Tracking**: Provides users with the ability to track the status of their workshop applications.
+- **Test Submission**: Users can submit their workshop test in the form of a zip file.
 - **Profile Management**: Allows users to update their personal information.
 - **Password Reset**: Users can reset forgotten passwords.
 - **Logout**: Allows users to log out from the application.
@@ -133,7 +148,9 @@ In addition to user functionalities, administrators have access to:
 In addition to user functionalities, professors have access to:
 - **Workshop Management**: Enables professors to create, view, edit, and delete workshops.
 - **Application Management**: Allows professors to view, edit, and delete workshop applications.
-- **Application Search**: Provides professors with the ability to search through workshop applications.
+- **Test Management**: Provides professors with the ability to view, download, and delete workshop tests submitted by users.
+- **Application Search**: Allows professors to search for applications by user name, email, etc.
+- **Test Search**: Provides professors with the ability to search for tests by user name.
 
 ---
 
