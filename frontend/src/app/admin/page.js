@@ -17,15 +17,14 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function getUsers() {
+      const token = localStorage.getItem('user._id');
       try {
         setLoading(true);
-        const token = localStorage.getItem('user._id');
         const headers = { Authorization: `Bearer ${token}` };
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'admin/users', { headers });
         setData(response.data);
         setLoading(false);
-      } catch (error) {
-        const token = localStorage.getItem('user._id');
+      } catch {
         if (!token) {
           router.push('/login');
         } else {
@@ -79,11 +78,14 @@ export default function AdminPage() {
   return (
     <div className="container">
       {showDeletePopup && (
-        <div id="deletePopup" className="popup">
+        <div className="popup">
           <div className="popup-content">
             <h2>Are you sure you want to delete this user?</h2>
             <button className="cancel-btn" onClick={() => setShowDeletePopup(false)}>Cancel</button>
-            <button className="confirm-btn" onClick={() => deleteUser(deleteUserId)}>Yes, I'm sure</button>
+            <button className="confirm-btn" onClick={() => {
+              deleteUser(deleteUserId);
+              setShowDeletePopup(false);
+            }}>Yes, I'm sure</button>
           </div>
         </div>
       )}
@@ -91,13 +93,8 @@ export default function AdminPage() {
         <div>
           <h1 className="main-title">Users</h1>
           <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Search by name or email..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="input border rounded-md p-2 w-full"
-            />
+            <input type="text" placeholder="Search by name or email..." value={searchTerm}
+              onChange={handleSearch} className="input border rounded-md p-2 w-full" />
           </div>
           {filteredUsers.length === 0 ? (
             <p className="text-center text-2xl text-red-500 font-semibold">User not found</p>
@@ -124,12 +121,10 @@ export default function AdminPage() {
                       <td className="w-1/6 py-2 break-all">{user.role}</td>
                       <td className="w-1/6 py-2">
                         <button className="btn btn-update" onClick={() => redirectToUpdate(user._id)}><FaEdit /></button>
-                        <button
-                          className="btn btn-delete"
-                          onClick={() => {
-                            setDeleteUserId(user._id);
-                            setShowDeletePopup(true);
-                          }}
+                        <button className="btn btn-delete" onClick={() => {
+                          setDeleteUserId(user._id);
+                          setShowDeletePopup(true); 
+                        }}
                         >
                           <FaTrash />
                         </button>
@@ -144,10 +139,10 @@ export default function AdminPage() {
             <ul className="flex justify-center space-x-4 p-4 m-4">
               {Array.from({ length: Math.ceil(filteredUsers.length / usersPerPage) }, (_, index) => (
                 <li key={index}>
-                  <button
-                    onClick={() => paginate(index + 1)}
+                  <button onClick={() => paginate(index + 1)}
                     className={`py-2 px-4 rounded cursor-pointer text-white ${currentPage === index + 1 ? 'bg-primary' : 'bg-secondary'}`}
-                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
+                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' 
+                  }}
                   >
                   {index + 1}
                   </button>

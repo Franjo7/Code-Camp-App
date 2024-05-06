@@ -30,7 +30,7 @@ export default function WorkshopEdit() {
       try {
         const token = localStorage.getItem('user._id');
         const headers = { Authorization: `Bearer ${token}` };
-        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `workshop/${id}`,{ headers });
+        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `workshop/${id}`, { headers });
         setWorkshop(response.data);
         setInitialWorkshop(response.data);
       } catch (error) {
@@ -90,7 +90,7 @@ export default function WorkshopEdit() {
               <option key={professor._id} value={professor._id}>{professor.firstName} {professor.lastName}</option>
             ))}
         </select>
-        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update Workshop</button>
+        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update</button>
       </form>
     </section>
   );

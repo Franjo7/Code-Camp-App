@@ -26,8 +26,8 @@ const ForgotPasswordPage = () => {
         toast.success('Email sent successfully, please check your inbox.');
         reset();
       })
-      .catch((error) => {
-        toast.error(error.response?.data?.message || 'Error while sending email, please try again.');
+      .catch(() => {
+        toast.error('Error while sending email, please try again.');
       });
   }
 

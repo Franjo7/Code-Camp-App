@@ -36,8 +36,9 @@ const LoginPage = () => {
       router.push('/');
       setCookies('token', response.data.token);
       window.localStorage.setItem('user._id', response.data.token);
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Invalid email or password. Please try again.');
+    } 
+    catch {
+      toast.error('Invalid email or password. Please try again.');
     }
   };  
 

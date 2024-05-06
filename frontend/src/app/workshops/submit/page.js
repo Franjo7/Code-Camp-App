@@ -32,8 +32,8 @@ const FileUploadPage = () => {
         toast.success('File uploaded successfully!');
         router.push('/');
       })
-      .catch((error) => {
-        toast.error(error.response?.data?.message || 'File upload failed, please try again.');
+      .catch(() => {
+        toast.error('File upload failed, please try again.');
       });
   }
 

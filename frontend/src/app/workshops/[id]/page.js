@@ -98,8 +98,7 @@ export default function MyWorkshops() {
             <ul className="flex justify-center space-x-4 p-4 m-4">
               {Array.from({ length: Math.ceil(data.length / workshopsPerPage) }, (_, index) => (
                 <li key={index}>
-                  <button
-                    onClick={() => paginate(index + 1)}
+                  <button onClick={() => paginate(index + 1)}
                     className={`py-2 px-4 rounded cursor-pointer text-white ${currentPage === index + 1 ? 'bg-primary' : 'bg-secondary'}`}
                     style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
                   >

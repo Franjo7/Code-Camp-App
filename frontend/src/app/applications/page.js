@@ -17,16 +17,19 @@ export default function ApplicationsPage() {
 
   useEffect(() => {
     async function getApplications() {
+      const token = localStorage.getItem('user._id');
       try {
         setLoading(true);
-        const token = localStorage.getItem('user._id');
         const headers = { Authorization: `Bearer ${token}` };
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'application/applicationsForWorkshop/', { headers });
         setData(response.data);
         setLoading(false);
-      } catch (error) {
-        console.error('An error occurred:', error);
-        toast.error('Error fetching applications. Please try again.');
+      } catch {
+        if (!token) {
+          router.push('/login');
+        } else {
+          router.push('/');
+        }
       }
     }
     getApplications();
@@ -83,13 +86,8 @@ export default function ApplicationsPage() {
         <div>
           <h1 className="main-title">Applications</h1>
           <div className="mb-4">
-            <input 
-              type="text" 
-              placeholder="Search by user..." 
-              value={searchTerm} 
-              onChange={handleSearch} 
-              className="input rounded-md p-2 w-full"
-            />
+            <input type="text" placeholder="Search by user..." value={searchTerm} 
+              onChange={handleSearch} className="input rounded-md p-2 w-full" />
           </div>
           {filteredApplications.length === 0 ? (
             <p className="text-center text-2xl text-red-500 font-semibold">No applications found</p>
@@ -123,8 +121,7 @@ export default function ApplicationsPage() {
             <ul className="flex justify-center space-x-4 p-4 m-4">
               {Array.from({ length: Math.ceil(filteredApplications.length / applicationsPerPage) }, (_, index) => (
                 <li key={index}>
-                  <button 
-                    onClick={() => paginate(index + 1)} 
+                  <button onClick={() => paginate(index + 1)} 
                     className={`py-2 px-4 rounded cursor-pointer text-white ${currentPage === index + 1 ? 'bg-primary' : 'bg-secondary'}`}
                     style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
                   >

@@ -41,8 +41,8 @@ const ResetPasswordPage = () => {
         toast.success('Password reset successfully, please login.');
         router.push('/login');
       })
-      .catch((error) => {
-        toast.error(error.response?.data?.message || 'Password reset failed, please try again.');
+      .catch(() => {
+        toast.error('Password reset failed, please try again.');
       });
   }
 

@@ -13,20 +13,18 @@ export default function WorkshopsPage() {
   const [showVisibilityPopup, setShowVisibilityPopup] = useState(false);
   const [visibilityWorkshopId, setVisibilityWorkshopId] = useState(null);
   const [visibilityStatus, setVisibilityStatus] = useState(false);
-  
   const router = useRouter();
 
   useEffect(() => {
     async function getWorkshops() {
+      const token = localStorage.getItem('user._id');
       try {
         setLoading(true);
-        const token = localStorage.getItem('user._id');
         const headers = { Authorization: `Bearer ${token}` };
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + 'workshop/', { headers });
         setData(response.data);
         setLoading(false);
-      } catch (error) {
-        const token = localStorage.getItem('user._id');
+      } catch {
         if (!token) {
           router.push('/login');
         } else {

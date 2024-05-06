@@ -43,14 +43,14 @@ const RegisterPage = () => {
 
   const router = useRouter();
 
-  const formSubmit = (data) => {
+  const formSubmit = async (data) => {
     axios.post(process.env.NEXT_PUBLIC_URL_USER + `user/register`, data)
       .then(() => {
         toast.success('Registration successful, please log in.');
         router.push('/login');
       })
-      .catch((error) => {
-        toast.error(error.response?.data?.message || 'Registration failed, please try again.');
+      .catch(() => {
+        toast.error('Registration failed, please try again.');
       });
   };
 
