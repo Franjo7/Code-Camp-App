@@ -4,15 +4,24 @@ import Workshop from "../model/workshopModel.js";
 import Test from "../model/testModel.js";
 
 
+
+// Funkcija za dohvacanje svih korisnika od strane admina 
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        return res.status(200).json(users);
+    } catch (error) {
+        console.log(`Error in getAllUsers controller: ${error}`)
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+// Funkcija za azuriranje korisnika od strane admina, gdje admin moze azurirati sve podatke korisnika osim lozinke
 export const update = async (req, res) => {
     try {
-        const userRole = req.user.user.role;
         const targetUserId = req.params.id;
-
-    
-        if (userRole.includes("admin")) {
-           
-            const user = await User.findById(targetUserId);
+        const user = await User.findById(targetUserId);
    
             const updateUser = await User.findByIdAndUpdate(
                 targetUserId,
@@ -31,15 +40,7 @@ export const update = async (req, res) => {
 
             const { password, ...rest } = updateUser._doc;
             return res.status(201).json(rest);
-            
-        } else {
-            return res.status(403).json({ 
-                error: { 
-                    message: "You are not authorized to update this user",
-                    code: 403
-                } 
-            });
-        }
+
     } catch (error) {
         console.log(error);
         console.log(`Error in update controller: ${error}`);
@@ -48,32 +49,20 @@ export const update = async (req, res) => {
 };
 
 
-export const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find({ deleted: { $ne: true } });
-        return res.status(200).json(users);
-    } catch (error) {
-        console.log(`Error in getAllUsers controller: ${error}`)
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
 
-
-
-
+// funkcija za brisanje korisnika od strane admina
 export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const userRole = req.user.user.role;
         
-        if (userRole.includes("admin")) {
-            
+        
             await Workshop.updateMany({ professor: id }, { $unset: { professor:1}});
             await Application.updateMany({ user: id }, { $unset: { user:1}});
             await Test.updateMany({ userId: id }, { $unset: { userId:1}});
+
             await User.findByIdAndDelete(id);
             return res.status(200).json({ message: "User deleted successfully" });
-        } 
+         
     } catch (error) {
         console.log(`Error in deleteUser controller: ${error}`);
         return res.status(500).json({ error: "Internal Server Error" });

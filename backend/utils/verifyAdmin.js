@@ -1,5 +1,5 @@
 
-
+// Ovaj middleware se koristi za provjeru da li je korisnik admin ili ne.
 export const verifyAdmin = async (req, res, next) => {
     try {
         const userRole = req.user.user.role;

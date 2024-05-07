@@ -7,11 +7,10 @@ import  jwt  from "jsonwebtoken";
 import dotenv from 'dotenv';
 import nodeMailer from 'nodemailer';
 
-
 dotenv.config();
 
 
-// Kreiranje/registracija usera
+// Funkcija za registraciju korisnika
 
 export const create = async (req, res) => { 
     try{
@@ -30,22 +29,12 @@ export const create = async (req, res) => {
         }
 
         const saltRounds = 10;
-         const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             savedUser.password = hashedPassword;
             const newUser = await savedUser.save();
 
-            const payload ={
-                user: {
-                    _id:newUser._id,
-                    role:newUser.role,
-                
-                   
-                }
-            }
-
-           const token =  jwt.sign(payload,process.env.JWT_SECRET,{expiresIn:'1hr'});
-            res.status(201).json({token});
+            res.status(201).json(newUser);
         
     } catch (error) {
         console.error(`Error in registerUser controller ${error}`)
@@ -54,7 +43,7 @@ export const create = async (req, res) => {
 };
 
 
-// user login
+// Funkcija za prijavu korisnika
 
 export const login = async (req, res) => {
         const {email,password} = req.body;
@@ -104,7 +93,7 @@ export const login = async (req, res) => {
 
 
 
-// fetching user by id
+// Funckija za dohvacanje korisnika po ID-u
 
 export const getUserById = async (req, res) => {
     try {
@@ -121,6 +110,7 @@ export const getUserById = async (req, res) => {
         }
 
         res.status(200).json(user);
+
     } catch (error) {
         console.error(`error in getUser controller ${error}`);
         res.status(500).json({ error: "Internal Server Error" });
@@ -128,7 +118,7 @@ export const getUserById = async (req, res) => {
 };
 
 
-// update user
+// Funkcija za azuriranje korisnika
 
 export const update = async (req, res) => {
     try {
@@ -143,8 +133,6 @@ export const update = async (req, res) => {
                 } 
             });
         }
-
-
     
         const newPassword = req.body.password;
         const user = await User.findById(targetUserId);
@@ -171,6 +159,7 @@ export const update = async (req, res) => {
             
             const { password, ...rest } = updateUser._doc;
             return res.status(201).json(rest);
+
         } else {
             if (newPassword && newPassword.length >= 8){
                 const saltRounds = 10;
@@ -202,6 +191,7 @@ export const update = async (req, res) => {
                 });
             }
         }
+
     } catch (error) {
         console.error(`Error in update controller: ${error}`);
         return res.status(500).json({ 
@@ -216,7 +206,7 @@ export const update = async (req, res) => {
 
 
 
-// delete user
+// Funkcija za brisanje korisnika, korisnik moze obrisati samo svoj profil
 
 export const deleteUser = async (req, res) => {
     try {
@@ -227,6 +217,7 @@ export const deleteUser = async (req, res) => {
                 await Workshop.updateMany({ professor: id }, { $unset: { professor:1}});
                 await Application.updateMany({ user: id }, { $unset: { user:1}});
                 await Test.updateMany({ userId: id }, { $unset: { userId:1}});
+
                 await User.findByIdAndDelete(id);
                 return res.status(200).json({ message: "User deleted successfully" });
             } else {
@@ -248,6 +239,7 @@ export const deleteUser = async (req, res) => {
 
 
 
+// Funkcija za dohvacanje svih profesora
 export const getAllProfessors = async (req, res) => {
     try {
         const users = await User.find({ role: 'professor' });
@@ -260,7 +252,7 @@ export const getAllProfessors = async (req, res) => {
 
 
 
-// forgot password send email
+// Funkcija za slanje emaila za resetiranje lozinke
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -275,8 +267,7 @@ export const forgotPassword = async (req, res) => {
             service: 'gmail',
             auth: {
                 user: process.env.EMAIL_ADDRESS,
-                pass: process.env.EMAIL_PASSWORD
-               
+                pass: process.env.EMAIL_PASSWORD  
             },
         });
 
@@ -284,7 +275,7 @@ export const forgotPassword = async (req, res) => {
             from: process.env.EMAIL_ADDRESS,
             to: email,
             subject: 'Reset your password',
-            text: `Click on the link to reset your password: ${process.env.CLIENT_URL}/?token=${token}` // front url
+            text: `Click on the link to reset your password: ${process.env.CLIENT_URL}/?token=${token}` 
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -304,6 +295,7 @@ export const forgotPassword = async (req, res) => {
 };
 
 
+// Funkcija za resetiranje lozinke
 export const resetPassword = async (req, res) => {
     try{
         const id = req.user._id;

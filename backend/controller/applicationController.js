@@ -3,6 +3,8 @@ import Workshop from '../model/workshopModel.js';
 import Application from '../model/applicationModel.js';
 import User from '../model/userModel.js';
 
+
+// Funkcija za prijavu na radionicu
 export const applicationForWorkshop = async (req, res) => {
     try {
         
@@ -35,6 +37,7 @@ export const applicationForWorkshop = async (req, res) => {
 
 
 
+// Funkcija za uređivanje prijave na radionicu
 
 export const manageApplication = async (req, res) => {
     try {
@@ -70,7 +73,7 @@ export const manageApplication = async (req, res) => {
 
 
 
-
+// Funkcija za brisanje prijave na radionicu
 export const deleteApplication  =  async (req, res) => {
     try{
 
@@ -106,15 +109,10 @@ export const deleteApplication  =  async (req, res) => {
 
 
 
-
+// Funkcija za dohvaćanje svih prijava na radionice
 export const getAllApplicationsForWorkshop = async (req, res) => {
     try {
-        const userId = req.user.user._id;
-        const role = req.user.user.role;
-
-        if (!userId || !role.includes('professor')) {
-            return res.status(403).json({ message: 'Only professors can view applications' });
-        }
+       
  
         const applications = await Application.find();
 
@@ -151,7 +149,7 @@ export const getAllApplicationsForWorkshop = async (req, res) => {
 
 
 
-
+// Funkcija za dohvaćanje svih prijava korisnika
 export const getAllApplicationsForUser = async (req, res) => {
     try {
         const userId = req.user.user._id;
@@ -207,16 +205,11 @@ export const getAllApplicationsForUser = async (req, res) => {
 };
 
 
+//Funkcija za dohvaćanje prijave na radionicu
 export const getApplicationForWorkshop = async (req, res) => {
     try {
-        const userId = req.user.user._id;
-        const role = req.user.user.role;
+      
         const applicationId = req.params.id;
-        
-        if (!userId || !role.includes('professor')) {
-            return res.status(403).json({ message: 'Only professors can view applications' });
-        }
-
         const application = await Application.findOne({ _id:applicationId  })
         const {user,workshop} = application;
        

@@ -5,6 +5,7 @@ import Workshop from '../model/workshopModel.js';
 import {Binary} from 'mongodb';
 
 
+// Funkcija za kreiranje testa
 export const createTest = async (req, res) => {
     try {
         const userId = req.user.user._id;
@@ -16,16 +17,13 @@ export const createTest = async (req, res) => {
         if (!userExist || !workshopExist) {
             return res.status(404).json({ message: 'User or Workshop not found' });
         }
- 
-        
+  
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
         const fileData = req.file.buffer;
         const fileContentType = req.file.mimetype;
-
-
 
         const test = new Test({
             userId,
@@ -46,7 +44,7 @@ export const createTest = async (req, res) => {
 };
 
 
-
+// Funkcija za dohvatanje svih testova
 export const getAllTest = async (req, res) => {
     try {
         const tests = await Test.find();
@@ -84,6 +82,7 @@ export const getAllTest = async (req, res) => {
     }
 };
 
+//Funkcija za brisanje testa
 export const deleteTest = async (req, res) => {
     try {
         const testId = req.params.id;

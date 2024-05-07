@@ -1,22 +1,13 @@
 import Workshop from "../model/workshopModel.js";
 import User from "../model/userModel.js";
-import Application from "../model/applicationModel.js";
 import dotenv from 'dotenv';
 dotenv.config();
 
 
-// Kreiranje radionice
-
+//Funkcija za kreiranje radionice
 export const create = async (req, res) => { 
     try {
         
-        const user = req.user.user._id;
-        const userRole = req.user.user.role;
-            
-        if(!user || !userRole.includes('professor')){
-            return res.status(403).json({ message: 'Only professors can create workshops' });
-        }
-
         const workshopData = new Workshop(req.body);
         const { name } = workshopData;
 
@@ -36,48 +27,34 @@ export const create = async (req, res) => {
 }
 
 
-// Azuriranje radionice
-
+// Funkcija za azuriranje radionice
 export const update = async (req, res) => {
    try{
-        const user = req.user.user._id;
-        const userRole = req.user.user.role;
-        
-    if(!user || !userRole.includes('professor')){
-        return res.status(403).json({ message: 'Only professors can update workshops' });
-    }
+        const id = req.params.id;
+        const workshopExist = await Workshop.findOne({_id:id});
 
-    const id = req.params.id;
-    const workshopExist = await Workshop.findOne({_id:id});
+        if(!workshopExist){
+            return res.status(404).json({message:"Workshop not found"});
+        }
 
-    if(!workshopExist){
-        return res.status(404).json({message:"Workshop not found"});
-    }
+        const {StartDate,EndDate,...otherFields} = req.body;
+        const updatedWorkshopData = {...otherFields, StartDate: new Date(StartDate), EndDate: new Date(EndDate)};
 
-    const {StartDate,EndDate,...otherFields} = req.body;
-    const updatedWorkshopData = {...otherFields, StartDate: new Date(StartDate), EndDate: new Date(EndDate)};
-
-    const updateWorkshop = await Workshop.findByIdAndUpdate(id,updatedWorkshopData,{new:true});
-    res.status(201).json(updateWorkshop);
+        const updateWorkshop = await Workshop.findByIdAndUpdate(id,updatedWorkshopData,{new:true});
+        res.status(201).json(updateWorkshop);
 
    } catch (error) {
-    console.error(`Error in updateWorkshop controller: ${error}`);
-    res.status(500).json({error:"Internal Server Error" });
+        console.error(`Error in updateWorkshop controller: ${error}`);
+        res.status(500).json({error:"Internal Server Error" });
    }
 };
 
-// Brisanje radionice
+// Funkcija za brisanje radionice
 export const deleteWorkshop = async (req, res) => {
     try{
-
-        const user = req.user.user._id;
-        const userRole = req.user.user.role;
-        
-    if(!user || !userRole.includes('professor')){
-        return res.status(403).json({ message: 'Only professors can delete workshops' });
-    }
         const id= req.params.id;
         const workshopExist = await Workshop.findOne({_id:id});
+
         if(!workshopExist){
             return res.status(404).json({message:"Workshop not found"});
         }
@@ -92,7 +69,7 @@ export const deleteWorkshop = async (req, res) => {
 };
 
 
-// Dohvatanje radionica
+// Funkcija za dohvatanje svih radionica
     export const fetch = async (req, res) => {
         try {
             const workshops = await Workshop.find();
@@ -128,8 +105,7 @@ export const deleteWorkshop = async (req, res) => {
     };
 
 
-// dohvcanje radionice po id
-
+// Funkcija za dohvatanje  radionice po id
 export const fetchById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -166,16 +142,8 @@ export const fetchById = async (req, res) => {
 };
 
 // Azuriranje vidljivosti radionice
-
 export const visibility = async (req, res) => {
     try {
-        const user = req.user.user._id;
-        const userRole = req.user.user.role;
-        
-    if(!user || !userRole.includes('professor')){
-        return res.status(403).json({ message: 'Only professors can change visibility of workshops' });
-    }
-
         const id = req.params.id;
         const workshopExist = await Workshop.findOne({_id:id});
 
@@ -195,7 +163,7 @@ export const visibility = async (req, res) => {
     }
 }
 
-
+// Funkcija za dohvatanje svih radionica koje su vidljive
 export const fetchForUser = async (req, res) => {
     try {
         const workshops = await Workshop.find({Visibility: true});

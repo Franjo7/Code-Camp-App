@@ -9,10 +9,15 @@ const applicationRoute = express.Router();
 
 
 applicationRoute.post('/workshopApplication',verifyToken,applicationForWorkshop);
+
 applicationRoute.put('/manageApplication/:id',verifyToken,verifyProfessor,manageApplication);
+
 applicationRoute.delete('/deleteApplication/:id',verifyToken,deleteApplication);
+
 applicationRoute.get('/applicationsForWorkshop',verifyToken,verifyProfessor,getAllApplicationsForWorkshop);
+
 applicationRoute.get('/applicationsForUser/:id',verifyToken,getAllApplicationsForUser);
+
 applicationRoute.get('/applicationForWorkshop/:id',verifyToken,verifyProfessor,getApplicationForWorkshop);
 
 

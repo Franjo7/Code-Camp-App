@@ -1,3 +1,4 @@
+// middleware koji provjerava je li korisnik profesor
 
 export const verifyProfessor = async (req, res, next) => {
     try {
