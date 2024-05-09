@@ -40,9 +40,9 @@ The **Code Camp Application** simplifies the registration process for users eage
 ### Backend Technologies
 
 <div style="display: flex; justify-content: space-around;">
-  <a href="https://nodejs.org/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/200px-Node.js_logo.svg.png" style="width: auto; height: 100px;"></a>
-  <a href="https://expressjs.com/"><img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Expressjs.png" style="width: auto; height: 100px;"></a>
-  <a href="https://www.mongodb.com/"><img src="https://webassets.mongodb.com/_com_assets/cms/mongodb_logo1-76twgcu2dm.png" style="width: auto; height: 100px;"></a>
+  <a href="https://nodejs.org/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/200px-Node.js_logo.svg.png" style="width: auto; height: 80px;"></a>
+  <a href="https://expressjs.com/"><img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Expressjs.png" style="width: auto; height: 80px;"></a>
+  <a href="https://www.mongodb.com/"><img src="https://webassets.mongodb.com/_com_assets/cms/mongodb_logo1-76twgcu2dm.png" style="width: auto; height: 80px;"></a>
 </div>  
 
 &nbsp;
@@ -50,28 +50,13 @@ The **Code Camp Application** simplifies the registration process for users eage
 ### Frontend Technologies
 
 <div style="display: flex; justify-content: space-around;">
-  <a href="https://nextjs.org/"><img src="https://assets.vercel.com/image/upload/v1607554385/repositories/next-js/next-logo.png" style="width: auto; height: 100px;"></a>
-  <a href="https://tailwindcss.com/"><img src="https://refactoringui.nyc3.digitaloceanspaces.com/tailwind-logo.svg" style="width: auto; height: 100px;"></a>
+  <a href="https://nextjs.org/"><img src="https://assets.vercel.com/image/upload/v1607554385/repositories/next-js/next-logo.png" style="width: auto; height: 80px;"></a>
+  <a href="https://tailwindcss.com/"><img src="https://refactoringui.nyc3.digitaloceanspaces.com/tailwind-logo.svg" style="width: auto; height: 80px;"></a>
 </div>
 
 &nbsp;
 
 ### Dependencies
-
-<style>
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    padding: 8px;
-    text-align: center;
-  }
-
-</style>
-
 
 | Backend                 | Frontend                   |
 |-------------------------|----------------------------|
