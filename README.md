@@ -1,7 +1,5 @@
 # Code Camp Application
 
----
-
 The **Code Camp Application** simplifies the registration process for users eager to participate in globalsoft's Code Camp workshops. Designed for effortless management of workshops, applications, and user interactions, it offers a user-friendly interface accessible to all stakeholders. Developed as part of company's internship program, it delivers robust features ensuring smooth coordination.
 
 ---
@@ -29,7 +27,7 @@ The **Code Camp Application** simplifies the registration process for users eage
    - [Administrators](#administrators)
    - [Professors](#professors)
 3. [Installation](#installation)
-4. [Demo](#demo)
+4. [Demo of the Application](#demo-of-the-application)
 
 ---
 
@@ -147,14 +145,14 @@ In addition to user functionalities, professors have access to:
    JWT_SECRET=your_secret_key
    ```
 3. Install dependencies: `npm install`
-4. Start the application: `npm run dev`
+4. Start the application: `npm start`
 
 &nbsp;
 
 ### Frontend
 
 1. Navigate to the frontend directory: `cd frontend`
-2. Create a `.env.local` file in the frontend directory and add the following configuration variables:
+2. Create a `.env.local` file in the frontend directory and add the following configuration variable:
    ```
    NEXT_PUBLIC_URL_USER=http://localhost:5001/api
    ```
@@ -165,7 +163,7 @@ In addition to user functionalities, professors have access to:
 
 &nbsp;
 
-## Demo
+## Demo of the Application
 
 ![Home](/frontend/public/Images/1-Home.png)<br><br>
 ![FAQ](/frontend/public/Images/2-FAQ.png)<br><br>
