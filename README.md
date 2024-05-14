@@ -1,6 +1,6 @@
 # Code Camp Application
 
-The **Code Camp Application** simplifies the registration process for users eager to participate in globalsoft's Code Camp workshops. Designed for effortless management of workshops, applications, and user interactions, it offers a user-friendly interface accessible to all stakeholders. Developed as part of company's internship program, it delivers robust features ensuring smooth coordination.
+The **Code Camp Application** simplifies the registration process for users eager to participate in globalsoft's Code Camp workshops. Crafted with a modern and user-friendly design, the application offers a seamless experience for users, administrators, and professors.
 
 ---
 
@@ -50,6 +50,8 @@ The **Code Camp Application** simplifies the registration process for users eage
   <a href="https://nextjs.org/"><img src="https://assets.vercel.com/image/upload/v1607554385/repositories/next-js/next-logo.png" style="width: auto; height: 80px;"></a>
   <a href="https://tailwindcss.com/"><img src="https://refactoringui.nyc3.digitaloceanspaces.com/tailwind-logo.svg" style="width: auto; height: 80px;"></a>
 </div>
+
+---
 
 &nbsp;
 
