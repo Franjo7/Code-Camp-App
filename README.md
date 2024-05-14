@@ -20,7 +20,6 @@ The **Code Camp Application** simplifies the registration process for users eage
 1. [Technologies](#technologies)
    - [Backend Technologies](#backend-technologies)
    - [Frontend Technologies](#frontend-technologies)
-   - [Dependencies](#dependencies)
 2. [Features](#features)
    - [Unauthenticated Users](#unauthenticated-users)
    - [Authenticated Users](#authenticated-users)
@@ -51,31 +50,6 @@ The **Code Camp Application** simplifies the registration process for users eage
   <a href="https://nextjs.org/"><img src="https://assets.vercel.com/image/upload/v1607554385/repositories/next-js/next-logo.png" style="width: auto; height: 80px;"></a>
   <a href="https://tailwindcss.com/"><img src="https://refactoringui.nyc3.digitaloceanspaces.com/tailwind-logo.svg" style="width: auto; height: 80px;"></a>
 </div>
-
-&nbsp;
-
-### Dependencies
-
-| Backend                 | Frontend                   |
-|-------------------------|----------------------------|
-| bcrypt@^5.1.1           | @hookform/resolvers@^3.3.4 |
-| body-parser@^1.20.2     | @mui/material@^5.15.13     |
-| cookie-parser@^1.4.6    | @nextui-org/react@^2.2.10  |
-| cors@^2.8.5             | axios@^1.6.8               |
-| dotenv@^16.4.5          | cookie-cutter@^0.2.0       |
-| ejs@^3.1.9              | jwt-decode@^4.0.0          |
-| express@^4.18.3         | next@14.1.1                |
-| express-flash@^0.0.2    | react@^18                  |
-| express-session@^1.18.0 | react-cookie@^7.1.0        |
-| jsonwebtoken@^9.0.2     | react-dom@^18              |
-| mongoose@^8.2.1         | react-hook-form@^7.51.0    |
-| multer@^1.4.5-lts.1     | react-hot-toast@^2.4.1     |
-| nodemailer@^6.9.13      | react-icons@^5.0.1         |
-| passport@^0.7.0         | react-router-dom@^6.22.3   |
-| passport-local@^1.0.0   | yup@^1.4.0                 |
-| upload@^1.3.2           |                            |
-
----
 
 &nbsp;
 
@@ -154,7 +128,7 @@ In addition to user functionalities, professors have access to:
 1. Navigate to the frontend directory: `cd frontend`
 2. Create a `.env.local` file in the frontend directory and add the following configuration variable:
    ```
-   NEXT_PUBLIC_URL_USER=http://localhost:5001/api
+   NEXT_PUBLIC_URL_USER=http://localhost:5001/api/
    ```
 3. Install dependencies: `npm install`
 4. Start the application: `npm run dev`
