@@ -64,21 +64,11 @@ const HomePage = () => {
         {role && (role.includes('user') || role.includes('admin') || role.includes('professor')) ? (
           <>
             <h1 className="main-title">Code Camp Sessions</h1>
-              <div className="space-y-8">
-                {data.map(workshop => (
-                  <div key={workshop._id} className="p-6 bg-secondary rounded-lg shadow-md text-white">
-                    <h2 className="text-4xl font-semibold mb-6">{workshop.name}</h2>
-                    <p className="text-xl mb-6">{workshop.description}</p>
-                    <div className="text-gray-400 mb-6">
-                      <p className="text-lg"><strong>Start Date:</strong> {workshop.StartDate}</p>
-                      <p className="text-lg"><strong>End Date:</strong> {workshop.EndDate}</p>
-                      <p className="text-lg"><strong>Professor:</strong> {workshop.professor}</p>
-                    </div>
-                    <button className="btn enabled-button text-white text-lg rounded-full w-full" 
-                    onClick={() => handleApply(workshop._id)}>Apply</button>
-                  </div>
-                ))}
-              </div>
+            <div className="space-y-8">
+              {data.map(workshop => (
+                <WorkshopCard key={workshop._id} workshop={workshop} onApply={() => handleApply(workshop._id)} />
+              ))}
+            </div>
           </>
         ) : (
           <>
@@ -106,4 +96,40 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;  
+const WorkshopCard = ({ workshop, onApply }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 200;
+
+  const handleToggle = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <div key={workshop._id} className="p-5 bg-secondary rounded-lg shadow-md text-white">
+      <h2 className="text-4xl font-semibold mb-6">{workshop.name}</h2>
+      <p className="text-xl">
+        {isExpanded ? workshop.description : `${workshop.description.substring(0, maxLength)}${workshop.description.length > maxLength ? '...' : ''}`}
+      </p>
+      {!isExpanded && workshop.description.length > maxLength && (
+        <button onClick={handleToggle} className="text-primary hover:underline mb-6">
+          Read more
+        </button>
+      )}
+      {isExpanded && (
+        <button onClick={handleToggle} className="text-primary hover:underline mb-6">
+          Read less
+        </button>
+      )}
+      <div className="flex flex-col md:flex-row justify-between mb-6">
+        <p className="text-lg border rounded p-2"><strong>Start Date:</strong> {workshop.StartDate}</p>
+        <p className="text-lg border rounded p-2"><strong>End Date:</strong> {workshop.EndDate}</p>
+        <p className="text-lg border rounded p-2"><strong>Professor:</strong> {workshop.professor}</p>
+      </div>
+      <button className="btn enabled-button text-white text-lg rounded-full w-full" onClick={onApply}>
+        Apply
+      </button>
+    </div>
+  );
+};
+
+export default HomePage;
