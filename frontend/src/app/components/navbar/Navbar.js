@@ -47,7 +47,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="flex items-center justify-between px-3 py-3 md:px-10 relative z-10">
+    <header className="flex items-center justify-between p-5 relative">
       <img src="./logo.svg" alt="logo" className="w-32 md:w-48" />
       <nav className="hidden md:flex text-lg items-center gap-10 text-white">
         <Link href='/' className={`flex items-center link ${pathname === '/' ? 'active' : ''}`} onClick={closeMenu}>
@@ -81,18 +81,18 @@ const Navbar = () => {
               <span className="ml-1">{firstName}</span>
             </button>
             {isOpen && (
-              <div className="absolute right-0 top-full w-40 mt-2 bg-secondary text-white rounded-lg shadow-lg border border-gray-300">
-                <div className="py-3 px-4 hover:text-white hover:underline">
+              <div className="absolute right-0 w-40 mt-2 bg-secondary text-white shadow-lg border border-gray-300">
+                <div className="p-2 hover:underline">
                   <Link href={`/user/edit/${id}`} onClick={closeMenu}>
-                    Profile
+                    Your Profile
                   </Link>
                 </div>
-                <div className="py-3 px-4 hover:text-white hover:underline">
+                <div className="p-2 hover:underline">
                   <Link href={`/workshops/${id}`} onClick={closeMenu}>
-                    My Workshops
+                    Your Workshops
                   </Link>
                 </div>
-                <div className="py-3 px-4 hover:text-white hover:underline cursor-pointer" onClick={handleLogout}>
+                <div className="p-2 hover:underline cursor-pointer" onClick={handleLogout}>
                   Logout
                 </div>
               </div>
@@ -113,7 +113,7 @@ const Navbar = () => {
         </button>
       </div>
       {isOpen && (
-        <div className="md:hidden absolute top-16 p-4 right-0 bg-secondary text-white overflow-y-auto">
+        <div className="md:hidden absolute top-16 p-3 right-1 bg-secondary text-white overflow-y-auto">
           <div className="flex flex-col items-center">
             <Link href='/' className='block py-2 px-4' onClick={closeMenu}>
               <div className="flex items-center">
@@ -165,13 +165,13 @@ const Navbar = () => {
                 </div>
                 {isOpen && (
                   <div className="absolute right-0 top-full mt-1 bg-secondary text-white py-2 rounded-md shadow-lg">
-                    <div className="py-2 px-4 hover:underline">
-                      <Link href={`/user/edit/${id}`} onClick={closeMenu}>Profile</Link>
+                    <div className="py-2 px-4">
+                      <Link href={`/user/edit/${id}`} onClick={closeMenu}>Your Profile</Link>
                     </div>
-                    <div className='py-2 px-4 hover:underline'>
-                      <Link href={`/workshops/${id}`} onClick={closeMenu}>My Workshops</Link>
+                    <div className='py-2 px-4'>
+                      <Link href={`/workshops/${id}`} onClick={closeMenu}>Your Workshops</Link>
                     </div>
-                    <div className='py-2 px-4 hover:underline' onClick={handleLogout}>Logout</div>
+                    <div className='py-2 px-4' onClick={handleLogout}>Logout</div>
                   </div>
                 )}
               </div>
