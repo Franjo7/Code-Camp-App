@@ -1,34 +1,18 @@
-"use client"
+"use client";
 import React, { useState } from "react";
-
-const Accordion = ({ title, answer }) => {
-  const [accordionOpen, setAccordionOpen] = useState(false);
-
-  return (
-    <div className="bg-secondary rounded-lg p-4 m-4">
-      <button
-        onClick={() => setAccordionOpen(!accordionOpen)}
-        className={`flex justify-between items-center w-full py-4 transition duration-300 ease-in-out ${
-          accordionOpen ? "text-primary" : "text-white"
-        }`}
-      >
-        <span className="text-2xl text-left font-semibold">{title}</span>
-        <span
-          className={`text-2xl ${
-            accordionOpen ? "rotate-180 transition duration-300 ease-in-out" : "transition duration-300 ease-in-out"
-          }`}
-        >
-          &#8595;
-        </span>
-      </button>
-      {accordionOpen && (
-        <div className="py-2 text-white">{answer}</div>
-      )}
-    </div>
-  );
-};
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const FAQPage = () => {
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  const handleAccordionChange = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
   const faqData = [
     { question: "Who are the workshops intended for?", answer: "The workshops are intended for everyone, from high school students and university students to employed individuals. We offer a basic group for those who have no prior knowledge and wish to step into the world of web programming for the first time. There are also advanced and full-stack groups for those who want to refine and expand their existing knowledge." },
     { question: "What are the requirements for registration in the workshops?", answer: "Given the significant interest and limited capacity, successful completion of an entry test is required for the advanced and full-stack groups, while for the basic group, having the willingness is sufficient." },
@@ -46,9 +30,37 @@ const FAQPage = () => {
     <div className="container">
       <div className="max-w-6xl mx-auto">
         <h1 className="main-title">Frequently Asked Questions</h1>
-          {faqData.map((faq, index) => (
-            <Accordion key={index} title={faq.question} answer={faq.answer} />
-          ))}
+        {faqData.map((faq, index) => (
+          <Accordion
+            key={index}
+            sx={{
+              backgroundColor: 'rgba(31, 41, 55)',
+              borderRadius: '0.5rem',
+              padding: '1rem',
+              margin: '1rem 0',
+              color: 'white'
+            }}
+            expanded={expandedIndex === index}
+            onChange={() => handleAccordionChange(index)}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white', fontSize: '2rem' }} />}>
+              <Typography
+                sx={{
+                  fontWeight: 'bold',
+                  fontSize: '1.25rem',
+                  color: expandedIndex === index ? 'primary.main' : 'white'
+                }}
+              >
+                {faq.question}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography sx={{ fontSize: '1rem', color: 'white' }}>
+                {faq.answer}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </div>
     </div>
   );

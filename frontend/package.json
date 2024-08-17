@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.15.13",
     "@nextui-org/react": "^2.2.10",
     "axios": "^1.6.8",
