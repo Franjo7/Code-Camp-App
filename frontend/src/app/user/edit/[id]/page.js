@@ -1,39 +1,80 @@
 "use client"
-import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  firstName: yup
+    .string()
+    .required('First Name is required')
+    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'First Name must contain only letters'),
+  lastName: yup
+    .string()
+    .required('Last Name is required')
+    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'Last Name must contain only letters'),
+  tel: yup
+    .string()
+    .required('Phone Number is required')
+    .matches(/^\+387 63 [0-9]{3}-[0-9]{3}$/, 'Phone Number must be in the format +387 63 XXX-XXX'),
+  email: yup
+    .string()
+    .required('Email is required')
+    .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/, 'Invalid email address'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters long'),
+  confirmPassword: yup
+    .string()
+    .required('Confirm Password is required')
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+});
 
 export default function EditProfile() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { errors, isValid }, setValue, watch } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+
   const pathname = usePathname();
   const id = pathname.split('/').pop();
-  const [user, setUser] = useState({});
   const [initialUser, setInitialUser] = useState({});
-  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
+  const formValues = watch();
 
   useEffect(() => {
     if (id) {
       async function getUser() {
         try {
           const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/getUser/${id}`);
-          setUser(response.data);
           setInitialUser(response.data);
+          setValue('firstName', response.data.firstName);
+          setValue('lastName', response.data.lastName);
+          setValue('tel', response.data.tel);
+          setValue('email', response.data.email);
         } catch (error) {
           console.error('Error fetching user:', error);
         }
       }
       getUser();
     }
-  }, [id]);
+  }, [id, setValue]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setUser({ ...user, [name]: value });
-    const isValueChanged = initialUser[name] !== value;
-    setIsDirty(isValueChanged);
+  const hasChanges = () => {
+    return (
+      formValues.firstName !== initialUser.firstName ||
+      formValues.lastName !== initialUser.lastName ||
+      formValues.tel !== initialUser.tel ||
+      formValues.email !== initialUser.email
+    );
+  };
+
+  const isButtonEnabled = () => {
+    return hasChanges() && isValid && !Object.keys(errors).length;
   };
 
   const onSubmit = async (data) => {
@@ -52,12 +93,19 @@ export default function EditProfile() {
     <section className='container'>
       <h1 className='main-title'>Update Your Profile</h1>
       <form className='form-container' onSubmit={handleSubmit(onSubmit)}>
-        <input type='text' name='firstName' placeholder='Your First Name' className='input' value={user.firstName || ''} {...register('firstName')} onChange={handleInputChange} />
-        <input type='text' name='lastName' placeholder='Your Last Name' className='input' value={user.lastName || ''} {...register('lastName')} onChange={handleInputChange} />
-        <input type='text' name='tel' placeholder='Your Phone Number' className='input' value={user.tel || ''} {...register('tel')} onChange={handleInputChange} />
-        <input type='email' name='email' placeholder='Your Email' className='input' value={user.email || ''} {...register('email')} onChange={handleInputChange} />
-        <input type='password' name='password' placeholder='Your Password' className='input' {...register('password')} onChange={handleInputChange} />
-        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update</button>
+        <input type='text' placeholder='Your First Name' className='input' {...register('firstName')} />
+        <p className='error-message'>{errors.firstName?.message}</p>
+        <input type='text' placeholder='Your Last Name' className='input' {...register('lastName')} />
+        <p className='error-message'>{errors.lastName?.message}</p>
+        <input type='text' placeholder='Your Phone Number' className='input' {...register('tel')} />
+        <p className='error-message'>{errors.tel?.message}</p>
+        <input type='email' placeholder='Your Email' className='input'  {...register('email')} />
+        <p className='error-message'>{errors.email?.message}</p>
+        <input type='password' placeholder='Your Password' className='input' {...register('password')} />
+        <p className='error-message'>{errors.password?.message}</p>
+        <input type='password' placeholder='Confirm Password' className='input' {...register('confirmPassword')} />
+        <p className='error-message'>{errors.confirmPassword?.message}</p>
+        <button type='submit' className={`button ${!isButtonEnabled() ? 'disabled-button' : 'enabled-button'}`} disabled={!isButtonEnabled()}>Update</button>
       </form>
     </section>
   );
