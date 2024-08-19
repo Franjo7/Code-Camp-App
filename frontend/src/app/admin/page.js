@@ -1,16 +1,16 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { DataGrid } from '@mui/x-data-grid';
+import { FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
+import Box from '@mui/material/Box';
 
 export default function AdminPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(6);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
   const router = useRouter();
@@ -35,22 +35,12 @@ export default function AdminPage() {
     getUsers();
   }, []);
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1);
-  };
+  const handleSearch = (event) => setSearchTerm(event.target.value);
 
   const filteredUsers = data.filter(user =>
-    user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    [user.firstName, user.lastName, user.email]
+      .some(field => field.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   async function deleteUser(id) {
     try {
@@ -71,12 +61,36 @@ export default function AdminPage() {
     }
   }
 
-  function redirectToUpdate(id) {
-    router.push(`/admin/edit/${id}`);
-  }
+  const columns = [
+    { field: 'firstName', headerName: 'First Name', flex: 1 },
+    { field: 'lastName', headerName: 'Last Name', flex: 1 },
+    { field: 'tel', headerName: 'Phone Number', flex: 1 },
+    { field: 'email', headerName: 'Email', flex: 2 },
+    { field: 'role', headerName: 'Role', flex: 1 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      flex: 1,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <>
+          <button className="btn btn-update" onClick={() => router.push(`/admin/edit/${params.row._id}`)}>
+            <FaEdit />
+          </button>
+          <button className="btn btn-delete" onClick={() => {
+            setDeleteUserId(params.row._id);
+            setShowDeletePopup(true);
+            }}>
+            <FaTrash />
+          </button>
+        </>
+      ),
+    },
+  ];
 
   return (
-    <div className="container">
+    <>
       {showDeletePopup && (
         <div className="popup">
           <div className="popup-content">
@@ -84,74 +98,49 @@ export default function AdminPage() {
             <button className="cancel-btn" onClick={() => setShowDeletePopup(false)}>Cancel</button>
             <button className="confirm-btn" onClick={() => {
               deleteUser(deleteUserId);
-              setShowDeletePopup(false);
             }}>Yes, I'm sure</button>
           </div>
         </div>
       )}
       {!loading && (
-        <div>
+        <div className="container">
           <h1 className="main-title">Users</h1>
-          <div className="mb-4">
-            <input type="text" placeholder="Search by name or email..." value={searchTerm}
-              onChange={handleSearch} className="input border rounded-md p-2 w-full" />
+          <div className="relative mb-4">
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="bg-secondary text-white border rounded-md pl-10 py-2 w-full"
+            />
+            <FaSearch className="absolute text-white top-1/2 left-3 transform -translate-y-1/2" />
           </div>
-          {filteredUsers.length === 0 ? (
-            <p className="text-center text-2xl text-red-500 font-semibold">User not found</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full table-fixed text-center">
-                <thead>
-                  <tr>
-                    <th className="w-1/6 py-2">First Name</th>
-                    <th className="w-1/6 py-2">Last Name</th>
-                    <th className="w-1/6 py-2">Phone Number</th>
-                    <th className="w-1/6 py-2">Email</th>
-                    <th className="w-1/6 py-2">Role</th>
-                    <th className="w-1/6 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentUsers.map((user, index) => (
-                    <tr key={index}>
-                      <td className="w-1/6 py-2 break-all">{user.firstName}</td>
-                      <td className="w-1/6 py-2 break-all">{user.lastName}</td>
-                      <td className="w-1/6 py-2 break-all">{user.tel}</td>
-                      <td className="w-1/6 py-2 break-all">{user.email}</td>
-                      <td className="w-1/6 py-2 break-all">{user.role}</td>
-                      <td className="w-1/6 py-2">
-                        <button className="btn btn-update" onClick={() => redirectToUpdate(user._id)}><FaEdit /></button>
-                        <button className="btn btn-delete" onClick={() => {
-                          setDeleteUserId(user._id);
-                          setShowDeletePopup(true); 
-                        }}
-                        >
-                          <FaTrash />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="pagination">
-            <ul className="flex justify-center space-x-4 p-4 m-4">
-              {Array.from({ length: Math.ceil(filteredUsers.length / usersPerPage) }, (_, index) => (
-                <li key={index}>
-                  <button onClick={() => paginate(index + 1)}
-                    className={`py-2 px-4 rounded cursor-pointer text-white ${currentPage === index + 1 ? 'bg-primary' : 'bg-secondary'}`}
-                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' 
+          <div style={{ width: '100%', overflowX: 'auto' }}>
+            <div style={{ minWidth: '1100px' }}>
+              <Box>
+                <DataGrid
+                  rows={filteredUsers}
+                  columns={columns}
+                  pageSize={5}
+                  getRowId={(row) => row._id}
+                  disableRowSelectionOnClick
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 5,
+                      }
+                    }
                   }}
-                  >
-                  {index + 1}
-                  </button>
-                </li>
-              ))}
-            </ul>
+                  pageSizeOptions={[5, 10, 20]}
+                  localeText={{
+                    noRowsLabel: 'No users found.',
+                  }}
+                />
+              </Box>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

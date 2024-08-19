@@ -181,3 +181,17 @@ th {
     background-color: #f44336;
     color: #FFFFFF;
 }
+ 
+.MuiDataGrid-cell, .MuiTablePagination-displayedRows,
+.MuiTablePagination-selectLabel, .MuiTablePagination-select {
+    color: white;
+    font-size: 1rem;
+}
+
+.MuiDataGrid-columnHeaderTitle {
+    font-size: 1rem;
+}
+
+.MuiTablePagination-actions svg {
+    color: white;
+}
