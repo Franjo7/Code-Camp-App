@@ -1,81 +1,100 @@
-"use client"
+"use client";
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  firstName: yup
+    .string()
+    .required('First Name is required')
+    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'First Name must contain only letters'),
+  lastName: yup
+    .string()
+    .required('Last Name is required')
+    .matches(/^[A-Za-zčćđšžČĆĐŠŽ]+$/, 'Last Name must contain only letters'),
+  tel: yup
+    .string()
+    .required('Phone Number is required')
+    .matches(/^\+387 63 [0-9]{3}-[0-9]{3}$/, 'Phone Number must be in the format +387 63 XXX-XXX'),
+  email: yup
+    .string()
+    .required('Email is required')
+    .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/, 'Invalid email address'),
+  role: yup
+    .string()
+    .required('Role is required')
+    .oneOf(['admin', 'user', 'professor'], 'Role not selected'),
+});
 
 export default function EditUser() {
+  const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+
   const pathname = usePathname();
   const id = pathname.split('/').pop();
-  const [user, setUser] = useState({});
-  const [initialUser, setInitialUser] = useState({});
-  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    async function getUser() {
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/getUser/${id}`);
-        setUser(response.data);
-        setInitialUser(response.data);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      } 
-    }
-    if (id) { 
+    if (id) {
+      async function getUser() {
+        try {
+          const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `user/getUser/${id}`);
+          setValue('firstName', response.data.firstName);
+          setValue('lastName', response.data.lastName);
+          setValue('tel', response.data.tel);
+          setValue('email', response.data.email);
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
+      }
       getUser();
     }
-  }, [id]);
+  }, [id, setValue]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setUser({ ...user, [name]: value });
-    const isValueChanged = initialUser[name] !== value;
-    setIsDirty(isValueChanged);
+  const isButtonEnabled = () => {
+    return isValid && !Object.keys(errors).length;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const userDataToUpdate = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        tel: user.tel,
-        email: user.email,
-        role: user.role
-      };
       const token = localStorage.getItem('user._id');
-      const headers = {Authorization: `Bearer ${token}`};
-
-      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `admin/update/${id}`, userDataToUpdate, {headers});
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `admin/update/${id}`, data, { headers });
       toast.success('User updated successfully!');
       router.push('/admin');
+    } catch (error) {
+      toast.error('Error while updating profile. Please try again.');
     }
-    catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-          const errorMessage = error.response.data.error.message;
-          const errorCode = error.response.data.error.code;
-          console.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
-      } else {
-          console.error('An error occurred:', error);
-      }
-    }  
-  };  
+  };
 
   return (
     <section className='container'>
       <h1 className='main-title'>Update User</h1>
-      <form className='form-container' onSubmit={handleSubmit}>
-        <input type='text' name='firstName' placeholder='First Name' className='input' value={user.firstName || ''} onChange={handleInputChange} />
-        <input type='text' name='lastName' placeholder='Last Name' className='input' value={user.lastName || ''} onChange={handleInputChange} />
-        <input type='text' name='tel' placeholder='Tel' className='input' value={user.tel || ''} onChange={handleInputChange} />
-        <input type='email' name='email' placeholder='Email' className='input' value={user.email || ''} onChange={handleInputChange} />
-        <select name='role' className='input' value={user.role || ''} onChange={handleInputChange}>
+      <form className='form-container' onSubmit={handleSubmit(onSubmit)}>
+        <input type='text' placeholder='First Name' className='input' {...register('firstName')} />
+        <p className='error-message'>{errors.firstName?.message}</p>
+        <input type='text' placeholder='Last Name' className='input' {...register('lastName')} />
+        <p className='error-message'>{errors.lastName?.message}</p>
+        <input type='text' placeholder='Phone Number' className='input' {...register('tel')} />
+        <p className='error-message'>{errors.tel?.message}</p>
+        <input type='email' placeholder='Email' className='input' {...register('email')} />
+        <p className='error-message'>{errors.email?.message}</p>
+        <select name='role' className='input' {...register('role')} >
+          <option value=''>Select Role</option>
           <option value='admin'>Admin</option>
           <option value='user'>User</option>
           <option value='professor'>Professor</option>
         </select>
-        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update</button>
+        <p className='error-message'>{errors.role?.message}</p>
+        <button type='submit' className={`button ${!isButtonEnabled() ? 'disabled-button' : 'enabled-button'}`} disabled={!isButtonEnabled()}>
+          Update
+        </button>
       </form>
     </section>
   );
