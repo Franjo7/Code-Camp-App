@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { DataGrid } from '@mui/x-data-grid';
 import { FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import Box from '@mui/material/Box';
+import { Modal, Button, Typography } from '@mui/material';
 
 export default function AdminPage() {
   const [data, setData] = useState([]);
@@ -13,6 +14,7 @@ export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
+  const [deleteUserName, setDeleteUserName] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function AdminPage() {
       }
     }
     getUsers();
-  }, []);
+  }, [router]);
 
   const handleSearch = (event) => setSearchTerm(event.target.value);
 
@@ -80,8 +82,9 @@ export default function AdminPage() {
           </button>
           <button className="btn btn-delete" onClick={() => {
             setDeleteUserId(params.row._id);
+            setDeleteUserName(`${params.row.firstName} ${params.row.lastName}`);
             setShowDeletePopup(true);
-            }}>
+          }}>
             <FaTrash />
           </button>
         </>
@@ -91,17 +94,43 @@ export default function AdminPage() {
 
   return (
     <>
-      {showDeletePopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <h2>Are you sure you want to delete this user?</h2>
-            <button className="cancel-btn" onClick={() => setShowDeletePopup(false)}>Cancel</button>
-            <button className="confirm-btn" onClick={() => {
+      <Modal
+        open={showDeletePopup}
+        onClose={() => setShowDeletePopup(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '90%', 
+          maxWidth: '500px', 
+          bgcolor: 'background.paper', 
+          borderRadius: 1, 
+          boxShadow: 24, 
+          p: 4 
+        }}>
+          <Typography id="modal-title" variant="h5">
+            Are you sure?
+          </Typography>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            This will delete user <strong>{deleteUserName}</strong>.
+          </Typography>
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="outlined" onClick={() => setShowDeletePopup(false)} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={() => {
               deleteUser(deleteUserId);
-            }}>Yes, I'm sure</button>
-          </div>
-        </div>
-      )}
+            }}>
+              Yes, I'm sure
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
       {!loading && (
         <div className="container">
           <h1 className="main-title">Users</h1>
