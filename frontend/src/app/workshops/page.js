@@ -1,18 +1,24 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { DataGrid } from '@mui/x-data-grid';
+import { FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
+import Box from '@mui/material/Box';
+import { Modal, Button, Typography } from '@mui/material';
 
 export default function WorkshopsPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteWorkshopId, setDeleteWorkshopId] = useState(null);
+  const [workshopName, setWorkshopName] = useState('');
   const [showVisibilityPopup, setShowVisibilityPopup] = useState(false);
   const [visibilityWorkshopId, setVisibilityWorkshopId] = useState(null);
   const [visibilityStatus, setVisibilityStatus] = useState(false);
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [descriptionText, setDescriptionText] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -33,7 +39,7 @@ export default function WorkshopsPage() {
       }
     }
     getWorkshops();
-  }, []);
+  }, [router]);
 
   async function deleteWorkshop(id) {
     try {
@@ -42,6 +48,7 @@ export default function WorkshopsPage() {
       await axios.delete(process.env.NEXT_PUBLIC_URL_USER + `workshop/delete/${id}`, { headers });
       setData(prevData => prevData.filter(workshop => workshop._id !== id));
       toast.success('Workshop deleted successfully!');
+      setShowDeletePopup(false);
     } catch (error) {
       toast.error('An error occurred. Please try again.');
     }
@@ -52,109 +59,191 @@ export default function WorkshopsPage() {
       const token = localStorage.getItem('user._id');
       const headers = { Authorization: `Bearer ${token}` };
       const updatedVisibility = !currentVisibility;
-      await axios.put(
-        process.env.NEXT_PUBLIC_URL_USER + `workshop/visibility/${id}`,
-        { Visibility: updatedVisibility },
-        { headers }
-      );
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `workshop/visibility/${id}`, { Visibility: updatedVisibility }, { headers });
 
-      const updatedWorkshops = data.map(item =>
-        item._id === id ? { ...item, Visibility: updatedVisibility } : item
-      );
+      const updatedWorkshops = data.map(item => item._id === id ? { ...item, Visibility: updatedVisibility } : item);
       setData(updatedWorkshops);
       updatedVisibility ? toast.success('Workshop is now visible!') : toast.success('Workshop is now hidden!');
+      setShowVisibilityPopup(false);
     } catch (error) {
       toast.error('An error occurred. Please try again.');
     }
   }
 
-  function redirectToUpdate(id) {
-    router.push(`/workshops/edit/${id}`);
+  function openDescriptionModal(description) {
+    setDescriptionText(description);
+    setShowDescriptionModal(true);
   }
 
+  const columns = [
+    { field: 'name', headerName: 'Name', flex: 1.5 },
+    { field: 'description', headerName: 'Description', flex: 1.5,
+      renderCell: (params) => (
+        <button className="flex items-center text-white rounded" onClick={() => openDescriptionModal(params.row.description)}>
+          <FaEye className="mr-2" /> View Description
+        </button>
+      ),
+    },
+    { field: 'StartDate', headerName: 'Start Date', flex: 1 },
+    { field: 'EndDate', headerName: 'End Date', flex: 1 },
+    { field: 'professor', headerName: 'Professor', flex: 1.5 },
+    { field: 'Visibility', headerName: 'Visibility', flex: 1,
+      renderCell: (params) => (
+        <button className={`${params.row.Visibility ? 'text-green-400' : 'text-red-400'}`} onClick={() => {
+            setVisibilityWorkshopId(params.row._id);
+            setVisibilityStatus(params.row.Visibility);
+            setShowVisibilityPopup(true);
+          }}
+        >
+          {params.row.Visibility ? 'Visible ✔' : 'Hidden ✖'}
+        </button>
+      ),
+    },
+    { field: 'actions', headerName: 'Actions', flex: 1.2, sortable: false, filterable: false,
+      renderCell: (params) => (
+        <>
+          <button className="btn btn-update" onClick={() => router.push(`/workshops/edit/${params.row._id}`)}>
+            <FaEdit />
+          </button>
+          <button className="btn btn-delete" onClick={() => {
+            setDeleteWorkshopId(params.row._id);
+            setWorkshopName(params.row.name);
+            setShowDeletePopup(true);
+          }}>
+            <FaTrash />
+          </button>
+        </>
+      ),
+    },
+  ];
+
   return (
-    <div className="container">
-      {showDeletePopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <h2>Are you sure you want to delete this workshop?</h2>
-            <button className="cancel-btn" onClick={() => setShowDeletePopup(false)}>Cancel</button>
-            <button className="confirm-btn" onClick={() => {
-              deleteWorkshop(deleteWorkshopId);
-              setShowDeletePopup(false);
-            }}>Yes, I'm sure</button>
-          </div>
-        </div>
-      )}
-      {showVisibilityPopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <h2>Are you sure you want to change visibility of this workshop?</h2>
-            <button className="cancel-btn" onClick={() => setShowVisibilityPopup(false)}>Cancel</button>
-            <button className="confirm-btn" onClick={() => {
-              toggleVisibility(visibilityWorkshopId, visibilityStatus);
-              setShowVisibilityPopup(false);
-            }}>{visibilityStatus ? 'Hide' : 'Show'}</button>
-          </div>
-        </div>
-      )}
+    <>
+      <Modal
+        open={showDeletePopup}
+        onClose={() => setShowDeletePopup(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '90%', 
+          maxWidth: '500px', 
+          bgcolor: 'background.paper', 
+          borderRadius: 1, 
+          boxShadow: 24, 
+          p: 4 
+        }}>
+          <Typography id="modal-title" variant="h5">
+            Are you sure?
+          </Typography>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            This will delete the <strong>{workshopName}</strong> workshop. 
+          </Typography>
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="outlined" onClick={() => setShowDeletePopup(false)} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={() => deleteWorkshop(deleteWorkshopId)}>
+              Yes, I'm sure
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={showVisibilityPopup}
+        onClose={() => setShowVisibilityPopup(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '90%', 
+          maxWidth: '500px', 
+          bgcolor: 'background.paper', 
+          borderRadius: 1, 
+          boxShadow: 24, 
+          p: 4 
+        }}>
+          <Typography id="modal-title" variant="h5">
+            Are you sure?
+          </Typography>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            This will change the visibility of <strong>{workshopName}</strong> workshop.
+          </Typography>
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="outlined" onClick={() => setShowVisibilityPopup(false)} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={() => toggleVisibility(visibilityWorkshopId, visibilityStatus)}>
+              Yes, I'm sure
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={showDescriptionModal}
+        onClose={() => setShowDescriptionModal(false)}
+        aria-labelledby="description-modal-title"
+        aria-describedby="description-modal-description"
+      >
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '90%', 
+          maxWidth: '500px', 
+          bgcolor: 'background.paper', 
+          borderRadius: 1, 
+          boxShadow: 24, 
+          p: 4 
+        }}>
+          <Typography id="description-modal-title" variant="h5">
+            Workshop Description
+          </Typography>
+          <Typography id="description-modal-description" sx={{ mt: 2 }}>
+            {descriptionText}
+          </Typography>
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="outlined" onClick={() => setShowDescriptionModal(false)}>
+              Close
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
       {!loading && (
-        <div className="overflow-x-auto">
-          <div className="flex justify-between items-center">
-            <h1 className="main-title flex-grow text-right">Workshops</h1>
-            <button className="btn btn-create" onClick={() => router.push('/workshops/create')}>
-              <FaPlus />
+        <div className="container">
+          <h1 className="main-title">Workshops</h1>
+          <div className="flex justify-end mb-4">
+            <button onClick={() => router.push('/workshops/create')} className="bg-secondary p-3 text-white flex items-center space-x-2">
+              <FaPlus /><span className="hidden sm:inline text-sm">Create New Workshop</span>
             </button>
           </div>
-          <table className="w-full table-fixed text-center">
-            <thead>
-              <tr>
-                <th className="w-1/7 py-2 break-all">Name</th>
-                <th className="w-1/7 py-2 break-all">Description</th>
-                <th className="w-1/7 py-2 break-all">Start Date</th>
-                <th className="w-1/7 py-2 break-all">End Date</th>
-                <th className="w-1/7 py-2 break-all">Professor</th>
-                <th className="w-1/7 py-2 break-all">Visibility</th>
-                <th className="w-1/7 py-2 break-all">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map(workshop => (
-                <tr key={workshop._id}>
-                  <td className="w-1/7 py-2 break-all">{workshop.name}</td>
-                  <td className="w-1/7 py-2 break-all">{workshop.description}</td>
-                  <td className="w-1/7 py-2 break-all">{workshop.StartDate}</td>
-                  <td className="w-1/7 py-2 break-all">{workshop.EndDate}</td>
-                  <td className="w-1/7 py-2 break-all">{workshop.professor}</td>
-                  <td className="w-1/7 py-2 break-all">
-                    <button
-                      className={`btn ${workshop.Visibility ? 'enabled-button' : 'disabled-button'}`}
-                      onClick={() => {
-                        setVisibilityWorkshopId(workshop._id);
-                        setVisibilityStatus(workshop.Visibility);
-                        setShowVisibilityPopup(true);
-                      }}
-                    >
-                      {workshop.Visibility ? 'Visible' : 'Hidden'}
-                    </button>
-                  </td>
-                  <td className="w-1/7 py-2">
-                    <button className="btn btn-update" onClick={() => redirectToUpdate(workshop._id)}>
-                      <FaEdit />
-                    </button>
-                    <button className="btn btn-delete" onClick={() => {
-                      setDeleteWorkshopId(workshop._id);
-                      setShowDeletePopup(true);
-                    }}>
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{ width: '100%', overflowX: 'auto' }}>
+            <div style={{ minWidth: '1100px' }}>
+              <Box>
+                <DataGrid
+                  rows={data}
+                  columns={columns}
+                  disableRowSelectionOnClick
+                  getRowId={(row) => row._id}
+                  hideFooter
+                />
+              </Box>
+            </div>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
