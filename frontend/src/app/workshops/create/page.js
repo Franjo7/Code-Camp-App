@@ -16,14 +16,14 @@ const schema = yup.object().shape({
     .required('Description is required')
     .min(200, 'Description should have at least 200 characters')
     .max(1000, 'Description should not exceed 1000 characters'),
-  startDate: yup
+  StartDate: yup
     .date()
     .required('Start Date is required')
     .min(new Date(), 'Invalid Start Date'),
-  endDate: yup
+  EndDate: yup
     .date()
     .required('End Date is required')
-    .min(yup.ref('startDate'), 'Invalid End Date'),
+    .min(yup.ref('StartDate'), 'Invalid End Date'),
   professor: yup
     .string()
     .required('Professor not selected'),
@@ -70,10 +70,10 @@ export default function WorkshopCreate() {
         <p className='error-message'>{errors.name?.message}</p>
         <textarea placeholder='Description' autoComplete='off' className='input min-h-32' {...register('description')} />
         <p className='error-message'>{errors.description?.message}</p>
-        <input type='date' placeholder='Start Date' autoComplete='off' className='input' {...register('startDate')} />
-        <p className='error-message'>{errors.startDate?.message}</p>
-        <input type='date' placeholder='End Date' autoComplete='off' className='input' {...register('endDate')} />
-        <p className='error-message'>{errors.endDate?.message}</p>
+        <input type='date' placeholder='Start Date' autoComplete='off' className='input' {...register('StartDate')} />
+        <p className='error-message'>{errors.StartDate?.message}</p>
+        <input type='date' placeholder='End Date' autoComplete='off' className='input' {...register('EndDate')} />
+        <p className='error-message'>{errors.EndDate?.message}</p>
         <select name='professor' className='input' {...register('professor')}>
           <option value=''>Select Professor</option>
           {professors.map((professor) => (
