@@ -1,16 +1,43 @@
-"use client"
+"use client";
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Name is required'),
+  description: yup
+    .string()
+    .required('Description is required')
+    .min(200, 'Description should have at least 200 characters')
+    .max(1000, 'Description should not exceed 1000 characters'),
+  StartDate: yup
+    .date()
+    .required('Start Date is required')
+    .min(new Date(), 'Invalid Start Date'),
+  EndDate: yup
+    .date()
+    .required('End Date is required')
+    .min(yup.ref('StartDate'), 'Invalid End Date'),
+  professor: yup
+    .string()
+    .required('Professor not selected'),
+});
 
 export default function WorkshopEdit() {
+  const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+
   const pathname = usePathname();
   const id = pathname.split('/').pop();
-  const [workshop, setWorkshop] = useState({});
-  const [initialWorkshop, setInitialWorkshop] = useState({});
   const [professors, setProfessors] = useState([]);
-  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -26,71 +53,64 @@ export default function WorkshopEdit() {
   }, []);
 
   useEffect(() => {
-    async function getWorkshop() {
-      try {
-        const token = localStorage.getItem('user._id');
-        const headers = { Authorization: `Bearer ${token}` };
-        const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `workshop/${id}`, { headers });
-        setWorkshop(response.data);
-        setInitialWorkshop(response.data);
-      } catch (error) {
-        console.error('Error fetching workshop:', error);
-      }
-    }
     if (id) {
+      async function getWorkshop() {
+        try {
+          const token = localStorage.getItem('user._id');
+          const headers = { Authorization: `Bearer ${token}` };
+          const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `workshop/${id}`, { headers });
+          setValue('name', response.data.name);
+          setValue('description', response.data.description);
+          setValue('StartDate', response.data.StartDate);
+          setValue('EndDate', response.data.EndDate);
+        } catch (error) {
+          console.error('Error fetching workshop:', error);
+        }
+      }
       getWorkshop();
     }
-  }, [id]);
+  }, [id, setValue]);  
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setWorkshop({ ...workshop, [name]: value });
-    const isValueChanged = initialWorkshop[name] !== value;
-    setIsDirty(isValueChanged);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const workshopDataToUpdate = {
-        name: workshop.name,
-        description: workshop.description,
-        StartDate: workshop.StartDate,
-        EndDate: workshop.EndDate,
-        professor: workshop.professor
-      };
       const token = localStorage.getItem('user._id');
       const headers = { Authorization: `Bearer ${token}` };
-
-      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `workshop/update/${id}`, workshopDataToUpdate, { headers });
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `workshop/update/${id}`, data, { headers });
       toast.success('Workshop updated successfully!');
       router.push('/workshops');
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-        const errorMessage = error.response.data.error.message;
-        const errorCode = error.response.data.error.code;
-        console.error(`Error code: ${errorCode}, Message: ${errorMessage}`);
-      } else {
-        console.error('An error occurred:', error);
-      }
+      toast.error('Error while updating workshop. Please try again.');
     }
+  };
+
+  const isButtonEnabled = () => {
+    return isValid && !Object.keys(errors).length;
   };
 
   return (
     <section className='container'>
       <h1 className='main-title'>Update Workshop</h1>
-      <form className='flex flex-col gap-2 max-w-md mx-auto mt-5' onSubmit={handleSubmit}>
-        <input type='text' name='name' placeholder='Name' className='input' value={workshop.name || ''} onChange={handleInputChange} />
-        <input type='text' name='description' placeholder='Description' className='input' value={workshop.description || ''} onChange={handleInputChange} />
-        <input type='date' name='StartDate' className='input' value={workshop.StartDate || ''} onChange={handleInputChange} />
-        <input type='date' name='EndDate' className='input' value={workshop.EndDate || ''} onChange={handleInputChange} />
-        <select name='professor' className='input' value={workshop.professor || ''} onChange={handleInputChange}>
+      <form className='form-container' onSubmit={handleSubmit(onSubmit)}>
+        <input type='text' placeholder='Name' className='input' {...register('name')} />
+        <p className='error-message'>{errors.name?.message}</p>
+        <textarea placeholder='Description' className='input min-h-32' {...register('description')} />
+        <p className='error-message'>{errors.description?.message}</p>
+        <input type='date' className='input' {...register('StartDate')} />
+        <p className='error-message'>{errors.StartDate?.message}</p>
+        <input type='date' className='input' {...register('EndDate')} />
+        <p className='error-message'>{errors.EndDate?.message}</p>
+        <select name='professor' className='input' {...register('professor')} >
           <option value=''>Select Professor</option>
-            {professors.map((professor) => (
-              <option key={professor._id} value={professor._id}>{professor.firstName} {professor.lastName}</option>
-            ))}
+          {professors.map((professor) => (
+            <option key={professor._id} value={professor._id}>
+              {professor.firstName} {professor.lastName}
+            </option>
+          ))}
         </select>
-        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update</button>
+        <p className='error-message'>{errors.professor?.message}</p>
+        <button type='submit' className={`button ${!isButtonEnabled() ? 'disabled-button' : 'enabled-button'}`} disabled={!isButtonEnabled()} >
+          Update
+        </button>
       </form>
     </section>
   );
