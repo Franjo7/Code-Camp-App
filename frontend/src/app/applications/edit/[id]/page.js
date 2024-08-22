@@ -1,15 +1,38 @@
-"use client"
+"use client";
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  status: yup
+    .string()
+    .required('Status is required')
+    .oneOf(['Pending...', 'Rejected', 'Approved'], 'Invalid Status'),
+  points: yup
+    .number()
+    .required('Points are required')
+    .min(0, 'Invalid Points')
+    .max(100, 'Invalid Points'),
+  evaluation: yup
+    .string()
+    .required('Evaluation is required')
+    .oneOf(['not evaluated', 'Fail', 'Pass'], 'Invalid Evaluation'),
+  remark: yup
+    .string()
+});
 
 export default function ApplicationEdit() {
+  const { register, handleSubmit, formState: { errors, isValid }, setValue } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+
   const pathname = usePathname();
   const id = pathname.split('/').pop();
-  const [application, setApplication] = useState({});
-  const [initialApplication, setInitialApplication] = useState({});
-  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -18,8 +41,13 @@ export default function ApplicationEdit() {
         const token = localStorage.getItem('user._id');
         const headers = { Authorization: `Bearer ${token}` };
         const response = await axios.get(process.env.NEXT_PUBLIC_URL_USER + `application/applicationForWorkshop/${id}`, { headers });
-        setApplication(response.data);
-        setInitialApplication(response.data);
+        setValue('user', response.data.user);
+        setValue('workshop', response.data.workshop);
+        setValue('registrationDate', response.data.registrationDate);
+        setValue('status', response.data.status);
+        setValue('points', response.data.points);
+        setValue('evaluation', response.data.evaluation);
+        setValue('remark', response.data.remark);
       } catch (error) {
         console.error('Error fetching application:', error);
       }
@@ -27,55 +55,54 @@ export default function ApplicationEdit() {
     if (id) {
       getApplication();
     }
-  }, [id]);
+  }, [id, setValue]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setApplication({ ...application, [name]: value });
-    const isValueChanged = initialApplication[name] !== value;
-    setIsDirty(isValueChanged);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const applicationDataToUpdate = {
-        user: application.user,
-        workshop: application.workshop,
-        registrationDate: application.registrationDate,
-        status: application.status,
-        points: application.points,
-        evaluation: application.evaluation,
-        remark: application.remark
-      };
       const token = localStorage.getItem('user._id');
       const headers = { Authorization: `Bearer ${token}` };
-
-      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `application/manageApplication/${id}`, applicationDataToUpdate, { headers });
+      const payload = { ...data, points: data.points.toString() };
+      await axios.put(process.env.NEXT_PUBLIC_URL_USER + `application/manageApplication/${id}`, payload, { headers });
       toast.success('Application updated successfully!');
       router.push('/applications');
     } catch (error) {
-      console.error('An error occurred:', error);
       toast.error('Error while updating application. Please try again.');
     }
   };
 
+  const isButtonEnabled = () => {
+    return isValid && !Object.keys(errors).length;
+  }
+
   return (
     <section className='container'>
       <h1 className='main-title'>Update Application</h1>
-      <form className='form-container' onSubmit={handleSubmit}>
-        <input type='text' name='user' placeholder='User' className='input' value={application.user || ''} onChange={handleInputChange} disabled />
-        <input type='text' name='workshop' placeholder='Workshop' className='input' value={application.workshop || ''} onChange={handleInputChange} disabled />
-        <input type='date' name='registrationDate' className='input' value={application.registrationDate || ''} onChange={handleInputChange} disabled />
-        <select name='status' className='input' value={application.status || ''} onChange={handleInputChange}>
+      <form className='form-container' onSubmit={handleSubmit(onSubmit)}>
+        <input type='text' placeholder='User' className='input' {...register('user')} disabled />
+        <p className='error-message'>{errors.user?.message}</p>
+        <input type='text' placeholder='Workshop' className='input' {...register('workshop')} disabled />
+        <p className='error-message'>{errors.workshop?.message}</p>
+        <input type='date' className='input' {...register('registrationDate')} disabled />
+        <p className='error-message'>{errors.registrationDate?.message}</p>
+        <select className='input' {...register('status')}>
           <option value='Pending...'>Pending...</option>
           <option value='Rejected'>Rejected</option>
           <option value='Approved'>Approved</option>
         </select>
-        <input type='text' name='points' placeholder='Points' className='input' value={application.points || ''} onChange={handleInputChange} />
-        <input type='text' name='evaluation' placeholder='Evaluation' className='input' value={application.evaluation || ''} onChange={handleInputChange} />
-        <input type='text' name='remark' placeholder='Remark' className='input' value={application.remark || ''} onChange={handleInputChange} />
-        <button type='submit' className={`button ${!isDirty ? 'disabled-button' : 'enabled-button'}`} disabled={!isDirty}>Update</button>
+        <p className='error-message'>{errors.status?.message}</p>
+        <input type='number' placeholder='Points' className='input' {...register('points')} />
+        <p className='error-message'>{errors.points?.message}</p>
+        <select className='input' {...register('evaluation')}>
+          <option value='not evaluated'>Not Evaluated</option>
+          <option value='Fail'>Fail</option>
+          <option value='Pass'>Pass</option>
+        </select>
+        <p className='error-message'>{errors.evaluation?.message}</p>
+        <input type='text' placeholder='Remark' className='input' {...register('remark')} />
+        <p className='error-message'>{errors.remark?.message}</p>
+        <button type='submit' className={`button ${!isButtonEnabled() ? 'disabled-button' : 'enabled-button'}`} disabled={!isButtonEnabled()} >
+          Update
+        </button>
       </form>
     </section>
   );
