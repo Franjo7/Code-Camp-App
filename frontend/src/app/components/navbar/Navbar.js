@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaHome, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher, FaPaperPlane, FaBook } from 'react-icons/fa';
+import { FaHome, FaQuestionCircle, FaSignInAlt, FaBars, FaTimes, FaUserCircle, FaUserLock, FaChalkboardTeacher, FaPaperPlane, FaBook, FaChevronDown } from 'react-icons/fa';
 import { useCookies } from 'react-cookie';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -15,6 +15,7 @@ const Navbar = () => {
   const [role, setRole] = useState(null);
   const [firstName, setFirstName] = useState('');
   const [id, setId] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const token = cookies.token;
@@ -30,7 +31,7 @@ const Navbar = () => {
     else {
       setRole(null);
       setFirstName('');
-      setId('');
+      setId(null);
     }
   }, [cookies.token]);
 
@@ -48,7 +49,11 @@ const Navbar = () => {
 
   return (
     <header className="flex items-center justify-between p-5 relative">
+
+      {/* Logo */}
       <img src="./logo.svg" alt="logo" className="w-32 md:w-48" />
+
+      {/* Desktop Navigation */}
       <nav className="hidden md:flex text-lg items-center gap-10 text-white">
         <Link href='/' className={`flex items-center link ${pathname === '/' ? 'active' : ''}`} onClick={closeMenu}>
           <FaHome className="mr-1" /> <span className="ml-1">Home</span>
@@ -64,39 +69,41 @@ const Navbar = () => {
         {role?.includes('professor') && (
           <>
             <Link href='/workshops' className={`flex items-center link ${pathname === '/workshops' ? 'active' : ''}`} onClick={closeMenu}>
-              <FaChalkboardTeacher className="mr-1 size-5" /> <span className="ml-1">Workshops</span>
+              <FaChalkboardTeacher className="mr-1" /> <span className="ml-1">Workshops</span>
             </Link>
             <Link href='/applications' className={`flex items-center link ${pathname === '/applications' ? 'active' : ''}`} onClick={closeMenu}>
-              <FaPaperPlane className="mr-1 size-5" /> <span className="ml-1">Applications</span>
+              <FaPaperPlane className="mr-1" /> <span className="ml-1">Applications</span>
             </Link>
             <Link href='/tests' className={`flex items-center link ${pathname === '/tests' ? 'active' : ''}`} onClick={closeMenu}>
-              <FaBook className="mr-1 size-5" /> <span className="ml-1">Tests</span>
+              <FaBook className="mr-1" /> <span className="ml-1">Tests</span>
             </Link>
           </>
         )}
+
+        {/* User Profile Dropdown */}
         {cookies.token ? (
-          <div className="relative">
-            <button onClick={() => setIsOpen(!isOpen)} className="flex items-center bg-secondary px-4 py-2 hover:bg-gray-600 cursor-pointer">
+          <div className="relative items-center">
+            <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center bg-secondary px-4 py-2 hover:bg-gray-600 cursor-pointer">
               <FaUserCircle className="mr-1" />
               <span className="ml-1">{firstName}</span>
+              <FaChevronDown className="ml-2" />
             </button>
-            {isOpen && (
+            {dropdownOpen && (
               <div className="absolute right-0 w-40 mt-2 bg-secondary text-white shadow-lg border border-gray-300">
                 <div className="p-2 hover:underline">
-                  <Link href={`/user/edit/${id}`} onClick={closeMenu}>
+                  <Link href={`/user/edit/${id}`} onClick={() => setDropdownOpen(false)}>
                     Your Profile
                   </Link>
                 </div>
                 <div className="p-2 hover:underline">
-                  <Link href={`/workshops/${id}`} onClick={closeMenu}>
+                  <Link href={`/workshops/${id}`} onClick={() => setDropdownOpen(false)}>
                     Your Workshops
                   </Link>
                 </div>
-                <div className="p-2 hover:underline cursor-pointer" onClick={handleLogout}>
+                <div className="p-2 hover:underline cursor-pointer" onClick={() => { setDropdownOpen(false); handleLogout()}}>
                   Logout
                 </div>
               </div>
-            
             )}
           </div>
         ) : (
@@ -107,78 +114,86 @@ const Navbar = () => {
           </Link>
         )}
       </nav>
+
+      {/* Mobile Navigation Toggle */}
       <div className='md:hidden'>
         <button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <FaTimes className="text-white text-2xl" /> : <FaBars className="text-white text-2xl" />}
         </button>
       </div>
+
+      {/* Mobile Navigation Menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-16 p-3 right-1 bg-secondary text-white overflow-y-auto">
-          <div className="flex flex-col items-center">
-            <Link href='/' className='block py-2 px-4' onClick={closeMenu}>
+        <div className="md:hidden fixed inset-0 p-10 bg-secondary text-white z-50">
+          <button onClick={closeMenu} className="absolute top-5 right-5 text-white text-2xl">
+            <FaTimes />
+          </button>
+          <div className="flex flex-col items-center h-1/2">
+            <Link href='/' className='block p-3' onClick={closeMenu}>
               <div className="flex items-center">
-                <FaHome className="mr-1 md:mr-0 md:mb-1" />
+                <FaHome className="mr-1" />
                 <span>Home</span>
               </div>
             </Link>
-            <Link href='/faq' className='block py-2 px-4' onClick={closeMenu}>
+            <Link href='/faq' className='block p-3' onClick={closeMenu}>
               <div className="flex items-center">
-                <FaQuestionCircle className="mr-1 md:mr-0 md:mb-1" />
+                <FaQuestionCircle className="mr-1" />
                 <span>FAQ</span>
               </div>
             </Link>
             {role?.includes('admin') && (
-            <Link href='/admin' className='block py-2 px-4' onClick={closeMenu}>
+            <Link href='/admin' className='block p-3' onClick={closeMenu}>
               <div className="flex items-center">
-                <FaUserLock className="mr-1 md:mr-0 md:mb-1" />
+                <FaUserLock className="mr-1" />
                 <span>Admin</span>
               </div>
             </Link>
             )}
             {role?.includes('professor') && (
             <>
-              <Link href='/workshops' className='block py-2 px-4' onClick={closeMenu}>
+              <Link href='/workshops' className='block p-3' onClick={closeMenu}>
                 <div className="flex items-center">
-                  <FaChalkboardTeacher className="mr-1 md:mr-0 md:mb-1" />
+                  <FaChalkboardTeacher className="mr-1" />
                   <span>Workshops</span>
                 </div>
               </Link>
-              <Link href='/applications' className='block py-2 px-4' onClick={closeMenu}>
+              <Link href='/applications' className='block p-3' onClick={closeMenu}>
                 <div className="flex items-center">
-                  <FaPaperPlane className="mr-1 md:mr-0 md:mb-1" />
+                  <FaPaperPlane className="mr-1" />
                   <span>Applications</span>
                 </div>
               </Link>
-              <Link href='/tests' className='block py-2 px-4' onClick={closeMenu}>
+              <Link href='/tests' className='block p-3' onClick={closeMenu}>
                 <div className="flex items-center">
-                  <FaBook className="mr-1 md:mr-0 md:mb-1" />
+                  <FaBook className="mr-1" />
                   <span>Tests</span>
                 </div>
               </Link>
             </>
             )}
             {cookies.token ? (
-              <div className="py-2 px-4 cursor-pointer relative" onClick={() => setIsOpen(!isOpen)}>
+              <div className="flex flex-col items-center block p-3" onClick={() => setDropdownOpen(!dropdownOpen)}>
                 <div className="flex items-center">
-                  <FaUserCircle className="mr-1 md:mr-0 md:mb-1" />
+                  <FaUserCircle className="mr-1" />
                   <span>{firstName}</span>
+                  <FaChevronDown className="ml-2" />
                 </div>
-                {isOpen && (
-                  <div className="absolute right-0 top-full mt-1 bg-secondary text-white py-2 rounded-md shadow-lg">
-                    <div className="py-2 px-4">
+                {dropdownOpen && (
+                  <div className="flex flex-col items-center p-3">
+                    <div className="block p-3 underline underline-offset-4">
                       <Link href={`/user/edit/${id}`} onClick={closeMenu}>Your Profile</Link>
                     </div>
-                    <div className='py-2 px-4'>
+                    <div className='block p-3 underline underline-offset-4'>
                       <Link href={`/workshops/${id}`} onClick={closeMenu}>Your Workshops</Link>
                     </div>
-                    <div className='py-2 px-4' onClick={handleLogout}>Logout</div>
+                    <div className='block p-3 underline underline-offset-4' onClick={handleLogout}>Logout</div>
                   </div>
                 )}
               </div>
             ) : (
-              <Link href='/login' className='block py-2 px-4' onClick={closeMenu}>
+              <Link href='/login' className='block p-3' onClick={closeMenu}>
                 <div className="flex items-center">
-                  <FaSignInAlt className="mr-1 md:mr-0 md:mb-1" />
+                  <FaSignInAlt className="mr-1" />
                   <span>Login</span>
                 </div>
               </Link>
