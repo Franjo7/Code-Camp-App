@@ -1,16 +1,17 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaDownload, FaTrash } from 'react-icons/fa';
+import { FaDownload, FaTrash, FaSearch } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import Box from '@mui/material/Box';
+import { Modal, Button, Typography } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
-const TestsPage = () => {
+export default function TestsPage() {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [testsPerPage] = useState(6);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteTestId, setDeleteTestId] = useState(null);
   const router = useRouter();
@@ -33,22 +34,10 @@ const TestsPage = () => {
       }
     }
     getTests();
-  }, []);
+  }, [router]);
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1);
-  };
-
-  const filteredTests = tests.filter(test => 
-    test.user.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const indexOfLastTest = currentPage * testsPerPage;
-  const indexOfFirstTest = indexOfLastTest - testsPerPage;
-  const currentTests = filteredTests.slice(indexOfFirstTest, indexOfLastTest);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleSearch = (event) => setSearchTerm(event.target.value);
+  const filteredTests = tests.filter(test => test.user.toLowerCase().includes(searchTerm.toLowerCase()));
 
   async function deleteTest(id) {
     try {
@@ -78,70 +67,111 @@ const TestsPage = () => {
       toast.error('Error while downloading test. Please try again.');
     }
   }
-  
-  return (
-    <div className="container">
-      {showDeletePopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <h2>Are you sure you want to delete this test?</h2>
-            <button className="cancel-btn" onClick={() => setShowDeletePopup(false)}>Cancel</button>
-            <button className="confirm-btn" onClick={() => {
-              deleteTest(deleteTestId);
-              setShowDeletePopup(false);
-            }}>Yes, I'm sure</button>
-          </div>
-        </div>
-      )}
-      {!loading && (
-        <div>
-          <h1 className="main-title">Tests</h1>
-          <div className="mb-4">
-            <input type="text" placeholder="Search by user..." value={searchTerm} 
-              onChange={handleSearch} className="input rounded-md p-2 w-full"/>
-          </div>
-          {currentTests.length === 0 ? (
-            <p className="text-center text-2xl text-red-500 font-semibold">No tests found</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
-              {currentTests.map(test => (
-                <div key={test._id} className="border border-gray-400 rounded-lg shadow-md p-6">
-                  <p className="mb-2"><strong>Uploaded by:</strong> {test.user}</p>
-                  <p className="mb-2"><strong>Workshop: </strong> {test.workshop}</p>
-                  <p className="mb-2"><strong>Date of Upload: </strong> {test.date}</p>
-                  <div className="mt-6 flex justify-end space-x-1">
-                    <button className="btn btn-download" onClick={() => downloadTest(test.fileName, test.downloadLink)}>
-                      <FaDownload />
-                    </button>
-                    <button className="btn btn-delete" onClick={() => {
-                      setDeleteTestId(test._id);
-                      setShowDeletePopup(true);
-                    }}>
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <div className="pagination">
-            <ul className="flex justify-center space-x-4 p-4 m-4">
-              {Array.from({ length: Math.ceil(filteredTests.length / testsPerPage) }, (_, index) => (
-                <li key={index}>
-                  <button onClick={() => paginate(index + 1)} 
-                    className={`py-2 px-4 rounded cursor-pointer text-white ${currentPage === index + 1 ? 'bg-primary' : 'bg-secondary'}`}
-                    style={{ padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
-                  >
-                  {index + 1}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
-export default TestsPage;
+  const columns = [
+    { field: 'user', headerName: 'Uploaded by', flex: 2 },
+    { field: 'workshop', headerName: 'Workshop', flex: 2 },
+    { field: 'date', headerName: 'Date of Upload', flex: 2 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      flex: 1,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <>
+          <button className="btn btn-download" onClick={() => downloadTest(params.row.fileName, params.row.downloadLink)}>
+            <FaDownload />
+          </button>
+          <button className="btn btn-delete" onClick={() => {
+            setDeleteTestId(params.row._id);
+            setShowDeletePopup(true);
+          }}>
+            <FaTrash />
+          </button>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Modal
+        open={showDeletePopup}
+        onClose={() => setShowDeletePopup(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '90%',
+          maxWidth: '500px',
+          bgcolor: 'background.paper',
+          borderRadius: 1,
+          boxShadow: 24,
+          p: 4
+        }}>
+          <Typography id="modal-title" variant="h5">
+            Are you sure?
+          </Typography>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            This will delete the test.
+          </Typography>
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="outlined" onClick={() => setShowDeletePopup(false)} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={() => {
+              deleteTest(deleteTestId);
+            }}>
+              Yes, I'm sure
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      {!loading && (
+        <div className="container">
+          <h1 className="main-title">Tests</h1>
+          <div className="relative mb-4">
+            <input
+              type="text"
+              placeholder="Search by user..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="bg-secondary text-white border rounded-md pl-10 py-2 w-full"
+            />
+            <FaSearch className="absolute text-white top-1/2 left-3 transform -translate-y-1/2" />
+          </div>
+          <div style={{ width: '100%', overflowX: 'auto' }}>
+            <div style={{ minWidth: '1100px' }}>
+              <Box>
+                <DataGrid
+                  rows={filteredTests}
+                  columns={columns}
+                  pageSize={5}
+                  getRowId={(row) => row._id}
+                  disableRowSelectionOnClick
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 5,
+                      }
+                    }
+                  }}
+                  pageSizeOptions={[5, 10, 20]}
+                  localeText={{
+                    noRowsLabel: 'No tests found.',
+                  }}
+                />
+              </Box>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
