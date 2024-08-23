@@ -42,15 +42,37 @@ export default function MyWorkshops() {
 
   const totalPages = Math.ceil(data.length / workshopsPerPage);
 
-  const renderInfoRow = (icon, label, value) => (
+  const statusColors = {
+    Approved: { color: 'text-green-400', symbol: '✔' },
+    Rejected: { color: 'text-red-400', symbol: '✖' },
+    default: { color: 'text-gray-400', symbol: '' }
+  };
+
+  const evaluationColors = {
+    Pass: { color: 'text-green-400', symbol: '✔' },
+    Fail: { color: 'text-red-400', symbol: '✖' },
+    default: { color: 'text-gray-400', symbol: '' }
+  };
+
+  const renderInfoRow = (icon, label, value, colorClass = '') => (
     <div className="flex justify-between items-center mb-2">
       <div className="flex items-center md:ml-10">
         {icon}
         <p className="md:ml-5 m-1"><strong>{label}:</strong></p>
       </div>
-      <p className="md:mr-10 m-1">{value}</p>
+      <p className={`md:mr-10 m-1 ${colorClass}`}>{value}</p>
     </div>
   );
+
+  const renderColoredStatus = (status) => {
+    const { color, symbol } = statusColors[status] || statusColors.default;
+    return <span className={color}>{status} {symbol}</span>;
+  };
+
+  const renderColoredEvaluation = (evaluation) => {
+    const { color, symbol } = evaluationColors[evaluation] || evaluationColors.default;
+    return <span className={color}>{evaluation} {symbol}</span>;
+  };
 
   const redirectToSubmitTest = (workshopId) => {
     router.push(`/workshops/submit?workshopId=${workshopId}`);
@@ -70,11 +92,11 @@ export default function MyWorkshops() {
               <div key={`${application._id}-${index}`} className="p-4 bg-secondary rounded-lg shadow-md text-white text-center">
                 <h2 className="text-3xl md:font-semibold mb-4">{application.workshop}</h2>
                 {renderInfoRow(<FaCalendarAlt />, 'Registration Date', application.registrationDate)}
-                {renderInfoRow(<FaInfoCircle />, 'Status', application.status)}
+                {renderInfoRow(<FaInfoCircle />, 'Status', renderColoredStatus(application.status))}
                 {application.points && application.evaluation && application.remark && (
                   <>
                     {renderInfoRow(<FaStar />, 'Points', application.points)}
-                    {renderInfoRow(<FaPen />, 'Evaluation', application.evaluation)}
+                    {renderInfoRow(<FaPen />, 'Evaluation', renderColoredEvaluation(application.evaluation))}
                     {renderInfoRow(<FaCheck />, 'Remark', application.remark)}
                     <div className="flex justify-center">
                       <button
