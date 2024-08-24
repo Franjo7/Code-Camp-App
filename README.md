@@ -1,8 +1,6 @@
 # Code Camp Application
 
-The **Code Camp Application** simplifies the registration process for users eager to participate in globalsoft's Code Camp workshops. Crafted with a modern and user-friendly design, the application offers a seamless experience for users, administrators, and professors.
-
----
+The **Code Camp Application** streamlines the registration process for users eager to participate in globalsoft's Code Camp workshops. Crafted with a modern and user-friendly design, it ensures a seamless experience for users, administrators, and professors. Developed as part of an internship program at [globalsoft](https://www.globalsoft.co/), the application will also serve as a project for a Master's thesis of the authors.
 
 &nbsp;
 
@@ -10,8 +8,6 @@ The **Code Camp Application** simplifies the registration process for users eage
 
 - Antonio Šego - Backend Developer
 - Franjo Lovrić - Frontend Developer
-
----
 
 &nbsp;
 
@@ -27,8 +23,6 @@ The **Code Camp Application** simplifies the registration process for users eage
    - [Professors](#professors)
 3. [Installation](#installation)
 4. [Demo of the Application](#demo-of-the-application)
-
----
 
 &nbsp;
 
@@ -50,8 +44,6 @@ The **Code Camp Application** simplifies the registration process for users eage
   <a href="https://nextjs.org/"><img src="https://assets.vercel.com/image/upload/v1607554385/repositories/next-js/next-logo.png" style="width: auto; height: 80px;"></a>
   <a href="https://tailwindcss.com/"><img src="https://refactoringui.nyc3.digitaloceanspaces.com/tailwind-logo.svg" style="width: auto; height: 80px;"></a>
 </div>
-
----
 
 &nbsp;
 
@@ -95,8 +87,6 @@ In addition to user functionalities, professors have access to:
 - **Application Search**: Allows professors to search for applications by user name, email, etc.
 - **Test Search**: Provides professors with the ability to search for tests by user name.
 
----
-
 &nbsp;
 
 ## Installation
@@ -135,24 +125,34 @@ In addition to user functionalities, professors have access to:
 3. Install dependencies: `npm install`
 4. Start the application: `npm run dev`
 
----
-
 &nbsp;
 
 ## Demo of the Application
 
-![Home](/frontend/public/Images/1-Home.png)<br><br>
-![FAQ](/frontend/public/Images/2-FAQ.png)<br><br>
-![Register](/frontend/public/Images/3-Register.png)<br><br>
-![Login](/frontend/public/Images/4-Login.png)<br><br>
-![Home](/frontend/public/Images/5-Home.png)<br><br>
-![Profile](/frontend/public/Images/6-Profile.png)<br><br>
-![MyWorkshops](/frontend/public/Images/7-MyWorkshops.png)<br><br>
-![Users](/frontend/public/Images/8-Users.png)<br><br>
-![Workshops](/frontend/public/Images/9-Workshops.png)<br><br>
-![Applications](/frontend/public/Images/10-Applications.png)<br><br>
-![Tests](/frontend/public/Images/11-Tests.png)<br><br>
-
----
+![Image-1](frontend/public/Images/Image-1.png)
+![Image-2](frontend/public/Images/Image-2.png)
+![Image-3](frontend/public/Images/Image-3.png)
+![Image-4](frontend/public/Images/Image-4.png)
+![Image-5](frontend/public/Images/Image-5.png)
+![Image-6](frontend/public/Images/Image-6.png)
+![Image-7](frontend/public/Images/Image-7.png)
+![Image-8](frontend/public/Images/Image-8.png)
+![Image-9](frontend/public/Images/Image-9.png)
+![Image-10](frontend/public/Images/Image-10.png)
+![Image-11](frontend/public/Images/Image-11.png)
+![Image-12](frontend/public/Images/Image-12.png)
+![Image-13](frontend/public/Images/Image-13.png)
+![Image-14](frontend/public/Images/Image-14.png)
+![Image-15](frontend/public/Images/Image-15.png)
+![Image-16](frontend/public/Images/Image-16.png)
+![Image-17](frontend/public/Images/Image-17.png)
+![Image-18](frontend/public/Images/Image-18.png)
+![Image-19](frontend/public/Images/Image-19.png)
+![Image-20](frontend/public/Images/Image-20.png)
+![Image-21](frontend/public/Images/Image-21.png)
+![Image-22](frontend/public/Images/Image-22.png)
+![Image-23](frontend/public/Images/Image-23.png)
+![Image-24](frontend/public/Images/Image-24.png)
+![Image-25](frontend/public/Images/Image-25.png)
 
 &nbsp;
