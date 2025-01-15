@@ -2,6 +2,7 @@
 import Workshop from '../model/workshopModel.js';
 import Application from '../model/applicationModel.js';
 import User from '../model/userModel.js';
+import { sendEmail } from '../utils/mailer.js';
 
 
 // Funkcija za prijavu na radionicu
@@ -55,6 +56,20 @@ export const manageApplication = async (req, res) => {
             return res.status(404).json({ message: "Application not found" });
         }
 
+        // Dohvatiti korisnika i radiomicu  na osnovu reference iz prijave
+
+        const student = await User.findById(application.user);
+        if (!student) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const workshop = await Workshop.findById(application.workshop);
+        if (!workshop) {
+            return res.status(404).json({ message: 'Workshop not found' });
+        }
+
+        const isStatusChanged = req.body.status && req.body.status !== application.status;
+
         const updatedFields = {
             status: req.body.status || application.status,
             points: req.body.points || application.points,
@@ -63,6 +78,26 @@ export const manageApplication = async (req, res) => {
         };
 
         const updatedApplication = await Application.findByIdAndUpdate(id, updatedFields, { new: true });
+
+        if (isStatusChanged) {
+            const studentEmail = student.email;
+            const workshopName = workshop.name;
+            const newStatus = req.body.status;
+
+            let subject,message;
+
+            if(newStatus === 'Approved'){
+                subject = 'Application Status';
+                message = `Poštovani ${student.firstName} ${student.lastName},\n\nVaša prijava za radionicu ${workshopName} je odobrena.\n\nLijep pozdrav!,\nglobalsoft tim.`;
+            } else if(newStatus === 'Rejected'){
+                subject = 'Application Status';
+                message = `Poštovani ${student.firstName} ${student.lastName},\n\nVaša prijava za radionicu ${workshopName} je odbijena.\n\nPokušajte ponovo u sljedećem ciklusu\n\nLijep pozdrav!,\nglobalsoft tim.`;
+            }
+
+            if (subject && message) {
+                await sendEmail(studentEmail, subject, message);
+            }
+        }
 
         res.status(200).json(updatedApplication);
     } catch (error) {
