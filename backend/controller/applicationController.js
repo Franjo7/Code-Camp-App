@@ -25,8 +25,24 @@ export const applicationForWorkshop = async (req, res) => {
             return res.status(400).json({ message: 'User already registered for this workshop' });
         };
 
+        if(userExist._id.toString() === workshopExist.professor.toString()){
+            return res.status(400).json({ message: 'Professor cannot apply for his own workshop' });
+        };
+
 
         const savedApplication = await newApplication.save();
+
+
+        // Emitovanje događaja putem Socket.io
+        const professor = await User.findById(workshopExist.professor);
+        if (professor) {
+            console.log(`Emitiramo događaj za profesora: nova prijava na radionicu od:${userExist.firstName} ${userExist.lastName}`);
+            req.io.emit(`new-application-${professor._id}`, {
+                workshopName: workshopExist.name,
+                studentName: `${userExist.firstName} ${userExist.lastName}`,
+            });
+        }
+
         res.status(201).json(savedApplication);
 
     } catch (error) {
@@ -56,7 +72,7 @@ export const manageApplication = async (req, res) => {
             return res.status(404).json({ message: "Application not found" });
         }
 
-        // Dohvatiti korisnika i radiomicu  na osnovu reference iz prijave
+        // Dohvatiti korisnika i radionicu  na osnovu reference iz prijave
 
         const student = await User.findById(application.user);
         if (!student) {
@@ -96,6 +112,14 @@ export const manageApplication = async (req, res) => {
 
             if (subject && message) {
                 await sendEmail(studentEmail, subject, message);
+            }
+
+            if (student) {
+                console.log(`Emitiramo događaj za ucenika: Cesttitamo odobrena prijava za: ${workshopName} radionicu`);
+                req.io.emit(`new-application-${student._id}`, {
+                    workshopName: workshopName,
+                    status: newStatus,
+                });
             }
         }
 

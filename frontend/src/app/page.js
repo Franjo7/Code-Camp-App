@@ -6,6 +6,7 @@ import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import socket from '../../utils/socket';
 
 const HomePage = () => {
   const [cookies] = useCookies(['token']);
@@ -23,6 +24,7 @@ const HomePage = () => {
     }
   }, [cookies.token]);
 
+
   useEffect(() => {
     async function getWorkshops() {
       try {
@@ -37,12 +39,72 @@ const HomePage = () => {
     getWorkshops();
   }, []);
 
+  useEffect(() => {
+    if(!socket.connected) {
+    console.log('Povezivanje na Socket.io server...');
+    socket.connect();
+    }
+
+    socket.on('connect', () => {
+      console.log('Socket connected:', socket.id);
+    });
+  
+    socket.on('disconnect', () => {
+      console.log('Socket disconnected');
+    });
+  
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+    };
+  }, []);
+  
+
+useEffect(() => {
+  const token = cookies.token;
+
+  let userId = null;
+  if (token) {
+    const decodedToken = jwtDecode(token);
+    userId = decodedToken.user._id;
+  }
+
+  if (userId) {
+    // Osluskujemo događaje za novoprimljene prijave
+    socket.on(`new-application-${userId}`, (data) => {
+      // Provjera  podataka za prijavu
+      if (data.workshopName && data.studentName) {
+        console.log('Primljena nova prijava:', data);
+        toast.success(
+          `New application received for ${data.workshopName}: ${data.studentName}`
+        );
+      } else if (data.workshopName && data.status) {
+        console.log('Primljeni podaci o rezultatu prijave:', data);
+        toast.success(
+          `Application result for ${data.workshopName}: ${data.status}`
+        );
+      } else {
+        console.warn('Nepoznati podaci primljeni, preskačem toast:', data);
+      }
+    });
+  }
+
+  return () => {
+    if (userId) {
+      socket.off(`new-application-${userId}`);
+    }
+  };
+}, [cookies.token]);
+
+
   const handleApply = async (workshop) => {
     try {
       const token = localStorage.getItem('user._id');
       const headers = { Authorization: `Bearer ${token}` };
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.user._id;
+
+
       const payload = {
         user: userId,
         workshop: workshop,
