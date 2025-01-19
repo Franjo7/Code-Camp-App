@@ -10,6 +10,14 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import { Server } from 'socket.io';
+import rateLimit from 'express-rate-limit';
+
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+})
 
 
 const app = express();
@@ -22,10 +30,12 @@ const io = new Server(server,{
     },
 });
 
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(limiter);
 
 app.use((req, res, next) => {
     req.io = io;
